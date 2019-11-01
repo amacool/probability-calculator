@@ -1,0 +1,31 @@
+.c-level-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.c-level-container span {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.result-container {
+  border: 2px solid #C4C4C4;
+  border-radius: 10px;
+  padding: 17px;
+  margin-bottom: 50px;
+}
+
+.result-header {
+  display: flex;
+  align-items: center;
+}
+
+.result-header svg {
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.result-body {
+  padding: 30px 10px 0 35px;
+}

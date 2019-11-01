@@ -1,0 +1,43 @@
+.powered-by {
+  height: 110px;
+  margin-top: -55px;
+}
+
+.powered-by > div {
+  float: right;
+  text-align: left;
+}
+
+.powered-by p {
+  margin: 0;
+  font-size: 17px;
+}
+
+.home-body {
+  padding-top: 100px;
+}
+
+.navigation-container {
+  width: 500px;
+  margin: 0 auto;
+}
+
+.navigation-container button {
+  display: block;
+  padding: 15px 20px;
+  background-color: #eeeeee;
+  color: #335588;
+  text-decoration: none;
+  font-size: 25px;
+  cursor: pointer;
+  margin-bottom: 27px;
+  border-radius: 15px;
+  border: none;
+  width: 100%;
+  outline: none;
+}
+
+.navigation-container button.enter-data {
+  color: #eee;
+  background-color: #335588;
+}

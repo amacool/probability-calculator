@@ -1,0 +1,23 @@
+.study-tab {
+  width: 250px;
+  display: flex;
+  margin: 0 auto;
+}
+
+.study-tab > div {
+  padding: 5px 7px;
+  width: 50%;
+  border: solid 1px #C4C4C4;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 16px;
+}
+
+.study-tab > div:first-child {
+  background-color: #D4D4D4;
+  border-right: none;
+}
+
+.study-tab > div:last-child {
+  background-color: #ECECEC;
+}

@@ -1,0 +1,26 @@
+table {
+  border-collapse: collapse;
+}
+
+table.custom-table {
+  width: 100%;
+  border: solid 1px #dcdcdc;
+}
+
+.custom-table thead {
+  background-color: #ddeeff;
+}
+
+.custom-table thead th {
+  padding: 15px;
+  border: solid 1px #dcdcdc;
+}
+
+.custom-table tbody tr:nth-child(2n) {
+  background-color: #eee;
+}
+
+.custom-table tbody tr td {
+  padding: 5px 10px;
+  border: solid 1px #dcdcdc;
+}

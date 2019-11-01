@@ -1,0 +1,14 @@
+.main-header {
+  background: #eeeeee;
+  padding: 20px 70px 0;
+}
+
+.main-header .main-header-top {
+  display: flex;
+  justify-content: space-between;
+}
+
+.main-body {
+  padding: 50px 100px 80px;
+  text-align: left;
+}
