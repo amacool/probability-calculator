@@ -8,11 +8,12 @@ const getMean = function (data) {
 };
 
 // Standard deviation
-const getSD = function (data) {
+const getSD = function (data, num) {
   let m = getMean(data);
-  return Math.sqrt(data.reduce(function (sq, n) {
+  let val = Math.sqrt(data.reduce(function (sq, n) {
     return sq + Math.pow(n - m, 2);
   }, 0) / (data.length - 1));
+  return parseFloat(val.toFixed(num));
 };
 
 // NORMSDIST
@@ -40,7 +41,7 @@ const getND = (z) => {
 };
 
 // 2 tailed TINV
-const getTINV = (df, conf) => {
+const getTINV = (conf, df) => {
 	if(! isNaN(df)) {
 	  if (df > 0) {
   		conf = conf + (1 - conf) / 2;
@@ -51,7 +52,7 @@ const getTINV = (df, conf) => {
 	  }
 	}
   return -1;
-}
+};
 
 // calc zinv
 const zinv = (alphaN) => {
@@ -87,7 +88,7 @@ const zinv = (alphaN) => {
   }
   */
   return(z_alpha);
-}
+};
 
 // calc NPS
 const npsgroups = (vals, type) => {
@@ -116,9 +117,9 @@ const npsgroups = (vals, type) => {
 	}
 
 	return nps_count;
-}
+};
 
-const calcNPS = (q5, z) => {
+const calcNPS = (q5, z, confLevel) => {
   //NPS CALC
   var numNPS = q5.length;
   var promoters = npsgroups (q5, 'p');
@@ -149,7 +150,21 @@ const calcNPS = (q5, z) => {
   var adj_npsMargin = adj_npsSE*z;
   var npsLow = adj_p_netpromoters - adj_npsMargin;
   var npsHigh = adj_p_netpromoters + adj_npsMargin;
-  return { npsMean: netpromoterscore, npsLow, npsHigh };
-}
 
-export { calcNPS, getMean, getSD, getND, getTINV , zinv};
+  // //Make this a simple function to return low and high
+  //
+  var mean_q5 = getMean(q5);
+  var sd_q5 = getSD(q5);
+  var n_q5 = q5.length;
+  var tq5 = getTINV(confLevel, n_q5-1);
+  var seq5 = sd_q5/Math.sqrt(n_q5);
+  var marginq5= seq5*tq5;
+  var lowq5 = mean_q5-marginq5;
+  var highq5 = mean_q5+marginq5;
+
+  console.log(npsLow, npsHigh, lowq5, highq5);
+
+  return { npsMean: netpromoterscore, npsLow, npsHigh, lowq5, highq5 };
+};
+
+export { calcNPS, getMean, getSD, getND, getTINV , zinv };

@@ -15,6 +15,7 @@ import { IndividualRawValues } from "./IndividualRawValues";
 import { RawMeans } from "./RawMeans";
 import { getCalcResult } from "../../calculation/logic";
 import { parseRawDataToInt } from "../../helper";
+import { drawOverallPercentileChart } from "./charts/HorizontalBarChart";
 import './style.css';
 
 const useStyles = makeStyles(theme => ({
@@ -54,6 +55,11 @@ function ViewResults({ history, location, rawData, path }) {
         cronbachAlpha: '',
         internalReliability: ''
       }
+    },
+    susEquivalents: {
+      suprQ: ['', ''],
+      usability: ['', ''],
+      susEquivalent: ['', '']
     }
     // {
     //   suprQ: [],
@@ -69,15 +75,24 @@ function ViewResults({ history, location, rawData, path }) {
   React.useEffect(() => {
     setLabelWidth(inputLabel.current.offsetWidth);
 
-    const aa = getCalcResult(parseRawDataToInt(rawData), values.confidenceLevel);
-    console.log('result: ', aa);
-    setResult(aa);
+    const result = getCalcResult(parseRawDataToInt(rawData), values.confidenceLevel);
+    setResult(result);
+    drawOverallPercentileChart({
+      low: result.overallResults.percentileRank.ciLow.replace('%', ''),
+      high: result.overallResults.percentileRank.ciHigh.replace('%', ''),
+      val: result.overallResults.percentileRank.percentileRank.replace('%', ''),
+    });
   }, []);
 
   React.useEffect(() => {
-    const aa = getCalcResult(parseRawDataToInt(rawData), values.confidenceLevel);
-    console.log('result: ', aa);
-    setResult(aa);
+    const result = getCalcResult(parseRawDataToInt(rawData), values.confidenceLevel);
+    console.log('result: ', result);
+    setResult(result);
+    drawOverallPercentileChart({
+      low: result.overallResults.percentileRank.ciLow.replace('%', ''),
+      high: result.overallResults.percentileRank.ciHigh.replace('%', ''),
+      val: result.overallResults.percentileRank.percentileRank.replace('%', ''),
+    });
   }, [values.confidenceLevel]);
 
   const handleChange = event => {
@@ -114,10 +129,10 @@ function ViewResults({ history, location, rawData, path }) {
       </div>
 
       <div className="view-result-body">
-        <OverallSupr result={result.overallResults} />
+        <OverallSupr result={result.overallResults} confLevel={values.confidenceLevel} />
         <PercentileRanks result={result.percentileRanksBA} />
         <RawScores result={result.rawScoresBA} />
-        <SusEquivalents />
+        <SusEquivalents result={result.susEquivalents} />
         <IndividualRawValues result={result.individualRawValuesBA} />
         <RawMeans result={result.rawMeansByQ} />
       </div>

@@ -1,8 +1,9 @@
 import React from "react";
 import { ResultHeader } from "./ResultHeader";
 
-export const OverallSupr = ({ result }) => {
+export const OverallSupr = ({ result, confLevel }) => {
   const [visible, setVisible] = React.useState(true);
+
   return (
     <div className="result-container">
       <ResultHeader
@@ -34,6 +35,10 @@ export const OverallSupr = ({ result }) => {
                 </tr>
               </tbody>
             </table>
+
+            <div id="chart-overall-percentile">
+              <p>We can be {confLevel*100}% confident the population mean SUPR-Q Score is above {result.percentileRank.ciLow}.</p>
+            </div>
           </div>
 
           <div className="result-body-inner-wrapper">

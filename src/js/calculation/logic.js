@@ -8,10 +8,11 @@ import {
   getProFormat
 } from "../helper";
 
-const get_ci_pr = (N, studySD, rawMean, rawMeanSUPRQ, maxScore, globalInMean, globalLnSD, alpha, acc) => {
+const get_ci_pr = (N, studySD, rawMean, rawMeanSUPRQ, maxScore, globalInMean, globalLnSD, confLevel, acc) => {
   const SE = studySD / Math.sqrt(N);
-  const t = getTINV(N - 1, alpha);
+  const t = getTINV(confLevel, N - 1);
   const margin = SE * t;
+  const marginOfError = margin / rawMean;
   const studyMean = rawMean > maxScore ? 4.999999999 : rawMeanSUPRQ;
   const studyMeanRef = Math.log(maxScore - studyMean);
   const low = studyMean - margin < 1 ? 1 : studyMean - margin;
@@ -39,7 +40,8 @@ const get_ci_pr = (N, studySD, rawMean, rawMeanSUPRQ, maxScore, globalInMean, gl
     ciLowPro,
     ciHighPro,
     ciLowVal,
-    ciHighVal
+    ciHighVal,
+    marginOfError
   };
 };
 
@@ -69,8 +71,8 @@ export const getCalcResult = (rawData, confLevel = 0.9) => {
 
   // definition of constants
   const acc = 1;
-  const N = 8;
-  const DF = 7;
+  const N = rawData.length;
+  const DF = N - 1;
   const alpha = 1 - confLevel;
   const  z =  zinv(alpha/2);
   const dataCount = rawData.length;
@@ -85,7 +87,7 @@ export const getCalcResult = (rawData, confLevel = 0.9) => {
   let rowSUM = [];
 
   // get sub-scales
-  rawData.forEach((row, index) => {
+  rawData.forEach((row) => {
     // supr-q
     if (row[0] && row[1] && row[2] && row[3] && row[4] && row[5] && row[6] && row[7]) {
       subScales.suprQ.push((row[0] + row[1] + row[2] + row[3] + row[4] / 2 + row[5] + row[6] + row[7])/8);
@@ -124,29 +126,18 @@ export const getCalcResult = (rawData, confLevel = 0.9) => {
     if (getNonBlankCount(row) === 8) {
       const rowSumVal = getArrSum(row);
       rowSUM.push(rowSumVal);
-      // const testSdVal = getSD(rowSumVal);
-      // // testSD.push(testSdVal);
-      // const testVarVal = testSdVal * testSdVal;
-      // testVar.push(testVarVal);
     } else {
       testVar.push('');
     }
   });
 
   // get non-blank, SD, RawScore
-  const nonBlank = [
-    getNonBlankCount(subScales.suprQ),
-    getNonBlankCount(subScales.usability),
-    getNonBlankCount(subScales.trust),
-    getNonBlankCount(subScales.loyalty),
-    getNonBlankCount(subScales.appearance)
-  ];
   const stdDevBA = [  // SD in excel
-    getSD(subScales.suprQ),
-    getSD(subScales.usability),
-    getSD(subScales.trust),
-    getSD(subScales.loyalty),
-    getSD(subScales.appearance)
+    getSD(subScales.suprQ, 1),
+    getSD(subScales.usability, 1),
+    getSD(subScales.trust, 1),
+    getSD(subScales.loyalty, 1),
+    getSD(subScales.appearance, 1)
   ];
   const rawMeanBA = [  // mean in excel
     getArrAvg(getNonBlankArr(subScales.suprQ)),
@@ -157,36 +148,31 @@ export const getCalcResult = (rawData, confLevel = 0.9) => {
   ];
 
   // get CronbachAlpha
-  const stdDevQ = qColumnData.map((item) => getSD(item));
+  const stdDevQ = qColumnData.map((item) => getSD(item, 2));
   const rawMeanQ = qColumnData.map((item) => getArrAvg(getNonBlankArr(item)));
-
-  const testSD = getSD(rowSUM);
+  const testSD = getSD(rowSUM, 2);
   const testVar = testSD * testSD;
   const sumVar = getArrSum(stdDevQ.map((item) => item * item));
   const cronbachAlpha = N / DF * (1 - (sumVar / testVar));
   const internalReliability = cronbachAlpha > 0.7 ? 'Good' : 'Poor';
-  console.log('row sum: ', rowSUM);
-  console.log('test sd: ', testSD);
-  console.log('test var: ', testVar);
-  console.log('sum var: ', sumVar);
-  console.log('cronbach alpha: ', cronbachAlpha);
-  console.log('internalReliability: ', internalReliability);
 
   // get Percentile Ranks by Attribute, get Raw Scores by Attribute
   // G - Values
-  let studyMeanArr = [];
-  let studyMeanRefArr = [];
-  let gZReflectArr = [];
-  let gProReflectArr = [];
-  let prSuprQ_meanArr = [];
+  let suprqMarginOfError = '';
   maxScore.forEach((score, index) => {
     const {
       prMean,
       ciLowPro,
       ciLowVal,
       ciHighPro,
-      ciHighVal
-    } = get_ci_pr(N, stdDevBA[index], rawMeanBA[index], rawMeanBA[0], maxScore[index], globalInMean[index], globalLnSD[index], 1 - confLevel, acc);
+      ciHighVal,
+      marginOfError
+    } = get_ci_pr(N, stdDevBA[index], rawMeanBA[index], rawMeanBA[0], maxScore[index], globalInMean[index], globalLnSD[index], confLevel, acc);
+
+    if (index === 0) {
+      suprqMarginOfError = marginOfError;
+      console.log(suprqMarginOfError);
+    }
 
     index < 5 && percentileRanksBA.push({
       mean: getProFormat(prMean, acc),
@@ -203,7 +189,7 @@ export const getCalcResult = (rawData, confLevel = 0.9) => {
       sampleSize: dataCount
     });
   });
-  const { npsMean, npsLow, npsHigh } = calcNPS(qColumnData[4], z);
+  const { npsMean, npsLow, npsHigh } = calcNPS(qColumnData[4], z, confLevel);
   percentileRanksBA.push({
     mean: getProFormat(npsMean, acc),
     low: getProFormat(npsLow, acc),
@@ -218,7 +204,6 @@ export const getCalcResult = (rawData, confLevel = 0.9) => {
     stdDev: '?',
     sampleSize: dataCount
   });
-  // console.log(npsMean, npsLow, npsHigh);
 
   // get confidence interval by questions
   // stdDevQ, rawMeanQ
@@ -258,7 +243,7 @@ export const getCalcResult = (rawData, confLevel = 0.9) => {
       percentileRank: percentileRanksBA[0].mean,
       ciLow: percentileRanksBA[0].low,
       ciHigh: percentileRanksBA[0].high,
-      marginOfError: '-'
+      marginOfError: getProFormat(suprqMarginOfError, acc)
     },
     rawScore: {
       rawScore: rawScoresBA[0].mean,
@@ -271,11 +256,27 @@ export const getCalcResult = (rawData, confLevel = 0.9) => {
     }
   };
 
+  // get SUS Equivalents
+  const susGlobalLnSD = globalLnSD[6];
+  const susMaxScore = maxScore[6];
+  const susEquivalent = -13.6 + 22*rawScoresBA[1].mean;
+  const susStudyMeanRef = Math.log(susMaxScore - susEquivalent);
+  const susGlobalInMean = Math.log(susMaxScore - 68);
+  const susZReflect = (susStudyMeanRef - susGlobalInMean)/susGlobalLnSD;
+  const susPercentileRank = 1 - getND(susZReflect);
+
+  susEquivalents = {
+    suprQ: [percentileRanksBA[0].mean, rawScoresBA[0].mean],
+    usability: [percentileRanksBA[1].mean, rawScoresBA[1].mean],
+    susEquivalent: [getProFormat(susPercentileRank, acc), susEquivalent.toFixed(2)]
+  };
+
   return {
     percentileRanksBA,
     rawScoresBA,
     individualRawValuesBA,
     rawMeansByQ,
-    overallResults
+    overallResults,
+    susEquivalents
   };
 };

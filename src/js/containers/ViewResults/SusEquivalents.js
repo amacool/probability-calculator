@@ -1,8 +1,9 @@
 import React from "react";
 import { ResultHeader } from "./ResultHeader";
 
-export const SusEquivalents = () => {
+export const SusEquivalents = ({ result }) => {
   const [visible, setVisible] = React.useState(true);
+  console.log(result);
   return (
     <div className="result-container">
       <ResultHeader
@@ -21,18 +22,18 @@ export const SusEquivalents = () => {
               </tr>
               <tr>
                 <td className="tg-cly1 cell-dark-blue">SUPR-Q (Overall)</td>
-                <td className="tg-cly1 cell-light-grey">73.9%</td>
-                <td className="tg-cly1 cell-light-grey">4.13</td>
+                <td className="tg-cly1 cell-light-grey">{result.suprQ[0]}</td>
+                <td className="tg-cly1 cell-light-grey">{result.suprQ[1]}</td>
               </tr>
               <tr>
                 <td className="tg-cly1 cell-light-blue">Usability</td>
-                <td className="tg-cly1 cell-light-grey">73.9%</td>
-                <td className="tg-cly1 cell-light-grey">4.13</td>
+                <td className="tg-cly1 cell-light-grey">{result.usability[0]}</td>
+                <td className="tg-cly1 cell-light-grey">{result.usability[1]}</td>
               </tr>
               <tr>
                 <td className="tg-cly1 cell-light-blue">SUS Equivalent</td>
-                <td className="tg-cly1">73.9%</td>
-                <td className="tg-cly1">4.13</td>
+                <td className="tg-cly1">{result.susEquivalent[0]}</td>
+                <td className="tg-cly1">{result.susEquivalent[1]}</td>
               </tr>
             </table>
           </div>
@@ -40,4 +41,4 @@ export const SusEquivalents = () => {
       )}
     </div>
   );
-}
+};
