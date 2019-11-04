@@ -1,4 +1,5 @@
 import { tinv } from "./ibetainv";
+import {globalInMean, globalLnSD} from "./constants";
 
 // Arithmetic mean
 const getMean = function (data) {
@@ -119,8 +120,7 @@ const npsgroups = (vals, type) => {
 	return nps_count;
 };
 
-const calcNPS = (q5, z, confLevel) => {
-  //NPS CALC
+const calcNPS = (q5, z) => {
   var numNPS = q5.length;
   var promoters = npsgroups (q5, 'p');
   var passives = npsgroups (q5, 'v');
@@ -130,9 +130,8 @@ const calcNPS = (q5, z, confLevel) => {
   var p_promoter = promoters/numNPS;
   var p_detractor = detractors/numNPS;
 
-   //Add 1/3 of a squared z-square to each category
-   //SEE Rocks 2016 Interval Estimation for the Net Promoter Score
-   //CALCULATIONS STARTING ON ROW 42
+  // Add 1/3 of a squared z-square to each category
+  // SEE Rocks 2016 Interval Estimation for the Net Promoter Score
   var zthird = Math.pow(z,2)/3;
   var npsvariance = p_promoter +p_detractor - Math.pow( (p_promoter - p_detractor), 2);
   var adj_promoters = promoters+zthird;
@@ -150,21 +149,30 @@ const calcNPS = (q5, z, confLevel) => {
   var adj_npsMargin = adj_npsSE*z;
   var npsLow = adj_p_netpromoters - adj_npsMargin;
   var npsHigh = adj_p_netpromoters + adj_npsMargin;
+  var npsProLow = getND(npsLow - globalInMean[6]) / globalLnSD[6];
+  var npsProHigh = getND(npsHigh - globalInMean[6]) / globalLnSD[6];
 
-  // //Make this a simple function to return low and high
-  //
-  var mean_q5 = getMean(q5);
-  var sd_q5 = getSD(q5);
-  var n_q5 = q5.length;
-  var tq5 = getTINV(confLevel, n_q5-1);
-  var seq5 = sd_q5/Math.sqrt(n_q5);
-  var marginq5= seq5*tq5;
-  var lowq5 = mean_q5-marginq5;
-  var highq5 = mean_q5+marginq5;
-
-  console.log(npsLow, npsHigh, lowq5, highq5);
-
-  return { npsMean: netpromoterscore, npsLow, npsHigh, lowq5, highq5 };
+  return { npsMean: netpromoterscore, npsLow, npsHigh, npsProLow, npsProHigh };
 };
 
-export { calcNPS, getMean, getSD, getND, getTINV , zinv };
+const calcCiForQ = (q, confLevel) => {
+  var mean_q = getMean(q);
+  var sd_q = getSD(q);
+  var n_q = q.length;
+  var tq = getTINV(confLevel, n_q-1);
+  var seq = sd_q/Math.sqrt(n_q);
+  var marginq= seq*tq;
+  var lowq = mean_q - marginq;
+  var highq = mean_q + marginq;
+  return { lowq, highq };
+};
+
+export {
+  calcNPS,
+  calcCiForQ,
+  getMean,
+  getSD,
+  getND,
+  getTINV,
+  zinv
+};

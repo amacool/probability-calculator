@@ -1,5 +1,12 @@
 import { maxScore, globalInMean, globalLnSD } from "./constants";
-import { calcNPS, getMean, getSD, getND, getTINV, zinv } from "./functions";
+import {
+  calcNPS,
+  calcCiForQ,
+  getSD,
+  getND,
+  getTINV,
+  zinv
+} from "./functions";
 import {
   getArrSum,
   getArrAvg,
@@ -83,7 +90,7 @@ export const getCalcResult = (rawData, confLevel = 0.9) => {
     loyalty: [],
     appearance: []
   };
-  let qColumnData = [...Array(8)].map(item => []);
+  let qColumnData = [...Array(8)].map(() => []);
   let rowSUM = [];
 
   // get sub-scales
@@ -189,31 +196,23 @@ export const getCalcResult = (rawData, confLevel = 0.9) => {
       sampleSize: dataCount
     });
   });
-  const { npsMean, npsLow, npsHigh } = calcNPS(qColumnData[4], z, confLevel);
+
+  // get NPS values
+  const { npsMean, npsLow, npsHigh, npsProLow, npsProHigh } = calcNPS(qColumnData[4], z);
   percentileRanksBA.push({
-    mean: getProFormat(npsMean, acc),
-    low: getProFormat(npsLow, acc),
-    high: getProFormat(npsHigh, acc),
-    stdDev: '?',
+    mean: '-', //getProFormat(npsMean, acc),
+    low: getProFormat(npsProLow, acc),
+    high: getProFormat(npsProHigh, acc),
+    stdDev: '-',
     sampleSize: dataCount
   });
   rawScoresBA.push({
-    mean: '?',
-    low: '?',
-    high: '?',
-    stdDev: '?',
+    mean: '-',
+    low: npsLow.toFixed(2),
+    high: npsHigh.toFixed(2),
+    stdDev: '-',
     sampleSize: dataCount
   });
-
-  // get confidence interval by questions
-  // stdDevQ, rawMeanQ
-  // index < 5 && rawMeansByQ.push({
-  //   mean: rawMeanBA[index].toFixed(2),
-  //   low: ciLowVal.toFixed(2),
-  //   high: ciHighVal.toFixed(2),
-  //   stdDev: stdDevBA[index].toFixed(1),
-  //   sampleSize: dataCount
-  // });
 
   // get Individual Raw Values by Attribute
   subScales.suprQ.forEach((item, index) => {
@@ -228,10 +227,13 @@ export const getCalcResult = (rawData, confLevel = 0.9) => {
 
   // get Raw Means by Questionnaire Item
   stdDevQ.forEach((item, index) => {
+    // get confidence interval by questions
+    const { highq, lowq } = calcCiForQ(qColumnData[index], confLevel);
+
     rawMeansByQ.push({
       mean: rawMeanQ[index].toFixed(2),
-      low: '?',
-      high: '?',
+      low: lowq.toFixed(2),
+      high: highq.toFixed(2),
       stdDev: stdDevQ[index].toFixed(1),
       sampleSize: dataCount
     });
@@ -259,7 +261,8 @@ export const getCalcResult = (rawData, confLevel = 0.9) => {
   // get SUS Equivalents
   const susGlobalLnSD = globalLnSD[6];
   const susMaxScore = maxScore[6];
-  const susEquivalent = -13.6 + 22*rawScoresBA[1].mean;
+  // const susEquivalent = -13.6 + 22*rawScoresBA[1].mean;
+  const susEquivalent = -2.279 + 19.2048 * rawMeanQ[0];
   const susStudyMeanRef = Math.log(susMaxScore - susEquivalent);
   const susGlobalInMean = Math.log(susMaxScore - 68);
   const susZReflect = (susStudyMeanRef - susGlobalInMean)/susGlobalLnSD;
