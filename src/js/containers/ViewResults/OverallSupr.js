@@ -3,6 +3,7 @@ import { ResultHeader } from "./ResultHeader";
 
 export const OverallSupr = ({ result, confLevel }) => {
   const [visible, setVisible] = React.useState(true);
+  const historicalAvgScore = "73.9%";
 
   return (
     <div className="result-container">
@@ -35,11 +36,8 @@ export const OverallSupr = ({ result, confLevel }) => {
                 </tr>
               </tbody>
             </table>
-
             <div id="chart-overall-percentile-bar">
-              <p>We can be {confLevel*100}% confident the population mean SUPR-Q Score is above {result.percentileRank.ciLow}.</p>
-            </div>
-            <div id="chart-overall-percentile-line">
+              <p className="chart-desc">We can be {confLevel*100}% confident the population mean SUPR-Q Score is above {result.percentileRank.ciLow}.</p>
             </div>
           </div>
 
@@ -77,6 +75,9 @@ export const OverallSupr = ({ result, confLevel }) => {
                 </tr>
               </tbody>
             </table>
+            <div id="chart-overall-percentile-line">
+              <p className="chart-desc">A raw score of {result.rawScore.rawScore} is higher than {historicalAvgScore} of websites in the database</p>
+            </div>
           </div>
         </div>
       )}

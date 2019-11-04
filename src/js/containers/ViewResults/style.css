@@ -34,3 +34,15 @@
   display: flex;
   justify-content: space-between;
 }
+
+.chart-desc {
+  font-weight: bold;
+}
+
+#chart-overall-percentile-bar p {
+  margin: 0 0 15px 10px;
+}
+
+#chart-overall-percentile-line p {
+  margin: 0 0 0 10px;
+}

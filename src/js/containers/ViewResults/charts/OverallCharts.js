@@ -6,7 +6,8 @@ export const drawOverallPercentileChart = function({ low, high, val }) {
   let barLabelWidth = 10; // space reserved for bar labels
   let gridLabelHeight = 25; // space reserved for gridline labels
   let gridChartOffset = 20; // space between start of grid and first bar
-  let maxBarWidth = 650; // width of the bar with the max value
+  let maxBarWidth = 670; // width of the bar with the max value
+  let barWidth = 700;
   let verticalLineHeight = 60;
 
   let d3 = window.d3;
@@ -34,7 +35,7 @@ export const drawOverallPercentileChart = function({ low, high, val }) {
 
   // svg container element
   let chart = d3.select('#chart-overall-percentile-bar').append("svg")
-    .attr('width', maxBarWidth + barLabelWidth + valueLabelWidth)
+    .attr('width', barWidth)
     .attr('height', 2 * gridLabelHeight + gridChartOffset + data.length * barHeight);
 
   let gridContainer = chart.append('g')
@@ -104,24 +105,27 @@ export const drawOverallPercentileChart = function({ low, high, val }) {
 };
 
 export const drawOverallRawScoreChart = function({ rawScore, percentileRank, maxScore, historicalAvgScore }) {
-  console.log('------------');
-  console.log(rawScore, percentileRank, maxScore, historicalAvgScore);
-  let valueLabelWidth = 40; // space reserved for value labels (right)
-  let barHeight = 20; // height of one bar
-  let barLabelWidth = 10; // space reserved for bar labels
-  let barLabelPadding = 5; // padding between bar and bar labels (left)
-  let gridLabelHeight = 25; // space reserved for gridline labels
-  let gridChartOffset = 20; // space between start of grid and first bar
-  let maxBarWidth = 650; // width of the bar with the max value
+  // prepare data set
+  let dataset = [...Array((maxScore - 1) / 0.1 + 1)].map((item, index) => ({
+    x: parseFloat((0.1 * index).toFixed(1)),
+    y: 0
+  }));
+  let historicalIndex = parseInt(Math.max(1, historicalAvgScore.toFixed(1)) / 0.1) - 10;
+  dataset[historicalIndex].y = 50;
+  let rawScoreIndex = parseInt(Math.max(1, rawScore.toFixed(1)) / 0.1) - 10;
+  dataset[rawScoreIndex].y = percentileRank;
+  let offset = historicalIndex - rawScoreIndex;
 
   let d3 = window.d3;
   // 2. Use the margin convention practice
-  let margin = { top: 50, right: 50, bottom: 50, left: 50 }
-    , width = 650   // Use the window's width
-    , height = 300; // Use the window's height
+  let margin = { top: 25, right: 25, bottom: 25, left: 25 }
+    , width = 620
+    , height = 150;
+  let chartWidth = 650;
+  let chartHeight = 200;
 
   // The number of datapoints
-  let n = 50;
+  let n = 40;
 
   // 5. X scale will use the index of our data
   let xScale = d3.scaleLinear()
@@ -135,38 +139,25 @@ export const drawOverallRawScoreChart = function({ rawScore, percentileRank, max
 
   // 7. d3's line generator
   let line = d3.line()
-    .x(function(d, i) { return xScale(i) * 0.1 + 1; })  // set the x values for the line generator
-    .y(function(d) { return yScale(d.y); })   // set the y values for the line generator
-    .curve(d3.curveMonotoneX);                // apply smoothing to the line
-
-  // 8. An array of objects of length N. Each object has key -> value pair, the key being "y" and the value is a random number
-  let dataset = [...Array(50)].map((item, index) => ({
-    x: 0.1 * index,
-    y: 0
-  }));
-  let historicalIndex = parseInt(Math.max(historicalAvgScore, 1) / 0.1) - 10;
-  dataset[historicalIndex].y = 50;
-  let rawScoreIndex = parseInt(Math.max(1, rawScore) / 0.1) - 10;
-  dataset[rawScoreIndex].y = percentileRank;
-  let offset = historicalIndex - rawScoreIndex;
+    .x(function(d, i) {
+      return xScale(d.x + 1);
+    })
+    .y(function(d) {
+      return yScale(d.y);
+    })
+    .curve(d3.curveMonotoneX);
 
   // 1. Add the SVG to the page and employ #2
-  let svg = d3.select('#chart-overall-percentile-bar').append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
+  d3.select('#chart-overall-percentile-line').selectAll("svg").remove();
+  let svg = d3.select('#chart-overall-percentile-line').append("svg")
+    .attr("width", chartWidth + margin.left + margin.right)
+    .attr("height", chartHeight + margin.top + margin.bottom)
+    .attr("viewBox", `-40 0 ${chartWidth + margin.left + margin.right} ${chartHeight + margin.top + margin.bottom}`)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   // 3. Call the x axis in a group tag
-  // svg.append("g")
-  //   .attr("class", "x axis")
-  //   .attr("transform", "translate(0," + height + ")")
-  //   .style("font", "16px")
-  //   .call(
-  //     d3.axisBottom(xScale)
-  //       .ticks(5)
-  //   );
-  let bottomAxis = svg.append("g")
+  svg.append("g")
     .append("line")
     .attr("x1", 0)
     .attr("x2", width)
@@ -176,30 +167,24 @@ export const drawOverallRawScoreChart = function({ rawScore, percentileRank, max
     .style("stroke", "#aeaeae");
   for (let i = 0; i < 5; i ++) {
     svg.append("text")
-      .attr("x", i * width / 5)
-      .attr("y", height + 15)
+      .attr("x", i * width / 4)
+      .attr("y", height + 22)
       .attr("dy", 1)
       .attr("text-anchor", "middle")
       .text(i + 1)
   }
 
   // 4. Call the y axis in a group tag
-  // svg.append("g")
-  //   .attr("class", "y axis")
-  //   .call(
-  //     d3.axisLeft(yScale)
-  //       .ticks(6)
-  //       .tickFormat((d) => d + '%')
-  //   );
-  for (let i = 0; i < 5; i ++) {
+  for (let i = 0; i <= 5; i ++) {
     svg.append("g")
       .append("text")
-      .attr("x", -30)
+      .attr("x", -20)
       .attr("y", height / 5 * i + 1 + 5)
       .attr("dy", 1)
       .attr("text-anchor", "middle")
+      .attr("font-size", "14px")
       .text((100 - i * 20) + '%');
-    svg.append("g")
+    i < 4 && svg.append("g")
       .append("line")
       .attr("x1", 0)
       .attr("x2", width)
@@ -208,25 +193,70 @@ export const drawOverallRawScoreChart = function({ rawScore, percentileRank, max
       .attr("shape-rendering", "crispEdges")
       .style("stroke", "#aeaeae");
   }
+  svg.append("g")
+    .append("text")
+    .attr("x", -135)
+    .attr("y", -50)
+    .attr("dy", 1)
+    .attr("text-anchor", "left")
+    .attr("font-size", "13")
+    .attr("transform", "rotate(-90)")
+    .text("Percentile Rank");
+
+  // draw historical items
+  svg.append("g")
+    .append("line")
+    .attr("x1", historicalIndex * width / 40)
+    .attr("x2", historicalIndex * width / 40)
+    .attr("y1", 0)
+    .attr("y2", height)
+    .attr("shape-rendering", "crispEdges")
+    .style("stroke-dasharray", ("15, 7"))
+    .style("stroke", "#aeaeae");
+  svg.append("g")
+    .append("text")
+    .attr("x", historicalIndex * width / 40 - 20)
+    .attr("y", height + 40)
+    .attr("dy", 1)
+    .attr("text-anchor", "left")
+    .attr("font-size", "14px")
+    .style("fill", "#aeaeae")
+    .text(historicalAvgScore + ' - Historical Average');
+
+  // add chart title
+  svg.append("g")
+    .append("text")
+    .attr("x", width / 2)
+    .attr("y", height + 45)
+    .attr("dy", 1)
+    .attr("text-anchor", "middle")
+    .attr("font-size", "14px")
+    .style("fill", "#000")
+    .text('SUPR-Q Raw Score');
 
   // 9. Append the path, bind the data, and call the line generator
   svg.append("path")
-    .datum(dataset) // 10. Binds data to the line
-    .attr("class", "line") // Assign a class for styling
-    .attr("d", line); // 11. Calls the line generator
+    .datum(dataset)         // 10. Binds data to the line
+    .attr("class", "line")  // Assign a class for styling
+    .attr("d", line);       // 11. Calls the line generator
 
   // 12. Appends a circle for each datapoint
   svg.selectAll(".dot")
     .data(dataset)
-    .enter().append("circle") // Uses the enter().append() method
+    .enter().append("circle")
     .attr("class", function(d, i) {
-      if (d.x === rawScore && d.y === percentileRank) {
+      console.log(d, rawScore, percentileRank);
+      if (d.x === parseFloat(rawScore.toFixed(1)) - 1 && d.y === parseFloat(percentileRank.toFixed(1))) {
         return "dot";
       }
       return "hidden-dot";
     }) // Assign a class for styling
-    .attr("cx", function(d, i) { return xScale(i) })
-    .attr("cy", function(d) { return yScale(d.y) })
+    .attr("cx", function(d) {
+      return xScale(d.x + 1);
+    })
+    .attr("cy", function(d) {
+      return yScale(d.y);
+    })
     .attr("r", 5);
     // .on("mouseover", function(a, b, c) {
     //   console.log(a);

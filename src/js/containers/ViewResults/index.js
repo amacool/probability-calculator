@@ -90,8 +90,8 @@ function ViewResults({ history, location, rawData, path }) {
       val: result.overallResults.percentileRank.percentileRank.replace('%', ''),
     });
     drawOverallRawScoreChart({
-      rawScore: result.overallResults.rawScore.rawScore,
-      percentileRank: result.overallResults.percentileRank.percentileRank.replace('%', ''),
+      rawScore: parseFloat(result.overallResults.rawScore.rawScore),
+      percentileRank: parseFloat(result.overallResults.percentileRank.percentileRank.replace('%', '')),
       maxScore: 5,
       historicalAvgScore: 3.97
     });
