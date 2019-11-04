@@ -3,6 +3,7 @@ import { ResultHeader } from "./ResultHeader";
 
 export const PercentileRanks = ({ result }) => {
   const [visible, setVisible] = React.useState(true);
+  console.log(result);
 
   return (
     <div className="result-container">
@@ -75,6 +76,9 @@ export const PercentileRanks = ({ result }) => {
                 <td className="tg-cly1 cell-light-grey">{result[5].sampleSize}</td>
               </tr>
             </table>
+            <div id="chart-percentile-by-attr">
+              {/*<p className="chart-desc">A raw score of {result.rawScore.rawScore} is higher than {historicalAvgScore} of websites in the database</p>*/}
+            </div>
           </div>
         </div>
       )}

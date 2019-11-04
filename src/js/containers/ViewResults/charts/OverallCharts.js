@@ -126,6 +126,7 @@ export const drawOverallRawScoreChart = function({ rawScore, percentileRank, max
 
   // The number of datapoints
   let n = 40;
+  let countY = 5;
 
   // 5. X scale will use the index of our data
   let xScale = d3.scaleLinear()
@@ -165,9 +166,9 @@ export const drawOverallRawScoreChart = function({ rawScore, percentileRank, max
     .attr("y2", height + 1)
     .attr("shape-rendering", "crispEdges")
     .style("stroke", "#aeaeae");
-  for (let i = 0; i < 5; i ++) {
+  for (let i = 0; i < countY; i ++) {
     svg.append("text")
-      .attr("x", i * width / 4)
+      .attr("x", i * width / (countY - 1))
       .attr("y", height + 22)
       .attr("dy", 1)
       .attr("text-anchor", "middle")
@@ -175,21 +176,21 @@ export const drawOverallRawScoreChart = function({ rawScore, percentileRank, max
   }
 
   // 4. Call the y axis in a group tag
-  for (let i = 0; i <= 5; i ++) {
+  for (let i = 0; i <= countY; i ++) {
     svg.append("g")
       .append("text")
       .attr("x", -20)
-      .attr("y", height / 5 * i + 1 + 5)
+      .attr("y", height / countY * i + 6)
       .attr("dy", 1)
       .attr("text-anchor", "middle")
       .attr("font-size", "14px")
       .text((100 - i * 20) + '%');
-    i < 4 && svg.append("g")
+    i < countY && svg.append("g")
       .append("line")
       .attr("x1", 0)
       .attr("x2", width)
-      .attr("y1", height / 5 * i + 1)
-      .attr("y2", height / 5 * i + 1)
+      .attr("y1", height / countY * i + 1)
+      .attr("y2", height / countY * i + 1)
       .attr("shape-rendering", "crispEdges")
       .style("stroke", "#aeaeae");
   }
@@ -206,8 +207,8 @@ export const drawOverallRawScoreChart = function({ rawScore, percentileRank, max
   // draw historical items
   svg.append("g")
     .append("line")
-    .attr("x1", historicalIndex * width / 40)
-    .attr("x2", historicalIndex * width / 40)
+    .attr("x1", historicalIndex * width / n)
+    .attr("x2", historicalIndex * width / n)
     .attr("y1", 0)
     .attr("y2", height)
     .attr("shape-rendering", "crispEdges")
@@ -215,7 +216,7 @@ export const drawOverallRawScoreChart = function({ rawScore, percentileRank, max
     .style("stroke", "#aeaeae");
   svg.append("g")
     .append("text")
-    .attr("x", historicalIndex * width / 40 - 20)
+    .attr("x", historicalIndex * width / n - 20)
     .attr("y", height + 40)
     .attr("dy", 1)
     .attr("text-anchor", "left")
@@ -245,7 +246,6 @@ export const drawOverallRawScoreChart = function({ rawScore, percentileRank, max
     .data(dataset)
     .enter().append("circle")
     .attr("class", function(d, i) {
-      console.log(d, rawScore, percentileRank);
       if (d.x === parseFloat(rawScore.toFixed(1)) - 1 && d.y === parseFloat(percentileRank.toFixed(1))) {
         return "dot";
       }
@@ -262,4 +262,87 @@ export const drawOverallRawScoreChart = function({ rawScore, percentileRank, max
     //   console.log(a);
     //   this.attr('class', 'focus')
     // });
+};
+
+export const drawPRAChart = function({ attrs, maxVal }) {
+  let labels = Object.keys(attrs);
+  let vals = Object.values(attrs);
+  let countY = 5;
+
+  vals = vals.map(item => parseFloat(item.mean.replace('%', '')));
+
+  let d3 = window.d3;
+  // 2. Use the margin convention practice
+  let margin = { top: 25, right: 25, bottom: 25, left: 25 }
+    , width = 370
+    , height = 190;
+  let chartWidth = 400;
+  let chartHeight = 220;
+  let barWidth = 34;
+
+  // 1. Add the SVG to the page and employ #2
+  d3.select('#chart-percentile-by-attr').selectAll("svg").remove();
+  let svg = d3.select('#chart-percentile-by-attr').append("svg")
+    .attr("width", chartWidth + margin.left + margin.right)
+    .attr("height", chartHeight + margin.top + margin.bottom)
+    .attr("viewBox", `-40 0 ${chartWidth + margin.left + margin.right} ${chartHeight + margin.top + margin.bottom}`)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  // 3. Call the x axis in a group tag
+  svg.append("g")
+    .append("line")
+    .attr("x1", 0)
+    .attr("x2", width)
+    .attr("y1", height + 1)
+    .attr("y2", height + 1)
+    .attr("shape-rendering", "crispEdges")
+    .style("stroke", "#aeaeae");
+  svg.append("g")
+    .append("line")
+    .attr("x1", 0)
+    .attr("x2", 0)
+    .attr("y1", 0)
+    .attr("y2", height + 1)
+    .attr("shape-rendering", "crispEdges")
+    .style("stroke", "#aeaeae");
+
+  // 4. Call the y axis in a group tag
+  for (let i = 0; i <= countY; i ++) {
+    svg.append("g")
+      .append("text")
+      .attr("x", -20)
+      .attr("y", height / countY * i + 6)
+      .attr("dy", 1)
+      .attr("text-anchor", "middle")
+      .attr("font-size", "14px")
+      .text((100 - i * 20) + '%');
+    i < countY && svg.append("g")
+      .append("line")
+      .attr("x1", 0)
+      .attr("x2", width)
+      .attr("y1", height / countY * i + 1)
+      .attr("y2", height / countY * i + 1)
+      .attr("shape-rendering", "crispEdges")
+      .style("stroke", "#aeaeae");
+  }
+
+  // draw bars
+  for (let i = 0; i < countY; i ++) {
+    svg.append("text")
+      .attr("x", i * width/countY + width/countY/2)
+      .attr("y", height + 22)
+      .attr("dy", 1)
+      .attr("font-size", "13px")
+      .attr("text-anchor", "middle")
+      .text(labels[i])
+
+    svg.append("rect")
+      .attr('x', i * width/countY + width/countY/2 - barWidth/2)
+      .attr('y', height * (100 - vals[i]) / 100)
+      .attr('height', height * (vals[i]) / 100)
+      .attr('width', barWidth)
+      .attr('stroke', 'none')
+      .attr('fill', i === 0 ? 'steelblue' : '#a6bfe8');
+  }
 };

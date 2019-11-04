@@ -15,7 +15,7 @@ import { IndividualRawValues } from "./IndividualRawValues";
 import { RawMeans } from "./RawMeans";
 import { getCalcResult } from "../../calculation/logic";
 import { parseRawDataToInt } from "../../helper";
-import { drawOverallPercentileChart, drawOverallRawScoreChart } from "./charts/OverallCharts";
+import { drawOverallPercentileChart, drawOverallRawScoreChart, drawPRAChart } from "./charts/OverallCharts";
 import './style.css';
 
 const useStyles = makeStyles(theme => ({
@@ -82,7 +82,6 @@ function ViewResults({ history, location, rawData, path }) {
 
   React.useEffect(() => {
     const result = getCalcResult(parseRawDataToInt(rawData), values.confidenceLevel);
-    console.log('result: ', result);
     setResult(result);
     drawOverallPercentileChart({
       low: result.overallResults.percentileRank.ciLow.replace('%', ''),
@@ -94,6 +93,16 @@ function ViewResults({ history, location, rawData, path }) {
       percentileRank: parseFloat(result.overallResults.percentileRank.percentileRank.replace('%', '')),
       maxScore: 5,
       historicalAvgScore: 3.97
+    });
+    drawPRAChart({
+      attrs: {
+        "Overall": result.percentileRanksBA[0],
+        "Usability": result.percentileRanksBA[1],
+        "Credibility": result.percentileRanksBA[2],
+        "Loyalty": result.percentileRanksBA[3],
+        "Appearance": result.percentileRanksBA[4]
+      },
+      maxVal: 100
     });
   }, [values.confidenceLevel]);
 
