@@ -1,13 +1,18 @@
 import React from "react";
 import { ResultHeader } from "./ResultHeader";
 
-export const RawMeans = ({ result }) => {
+export const RawMeans = ({ result, drawChart }) => {
   const [visible, setVisible] = React.useState(true);
   return (
     <div className="result-container">
       <ResultHeader
         visible={visible}
-        setVisible={setVisible}
+        setVisible={(val) => {
+          setVisible(val);
+          setTimeout(function() {
+            drawChart();
+          });
+        }}
         heading="Raw Means by Questionnaire Item"
       />
       {visible && (

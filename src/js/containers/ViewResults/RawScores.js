@@ -1,13 +1,18 @@
 import React from "react";
 import { ResultHeader } from "./ResultHeader";
 
-export const RawScores = ({ result }) => {
+export const RawScores = ({ result, drawChart }) => {
   const [visible, setVisible] = React.useState(true);
   return (
     <div className="result-container">
       <ResultHeader
         visible={visible}
-        setVisible={setVisible}
+        setVisible={(val) => {
+          setVisible(val);
+          setTimeout(function() {
+            drawChart();
+          });
+        }}
         heading="Raw Scores by Attribute"
       />
       {visible && (
@@ -74,6 +79,7 @@ export const RawScores = ({ result }) => {
                 <td className="tg-cly1 cell-light-grey">{result[5].sampleSize}</td>
               </tr>
             </table>
+            <div id="chart-raw-scores-by-attr" />
           </div>
         </div>
       )}

@@ -1,7 +1,6 @@
 import React from "react";
 import connect from "react-redux/es/connect/connect";
 import { bindActionCreators } from "redux";
-// import calcActions from "../../redux/path/actions";
 import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -15,7 +14,7 @@ import { IndividualRawValues } from "./IndividualRawValues";
 import { RawMeans } from "./RawMeans";
 import { getCalcResult } from "../../calculation/logic";
 import { parseRawDataToInt } from "../../helper";
-import { drawOverallPercentileChart, drawOverallRawScoreChart, drawPRAChart } from "./charts/OverallCharts";
+import { drawOverallPercentileChart, drawOverallRawScoreChart, drawBarChart } from "./charts/OverallCharts";
 import './style.css';
 
 const useStyles = makeStyles(theme => ({
@@ -62,17 +61,51 @@ function ViewResults({ history, location, rawData, path }) {
       usability: ['', ''],
       susEquivalent: ['', '']
     }
-    // {
-    //   suprQ: [],
-    //   usability: [],
-    //   trust,
-    //   loyalty,
-    //   appearance
-    // }
   });
 
   const inputLabel = React.useRef(null);
   const [labelWidth, setLabelWidth] = React.useState(0);
+
+  const drawCharts = (data) => {
+    drawOverallPercentileChart({
+      low: data.overallResults.percentileRank.ciLow.replace('%', ''),
+      high: data.overallResults.percentileRank.ciHigh.replace('%', ''),
+      val: data.overallResults.percentileRank.percentileRank.replace('%', ''),
+      target: "chart-overall-percentile-bar"
+    });
+    drawOverallRawScoreChart({
+      rawScore: parseFloat(data.overallResults.rawScore.rawScore),
+      percentileRank: parseFloat(data.overallResults.percentileRank.percentileRank.replace('%', '')),
+      maxScore: 5,
+      historicalAvgScore: 3.97,
+      target: "chart-overall-percentile-line"
+    });
+    drawBarChart({
+      attrs: {
+        "Overall": data.percentileRanksBA[0],
+        "Usability": data.percentileRanksBA[1],
+        "Credibility": data.percentileRanksBA[2],
+        "Loyalty": data.percentileRanksBA[3],
+        "Appearance": data.percentileRanksBA[4]
+      },
+      maxVal: 100,
+      countY: 5,
+      target: "chart-percentile-by-attr"
+    });
+    drawBarChart({
+      attrs: {
+        "Overall": data.percentileRanksBA[0],
+        "Usability": data.percentileRanksBA[1],
+        "Credibility": data.percentileRanksBA[2],
+        "Loyalty": data.percentileRanksBA[3],
+        "Appearance": data.percentileRanksBA[4]
+      },
+      maxVal: 5,
+      countY: 4,
+      target: "chart-raw-scores-by-attr"
+    });
+  };
+
   React.useEffect(() => {
     setLabelWidth(inputLabel.current.offsetWidth);
 
@@ -83,27 +116,7 @@ function ViewResults({ history, location, rawData, path }) {
   React.useEffect(() => {
     const result = getCalcResult(parseRawDataToInt(rawData), values.confidenceLevel);
     setResult(result);
-    drawOverallPercentileChart({
-      low: result.overallResults.percentileRank.ciLow.replace('%', ''),
-      high: result.overallResults.percentileRank.ciHigh.replace('%', ''),
-      val: result.overallResults.percentileRank.percentileRank.replace('%', ''),
-    });
-    drawOverallRawScoreChart({
-      rawScore: parseFloat(result.overallResults.rawScore.rawScore),
-      percentileRank: parseFloat(result.overallResults.percentileRank.percentileRank.replace('%', '')),
-      maxScore: 5,
-      historicalAvgScore: 3.97
-    });
-    drawPRAChart({
-      attrs: {
-        "Overall": result.percentileRanksBA[0],
-        "Usability": result.percentileRanksBA[1],
-        "Credibility": result.percentileRanksBA[2],
-        "Loyalty": result.percentileRanksBA[3],
-        "Appearance": result.percentileRanksBA[4]
-      },
-      maxVal: 100
-    });
+    drawCharts(result);
   }, [values.confidenceLevel]);
 
   const handleChange = event => {
@@ -140,12 +153,12 @@ function ViewResults({ history, location, rawData, path }) {
       </div>
 
       <div className="view-result-body">
-        <OverallSupr result={result.overallResults} confLevel={values.confidenceLevel} />
-        <PercentileRanks result={result.percentileRanksBA} />
-        <RawScores result={result.rawScoresBA} />
-        <SusEquivalents result={result.susEquivalents} />
+        <OverallSupr result={result.overallResults} confLevel={values.confidenceLevel} drawChart={() => drawCharts(result)} />
+        <PercentileRanks result={result.percentileRanksBA} drawChart={() => drawCharts(result)} />
+        <RawScores result={result.rawScoresBA} drawChart={() => drawCharts(result)} />
+        <SusEquivalents result={result.susEquivalents} drawChart={() => drawCharts(result)} />
         <IndividualRawValues result={result.individualRawValuesBA} />
-        <RawMeans result={result.rawMeansByQ} />
+        <RawMeans result={result.rawMeansByQ} drawChart={() => drawCharts(result)} />
       </div>
     </div>
   );

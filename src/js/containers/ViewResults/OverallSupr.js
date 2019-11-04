@@ -1,7 +1,7 @@
 import React from "react";
 import { ResultHeader } from "./ResultHeader";
 
-export const OverallSupr = ({ result, confLevel }) => {
+export const OverallSupr = ({ result, confLevel, drawChart }) => {
   const [visible, setVisible] = React.useState(true);
   const historicalAvgScore = "73.9%";
 
@@ -9,7 +9,12 @@ export const OverallSupr = ({ result, confLevel }) => {
     <div className="result-container">
       <ResultHeader
         visible={visible}
-        setVisible={setVisible}
+        setVisible={(val) => {
+          setVisible(val);
+          setTimeout(function() {
+            drawChart();
+          });
+        }}
         heading="Overall SUPR-Q Results"
       />
       {visible && (

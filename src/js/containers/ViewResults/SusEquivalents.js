@@ -1,14 +1,19 @@
 import React from "react";
 import { ResultHeader } from "./ResultHeader";
 
-export const SusEquivalents = ({ result }) => {
+export const SusEquivalents = ({ result, drawChart }) => {
   const [visible, setVisible] = React.useState(true);
-  console.log(result);
+
   return (
     <div className="result-container">
       <ResultHeader
         visible={visible}
-        setVisible={setVisible}
+        setVisible={(val) => {
+          setVisible(val);
+          setTimeout(function() {
+            drawChart();
+          });
+        }}
         heading="SUS Equivalents"
       />
       {visible && (

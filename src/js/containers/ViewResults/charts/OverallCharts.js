@@ -1,7 +1,6 @@
 import "./style.css";
 
-export const drawOverallPercentileChart = function({ low, high, val }) {
-  let valueLabelWidth = 40; // space reserved for value labels (right)
+export const drawOverallPercentileChart = function({ low, high, val, target }) {
   let barHeight = 20; // height of one bar
   let barLabelWidth = 10; // space reserved for bar labels
   let gridLabelHeight = 25; // space reserved for gridline labels
@@ -31,10 +30,10 @@ export const drawOverallPercentileChart = function({ low, high, val }) {
   // let x = d3.scale.linear().domain([0, d3.max(data, barValue)]).range([0, maxBarWidth]);
 
   // initialization
-  d3.select('#chart-overall-percentile-bar').selectAll("svg").remove();
+  d3.select(`#${target}`).selectAll("svg").remove();
 
   // svg container element
-  let chart = d3.select('#chart-overall-percentile-bar').append("svg")
+  let chart = d3.select(`#${target}`).append("svg")
     .attr('width', barWidth)
     .attr('height', 2 * gridLabelHeight + gridChartOffset + data.length * barHeight);
 
@@ -104,7 +103,13 @@ export const drawOverallPercentileChart = function({ low, high, val }) {
     .style("stroke", "#aeaeae");
 };
 
-export const drawOverallRawScoreChart = function({ rawScore, percentileRank, maxScore, historicalAvgScore }) {
+export const drawOverallRawScoreChart = function({
+  rawScore,
+  percentileRank,
+  maxScore,
+  historicalAvgScore,
+  target
+}) {
   // prepare data set
   let dataset = [...Array((maxScore - 1) / 0.1 + 1)].map((item, index) => ({
     x: parseFloat((0.1 * index).toFixed(1)),
@@ -149,8 +154,8 @@ export const drawOverallRawScoreChart = function({ rawScore, percentileRank, max
     .curve(d3.curveMonotoneX);
 
   // 1. Add the SVG to the page and employ #2
-  d3.select('#chart-overall-percentile-line').selectAll("svg").remove();
-  let svg = d3.select('#chart-overall-percentile-line').append("svg")
+  d3.select(`#${target}`).selectAll("svg").remove();
+  let svg = d3.select(`#${target}`).append("svg")
     .attr("width", chartWidth + margin.left + margin.right)
     .attr("height", chartHeight + margin.top + margin.bottom)
     .attr("viewBox", `-40 0 ${chartWidth + margin.left + margin.right} ${chartHeight + margin.top + margin.bottom}`)
@@ -264,15 +269,11 @@ export const drawOverallRawScoreChart = function({ rawScore, percentileRank, max
     // });
 };
 
-export const drawPRAChart = function({ attrs, maxVal }) {
+export const drawBarChart = function({ attrs, maxVal, target, countY }) {
   let labels = Object.keys(attrs);
   let vals = Object.values(attrs);
-  let countY = 5;
-
   vals = vals.map(item => parseFloat(item.mean.replace('%', '')));
-
   let d3 = window.d3;
-  // 2. Use the margin convention practice
   let margin = { top: 25, right: 25, bottom: 25, left: 25 }
     , width = 370
     , height = 190;
@@ -281,8 +282,8 @@ export const drawPRAChart = function({ attrs, maxVal }) {
   let barWidth = 34;
 
   // 1. Add the SVG to the page and employ #2
-  d3.select('#chart-percentile-by-attr').selectAll("svg").remove();
-  let svg = d3.select('#chart-percentile-by-attr').append("svg")
+  d3.select(`#${target}`).selectAll("svg").remove();
+  let svg = d3.select(`#${target}`).append("svg")
     .attr("width", chartWidth + margin.left + margin.right)
     .attr("height", chartHeight + margin.top + margin.bottom)
     .attr("viewBox", `-40 0 ${chartWidth + margin.left + margin.right} ${chartHeight + margin.top + margin.bottom}`)
@@ -316,7 +317,7 @@ export const drawPRAChart = function({ attrs, maxVal }) {
       .attr("dy", 1)
       .attr("text-anchor", "middle")
       .attr("font-size", "14px")
-      .text((100 - i * 20) + '%');
+      .text(maxVal === 100 ? (100 - i * 20) + '%' : maxVal - i);
     i < countY && svg.append("g")
       .append("line")
       .attr("x1", 0)
@@ -335,11 +336,11 @@ export const drawPRAChart = function({ attrs, maxVal }) {
       .attr("dy", 1)
       .attr("font-size", "13px")
       .attr("text-anchor", "middle")
-      .text(labels[i])
+      .text(labels[i]);
 
     svg.append("rect")
       .attr('x', i * width/countY + width/countY/2 - barWidth/2)
-      .attr('y', height * (100 - vals[i]) / 100)
+      .attr('y', height * (100 - vals[i]) / 100 + 1)
       .attr('height', height * (vals[i]) / 100)
       .attr('width', barWidth)
       .attr('stroke', 'none')
