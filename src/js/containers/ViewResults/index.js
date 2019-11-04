@@ -15,7 +15,7 @@ import { IndividualRawValues } from "./IndividualRawValues";
 import { RawMeans } from "./RawMeans";
 import { getCalcResult } from "../../calculation/logic";
 import { parseRawDataToInt } from "../../helper";
-import { drawOverallPercentileChart } from "./charts/HorizontalBarChart";
+import { drawOverallPercentileChart, drawOverallRawScoreChart } from "./charts/OverallCharts";
 import './style.css';
 
 const useStyles = makeStyles(theme => ({
@@ -48,6 +48,7 @@ function ViewResults({ history, location, rawData, path }) {
         marginOfError: ''
       },
       rawScore: {
+        rawScore: '',
         ciLow: '',
         ciHigh: '',
         stdDev: '',
@@ -77,11 +78,6 @@ function ViewResults({ history, location, rawData, path }) {
 
     const result = getCalcResult(parseRawDataToInt(rawData), values.confidenceLevel);
     setResult(result);
-    drawOverallPercentileChart({
-      low: result.overallResults.percentileRank.ciLow.replace('%', ''),
-      high: result.overallResults.percentileRank.ciHigh.replace('%', ''),
-      val: result.overallResults.percentileRank.percentileRank.replace('%', ''),
-    });
   }, []);
 
   React.useEffect(() => {
@@ -92,6 +88,12 @@ function ViewResults({ history, location, rawData, path }) {
       low: result.overallResults.percentileRank.ciLow.replace('%', ''),
       high: result.overallResults.percentileRank.ciHigh.replace('%', ''),
       val: result.overallResults.percentileRank.percentileRank.replace('%', ''),
+    });
+    drawOverallRawScoreChart({
+      rawScore: result.overallResults.rawScore.rawScore,
+      percentileRank: result.overallResults.percentileRank.percentileRank.replace('%', ''),
+      maxScore: 5,
+      historicalAvgScore: 3.97
     });
   }, [values.confidenceLevel]);
 

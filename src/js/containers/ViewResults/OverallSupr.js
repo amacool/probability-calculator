@@ -36,8 +36,10 @@ export const OverallSupr = ({ result, confLevel }) => {
               </tbody>
             </table>
 
-            <div id="chart-overall-percentile">
+            <div id="chart-overall-percentile-bar">
               <p>We can be {confLevel*100}% confident the population mean SUPR-Q Score is above {result.percentileRank.ciLow}.</p>
+            </div>
+            <div id="chart-overall-percentile-line">
             </div>
           </div>
 
