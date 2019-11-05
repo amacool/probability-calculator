@@ -110,24 +110,52 @@ export const drawOverallRawScoreChart = function({
   historicalAvgScore,
   target
 }) {
-  // prepare data set
-  let dataset = [...Array((maxScore - 1) / 0.1 + 1)].map((item, index) => ({
-    x: parseFloat((0.1 * index).toFixed(1)),
-    y: 0
-  }));
-  let historicalIndex = parseInt(Math.max(1, historicalAvgScore.toFixed(1)) / 0.1) - 10;
-  dataset[historicalIndex].y = 50;
-  let rawScoreIndex = parseInt(Math.max(1, rawScore.toFixed(1)) / 0.1) - 10;
-  dataset[rawScoreIndex].y = percentileRank;
-  let offset = historicalIndex - rawScoreIndex;
-
+  percentileRank = 30;
+  rawScore = 3.8;
+  // Use the margin convention practice
   let d3 = window.d3;
-  // 2. Use the margin convention practice
   let margin = { top: 25, right: 25, bottom: 25, left: 25 }
     , width = 620
     , height = 150;
   let chartWidth = 650;
   let chartHeight = 200;
+
+  // prepare data set
+  let dataset = [...Array((maxScore - 1) / 0.1 + 1)].map((item, index) => ({
+    x: parseFloat((0.1 * index).toFixed(1)),
+    y: 0
+  }));
+  let ratio = (chartWidth / chartHeight) * (100 / 4);
+  let historicalIndex = parseInt(Math.max(1, historicalAvgScore.toFixed(1)) / 0.1) - 10;
+  dataset[historicalIndex].y = 50;
+  let rawScoreIndex = parseInt(Math.max(1, rawScore.toFixed(1)) / 0.1) - 10;
+  dataset[rawScoreIndex].y = percentileRank;
+  let offset = Math.abs(historicalIndex - rawScoreIndex);
+  let x1 = ratio * rawScoreIndex / 10;
+  let y1 = percentileRank;
+  let tan_a = (percentileRank - 50) / (ratio*(rawScoreIndex - historicalIndex)/10);
+  let a = Math.atan(tan_a);
+  let h1 = 100 - percentileRank;
+  let deltaX1 = h1 / tan_a;
+  let x2 = x1 + deltaX1;
+  let y2 = 100;
+  let len1 = h1 / Math.sin(a);
+  let x3 = x2 + len1;
+  let actualX3 = parseFloat((x3 / ratio).toFixed(1));
+
+  let deltaX0 = 50 / tan_a;
+  let len0 = Math.sqrt(deltaX0*deltaX0 + 50*50);
+  let x4 = ratio*historicalIndex/10 - deltaX0 - len0*0.5;
+  let actualX4 = parseFloat((x4 / ratio).toFixed(1));
+
+  let lineDataSet = [
+    { x: 0, y: 0 },
+    { x: actualX4, y: 0 },
+    { x: historicalIndex / 10, y: 50 },
+    { x: rawScoreIndex / 10, y: percentileRank },
+    { x: actualX3, y: 100 },
+    { x: maxScore - 1, y: 100 },
+  ];
 
   // The number of datapoints
   let n = 40;
@@ -242,7 +270,7 @@ export const drawOverallRawScoreChart = function({
 
   // 9. Append the path, bind the data, and call the line generator
   svg.append("path")
-    .datum(dataset)         // 10. Binds data to the line
+    .datum(lineDataSet)         // 10. Binds data to the line
     .attr("class", "line")  // Assign a class for styling
     .attr("d", line);       // 11. Calls the line generator
 
