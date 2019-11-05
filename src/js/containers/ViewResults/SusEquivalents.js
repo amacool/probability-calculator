@@ -1,5 +1,6 @@
 import React from "react";
 import { ResultHeader } from "./ResultHeader";
+import {downloadAsPng} from "../../helper";
 
 export const SusEquivalents = ({ result, drawChart }) => {
   const [visible, setVisible] = React.useState(true);
@@ -41,6 +42,10 @@ export const SusEquivalents = ({ result, drawChart }) => {
                 <td className="tg-cly1">{result.susEquivalent[1]}</td>
               </tr>
             </table>
+            <div id="chart-sus-equivalent-chart" />
+            <div className="export-btn-container">
+              <button className="btn-primary" onClick={() => downloadAsPng('chart-sus-equivalent-chart', 'SUS Equivalents')}>Export Chart</button>
+            </div>
           </div>
         </div>
       )}

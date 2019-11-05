@@ -1,3 +1,5 @@
+import htmlToImage from "html-to-image";
+
 const getFormatedRawData = (data) => {
   return data.map((item, index) => ({
     id: index,
@@ -40,6 +42,16 @@ const getProFormat = (val, num) => {
   return (val*100).toFixed(num) + '%';
 };
 
+const downloadAsPng = (target, name) => {
+  htmlToImage.toPng(document.getElementById(target))
+    .then(function (dataUrl) {
+      let link = document.createElement('a');
+      link.download = name;
+      link.href = dataUrl;
+      link.click();
+    });
+};
+
 export {
   getFormatedRawData,
   getCleanRawData,
@@ -48,5 +60,6 @@ export {
   getArrAvg,
   getNonBlankArr,
   getNonBlankCount,
-  getProFormat
+  getProFormat,
+  downloadAsPng
 };

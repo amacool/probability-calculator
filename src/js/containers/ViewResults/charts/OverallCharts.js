@@ -34,6 +34,7 @@ export const drawOverallPercentileChart = function({ low, high, val, target, wid
 
   // svg container element
   let chart = d3.select(`#${target}`).append("svg")
+    .attr('id', `${target}-svg`)
     .attr('width', barWidth)
     .attr('height', 2 * gridLabelHeight + gridChartOffset + data.length * barHeight);
 
@@ -112,7 +113,6 @@ export const drawOverallRawScoreChart = function({
   widthT,
   heightT
 }) {
-  // Use the margin convention practice
   let d3 = window.d3;
   let margin = { top: 25, right: 25, bottom: 25, left: 25 }
     , width = widthT - 30
@@ -139,7 +139,6 @@ export const drawOverallRawScoreChart = function({
   let h1 = flag === 1 ? 100 - y1 : y1;
   let deltaX1 = h1 / tan_a;
   let x2 = x1 + flag*deltaX1;
-  let y2 = 100;
   let len1 = h1 / Math.sin(a);
   let x3 = x2 + flag*len1;
   let actualX3 = parseFloat((x3 / ratio).toFixed(1));
@@ -169,21 +168,19 @@ export const drawOverallRawScoreChart = function({
     ];
   }
 
-  console.log(lineDataSet);
-
   // The number of datapoints
   let n = 40;
   let countY = 5;
 
   // 5. X scale will use the index of our data
   let xScale = d3.scaleLinear()
-    .domain([1, maxScore])   // input
-    .range([0, width]); // output
+    .domain([1, maxScore])
+    .range([0, width]);
 
   // 6. Y scale will use the randomly generate number
   let yScale = d3.scaleLinear()
-    .domain([0, 100])       // input
-    .range([height, 0]);    // output
+    .domain([0, 100])
+    .range([height, 0]);
 
   // 7. d3's line generator
   let line = d3.line()
@@ -284,20 +281,23 @@ export const drawOverallRawScoreChart = function({
 
   // 9. Append the path, bind the data, and call the line generator
   svg.append("path")
-    .datum(lineDataSet)         // 10. Binds data to the line
-    .attr("class", "line")  // Assign a class for styling
-    .attr("d", line);       // 11. Calls the line generator
+    .datum(lineDataSet)
+    .attr("fill", "none")
+    .attr("stroke", "#000000")
+    .attr("stroke-width", "1px")
+    .attr("d", line);
 
   // 12. Appends a circle for each datapoint
   svg.selectAll(".dot")
     .data(dataset)
     .enter().append("circle")
-    .attr("class", function(d, i) {
+    .attr("display", function(d, i) {
       if (d.x === parseFloat(rawScore.toFixed(1)) - 1 && d.y === parseFloat(percentileRank.toFixed(1))) {
-        return "dot";
+        return "block";
       }
-      return "hidden-dot";
-    }) // Assign a class for styling
+      return "none";
+    })
+    .attr("fill", "#4f81bd")
     .attr("cx", function(d) {
       return xScale(d.x + 1);
     })
@@ -399,4 +399,164 @@ export const drawBarChart = function({ attrs, maxVal, target, countY, showLabel,
       .attr("shape-rendering", "crispEdges")
       .style("stroke", "#7b7b7b");
   }
+};
+
+export const drawSusEquivalentChart = function({
+  rawScore,
+  percentileRank,
+  maxScore,
+  historicalAvgScore,
+  target,
+  widthT,
+  heightT
+}) {
+  // Use the margin convention practice
+  let d3 = window.d3;
+  let margin = { top: 25, right: 25, bottom: 25, left: 25 }
+    , width = widthT - 30
+    , height = heightT - 50;
+  let chartWidth = widthT;
+  let chartHeight = heightT;
+
+  // prepare data set
+  let dataset = [...Array((maxScore - 1) / 0.1 + 1)].map((item, index) => ({
+    x: parseFloat((0.1 * index).toFixed(1)),
+    y: 0
+  }));
+  let ratio = (chartWidth / chartHeight) * (100 / 4);
+  let flag = percentileRank > 50 ? 1 : -1;
+  let historicalIndex = parseInt(((Math.max(1, historicalAvgScore.toFixed(1)) / 0.1).toFixed(1) - 10).toFixed(1));
+  dataset[historicalIndex].y = 50;
+  let rawScoreIndex = parseInt(((Math.max(1, rawScore.toFixed(1)) / 0.1).toFixed(1) - 10).toFixed(1));
+  dataset[rawScoreIndex].y = percentileRank;
+  let offset = Math.abs(historicalIndex - rawScoreIndex);
+  let x1 = ratio * rawScoreIndex / 10;
+  let y1 = percentileRank;
+  let tan_a = Math.abs((y1 - 50) / (ratio*(offset)/10));
+  let a = Math.atan(tan_a);
+  let h1 = flag === 1 ? 100 - y1 : y1;
+  let deltaX1 = h1 / tan_a;
+  let x2 = x1 + flag*deltaX1;
+  let len1 = h1 / Math.sin(a);
+  let x3 = x2 + flag*len1;
+  let actualX3 = parseFloat((x3 / ratio).toFixed(1));
+
+  let deltaX0 = 50 / tan_a;
+  let len0 = Math.sqrt(deltaX0*deltaX0 + 50*50);
+  let x4 = ratio*historicalIndex/10 - flag*deltaX0 - flag*len0*0.5;
+  let actualX4 = parseFloat((x4 / ratio).toFixed(1));
+  let lineDataSet = [];
+  if (flag === 1) {
+    lineDataSet = [
+      { x: 0, y: 0 },
+      { x: actualX4, y: 0 },
+      { x: historicalIndex/10, y: 50 },
+      { x: rawScoreIndex/10, y: percentileRank },
+      { x: actualX3, y: 100 },
+      { x: maxScore - 1, y: 100 },
+    ];
+  } else {
+    lineDataSet = [
+      { x: 0, y: 0 },
+      { x: actualX3, y: 0 },
+      { x: rawScoreIndex/10, y: percentileRank },
+      { x: historicalIndex/10, y: 50 },
+      { x: actualX4, y: 100 },
+      { x: maxScore-1, y: 100 },
+    ];
+  }
+
+  console.log(lineDataSet);
+
+  // The number of datapoints
+  let n = 40;
+  let countY = 5;
+
+  // 5. X scale will use the index of our data
+  let xScale = d3.scaleLinear()
+    .domain([1, maxScore])
+    .range([0, width]);
+
+  // 6. Y scale will use the randomly generate number
+  let yScale = d3.scaleLinear()
+    .domain([0, 100])
+    .range([height, 0]);
+
+  // 7. d3's line generator
+  let line = d3.line()
+    .x(function(d, i) {
+      return xScale(d.x + 1);
+    })
+    .y(function(d) {
+      return yScale(d.y);
+    })
+    .curve(d3.curveMonotoneX);
+
+  // 1. Add the SVG to the page and employ #2
+  d3.select(`#${target}`).selectAll("svg").remove();
+  let svg = d3.select(`#${target}`).append("svg")
+    .attr("width", chartWidth + margin.left + margin.right)
+    .attr("height", chartHeight + margin.top + margin.bottom)
+    .attr("viewBox", `-40 0 ${chartWidth + margin.left + margin.right} ${chartHeight + margin.top + margin.bottom}`)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  // 3. Call the x axis in a group tag
+  svg.append("g")
+    .append("line")
+    .attr("x1", 0)
+    .attr("x2", width)
+    .attr("y1", height + 1)
+    .attr("y2", height + 1)
+    .attr("shape-rendering", "crispEdges")
+    .style("stroke", "#aeaeae");
+  for (let i = 0; i < 6; i ++) {
+    svg.append("text")
+      .attr("x", i * width / (6 - 1))
+      .attr("y", height + 22)
+      .attr("dy", 1)
+      .attr("font-size", "13px")
+      .attr("text-anchor", "middle")
+      .text(i*20 + '%')
+  }
+
+  // 4. Call the y axis in a group tag
+  for (let i = 0; i <= 5; i ++) {
+    svg.append("g")
+      .append("text")
+      .attr("x", -20)
+      .attr("y", height / 5 * i + 5)
+      .attr("dy", 1)
+      .attr("text-anchor", "middle")
+      .attr("font-size", "14px")
+      .text((100 - i * 10));
+    i < 5 && svg.append("g")
+      .append("line")
+      .attr("x1", 0)
+      .attr("x2", width)
+      .attr("y1", height / 5 * i + 1)
+      .attr("y2", height / 5 * i + 1)
+      .attr("shape-rendering", "crispEdges")
+      .style("stroke", "#aeaeae");
+  }
+  svg.append("g")
+    .append("text")
+    .attr("x", -135)
+    .attr("y", -50)
+    .attr("dy", 1)
+    .attr("text-anchor", "left")
+    .attr("font-size", "13")
+    .attr("transform", "rotate(-90)")
+    .text("SUS Equivalent Score");
+
+  // add chart title
+  svg.append("g")
+    .append("text")
+    .attr("x", width / 2)
+    .attr("y", height + 45)
+    .attr("dy", 1)
+    .attr("text-anchor", "middle")
+    .attr("font-size", "14px")
+    .style("fill", "#000")
+    .text('SUPR-Q Percentile Rank for Usability');
 };

@@ -1,6 +1,7 @@
 import React from "react";
 import { ResultHeader } from "./ResultHeader"
 import { questionDesc } from "../../constants";
+import {downloadAsPng} from "../../helper";
 
 export const RawMeans = ({ result, drawChart }) => {
   const [visible, setVisible] = React.useState(true);
@@ -96,7 +97,7 @@ export const RawMeans = ({ result, drawChart }) => {
                 <td className="tg-0lax cell-light-grey">{result[7].sampleSize}</td>
               </tr>
             </table>
-            <div className="chart-container">
+            <div className="chart-container" id="chart-raw-values-by-question-container">
               <div>
                 <div id="chart-raw-values-by-question" />
                 <div className="labels">
@@ -110,6 +111,9 @@ export const RawMeans = ({ result, drawChart }) => {
                 </div>
               </div>
             </div>
+          </div>
+          <div className="export-btn-container">
+            <button className="btn-primary" onClick={() => downloadAsPng('chart-raw-values-by-question-container', 'Raw Means by Questionnaire Item')}>Export Chart</button>
           </div>
         </div>
       )}

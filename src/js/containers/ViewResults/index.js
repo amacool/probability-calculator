@@ -14,7 +14,12 @@ import { IndividualRawValues } from "./IndividualRawValues";
 import { RawMeans } from "./RawMeans";
 import { getCalcResult } from "../../calculation/logic";
 import { parseRawDataToInt } from "../../helper";
-import { drawOverallPercentileChart, drawOverallRawScoreChart, drawBarChart } from "./charts/OverallCharts";
+import {
+  drawOverallPercentileChart,
+  drawOverallRawScoreChart,
+  drawBarChart,
+  drawSusEquivalentChart
+} from "./charts/OverallCharts";
 import { questionDesc } from "../../constants";
 import './style.css';
 
@@ -135,6 +140,15 @@ function ViewResults({ history, location, rawData, path }) {
       barWidth: 34,
       widthT: 450,
       heightT: 220
+    });
+    drawSusEquivalentChart({
+      rawScore: parseFloat(data.overallResults.rawScore.rawScore),
+      percentileRank: parseFloat(data.overallResults.percentileRank.percentileRank.replace('%', '')),
+      maxScore: 5,
+      historicalAvgScore: 3.9,
+      target: "chart-sus-equivalent-chart",
+      widthT: 650,
+      heightT: 200
     });
   };
 

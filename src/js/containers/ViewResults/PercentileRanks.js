@@ -1,5 +1,6 @@
 import React from "react";
 import { ResultHeader } from "./ResultHeader";
+import {downloadAsPng} from "../../helper";
 
 export const PercentileRanks = ({ result, drawChart }) => {
   const [visible, setVisible] = React.useState(true);
@@ -24,8 +25,8 @@ export const PercentileRanks = ({ result, drawChart }) => {
                 <th className="tg-cly1 cell-dark-grey" rowSpan="2"></th>
                 <th className="tg-cly1 cell-dark-blue" rowSpan="2">Percentile Rank</th>
                 <th className="tg-cly1 cell-dark-grey" colSpan="2">Confidence Interval</th>
-                <th className="tg-cly1 cell-dark-grey" rowSpan="2">Standard Deviation</th>
-                <th className="tg-cly1 cell-dark-grey" rowSpan="2">Sample Size</th>
+                <th className="tg-cly1 cell-dark-grey" rowSpan="2">Standard<br/>Deviation</th>
+                <th className="tg-cly1 cell-dark-grey" rowSpan="2">Sample<br/>Size</th>
               </tr>
               <tr>
                 <td className="tg-cly1 cell-dark-grey">Low</td>
@@ -81,6 +82,9 @@ export const PercentileRanks = ({ result, drawChart }) => {
               </tr>
             </table>
             <div id="chart-percentile-by-attr" />
+            <div className="export-btn-container">
+              <button className="btn-primary" onClick={() => downloadAsPng('chart-percentile-by-attr', 'Percentile Ranks by Attribute')}>Export Chart</button>
+            </div>
           </div>
         </div>
       )}
