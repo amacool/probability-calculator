@@ -311,7 +311,7 @@ export const drawOverallRawScoreChart = function({
     // });
 };
 
-export const drawBarChart = function({ attrs, maxVal, target, countY, showLabel, widthT, heightT, barWidth }) {
+export const drawBarChart = function({ attrs, maxVal, target, countY, showLabel, widthT, heightT, barWidth, pacingY }) {
   let labels = Object.keys(attrs);
   let vals = Object.values(attrs);
   let lows = vals.map(item => parseFloat(item.low.replace('%', '')));
@@ -361,7 +361,7 @@ export const drawBarChart = function({ attrs, maxVal, target, countY, showLabel,
       .attr("dy", 1)
       .attr("text-anchor", "middle")
       .attr("font-size", "14px")
-      .text(maxVal === 100 ? (100 - i * 20) + '%' : maxVal - i);
+      .text(maxVal === 100 ? (100 - i * 20) + '%' : maxVal - i*pacingY);
     i < countY && svg.append("g")
       .append("line")
       .attr("x1", 0)

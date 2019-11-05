@@ -100,6 +100,7 @@ function ViewResults({ history, location, rawData, path }) {
       },
       maxVal: 100,
       countY: 5,
+      pacingY: 20,
       target: "chart-percentile-by-attr",
       showLabel: true,
       barWidth: 34,
@@ -116,6 +117,7 @@ function ViewResults({ history, location, rawData, path }) {
       },
       maxVal: 5,
       countY: 4,
+      pacingY: 1,
       target: "chart-raw-scores-by-attr",
       showLabel: true,
       barWidth: 34,
@@ -128,18 +130,31 @@ function ViewResults({ history, location, rawData, path }) {
         [questionDesc[1]]: data.rawMeansByQ[1],
         [questionDesc[2]]: data.rawMeansByQ[2],
         [questionDesc[3]]: data.rawMeansByQ[3],
-        [questionDesc[4]]: data.rawMeansByQ[4],
         [questionDesc[5]]: data.rawMeansByQ[5],
         [questionDesc[6]]: data.rawMeansByQ[6],
         [questionDesc[7]]: data.rawMeansByQ[7]
       },
       maxVal: 5,
       countY: 4,
+      pacingY: 1,
       target: "chart-raw-values-by-question",
       showLabel: false,
       barWidth: 34,
       widthT: 450,
       heightT: 220
+    });
+    drawBarChart({
+      attrs: {
+        [questionDesc[4]]: data.rawMeansByQ[4]
+      },
+      maxVal: 10,
+      countY: 5,
+      pacingY: 2,
+      target: "chart-raw-values-by-question-single",
+      showLabel: false,
+      barWidth: 34,
+      widthT: 120,
+      heightT: 220,
     });
     drawSusEquivalentChart({
       rawScore: parseFloat(data.overallResults.rawScore.rawScore),

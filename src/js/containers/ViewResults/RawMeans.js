@@ -101,13 +101,13 @@ export const RawMeans = ({ result, drawChart }) => {
               <div>
                 <div id="chart-raw-values-by-question" />
                 <div className="labels">
-                  {questionDesc.map(item => <p>{item}</p>)}
+                  {questionDesc.filter((item, index) => index !== 4).map(item => <p>{item}</p>)}
                 </div>
               </div>
               <div>
                 <div id="chart-raw-values-by-question-single" />
-                <div className="labels">
-                  {/*<span>hello</span>*/}
+                <div className="labels single-label">
+                  <p>I would recommend the website to a friend or colleague.</p>
                 </div>
               </div>
             </div>
