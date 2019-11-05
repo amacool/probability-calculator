@@ -205,6 +205,9 @@ function ViewResults({ history, location, rawData, path }) {
         <SusEquivalents result={result.susEquivalents} drawChart={() => drawCharts(result)} />
         <IndividualRawValues result={result.individualRawValuesBA} />
         <RawMeans result={result.rawMeansByQ} drawChart={() => drawCharts(result)} />
+        <div>
+          <span>Error bars represent {values.confidenceLevel*100}% confidence intervals.</span>
+        </div>
       </div>
     </div>
   );

@@ -69,7 +69,7 @@ export default function MaterialTableDemo({
   const isObjectEqual = (a, b) => {
     const keys = Object.keys(a);
     return !keys.some((key) => a[key] !== b[key]);
-  }
+  };
 
   const isValidData = (data) => {
     const values = Object.values(data);
@@ -101,6 +101,7 @@ export default function MaterialTableDemo({
       title=""
       columns={state.columns}
       data={state.data}
+      onCellClick={() => alert('ff')}
       options={{
         actionsColumnIndex: -1,
         headerStyle: {

@@ -9,6 +9,12 @@
   font-weight: bold;
 }
 
+.view-result-body > div:last-child {
+  text-align: right;
+  margin-top: -25px;
+  font-size: 12px;
+}
+
 .result-container {
   border: 2px solid #C4C4C4;
   border-radius: 10px;
