@@ -1,5 +1,6 @@
 import React from "react";
-import { ResultHeader } from "./ResultHeader";
+import { ResultHeader } from "./ResultHeader"
+import { questionDesc } from "../../constants";
 
 export const RawMeans = ({ result, drawChart }) => {
   const [visible, setVisible] = React.useState(true);
@@ -95,9 +96,23 @@ export const RawMeans = ({ result, drawChart }) => {
                 <td className="tg-0lax cell-light-grey">{result[7].sampleSize}</td>
               </tr>
             </table>
+            <div className="chart-container">
+              <div>
+                <div id="chart-raw-values-by-question" />
+                <div className="labels">
+                  {questionDesc.map(item => <p>{item}</p>)}
+                </div>
+              </div>
+              <div>
+                <div id="chart-raw-values-by-question-single" />
+                <div className="labels">
+                  {/*<span>hello</span>*/}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}
     </div>
   );
-}
+};

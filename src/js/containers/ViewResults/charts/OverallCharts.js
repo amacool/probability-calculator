@@ -1,12 +1,12 @@
 import "./style.css";
 
-export const drawOverallPercentileChart = function({ low, high, val, target }) {
+export const drawOverallPercentileChart = function({ low, high, val, target, width }) {
   let barHeight = 20; // height of one bar
   let barLabelWidth = 10; // space reserved for bar labels
   let gridLabelHeight = 25; // space reserved for gridline labels
   let gridChartOffset = 20; // space between start of grid and first bar
   let maxBarWidth = 670; // width of the bar with the max value
-  let barWidth = 700;
+  let barWidth = width;
   let verticalLineHeight = 60;
 
   let d3 = window.d3;
@@ -108,17 +108,17 @@ export const drawOverallRawScoreChart = function({
   percentileRank,
   maxScore,
   historicalAvgScore,
-  target
+  target,
+  widthT,
+  heightT
 }) {
-  percentileRank = 30;
-  rawScore = 3.8;
   // Use the margin convention practice
   let d3 = window.d3;
   let margin = { top: 25, right: 25, bottom: 25, left: 25 }
-    , width = 620
-    , height = 150;
-  let chartWidth = 650;
-  let chartHeight = 200;
+    , width = widthT - 30
+    , height = heightT - 50;
+  let chartWidth = widthT;
+  let chartHeight = heightT;
 
   // prepare data set
   let dataset = [...Array((maxScore - 1) / 0.1 + 1)].map((item, index) => ({
@@ -126,36 +126,50 @@ export const drawOverallRawScoreChart = function({
     y: 0
   }));
   let ratio = (chartWidth / chartHeight) * (100 / 4);
-  let historicalIndex = parseInt(Math.max(1, historicalAvgScore.toFixed(1)) / 0.1) - 10;
+  let flag = percentileRank > 50 ? 1 : -1;
+  let historicalIndex = parseInt(((Math.max(1, historicalAvgScore.toFixed(1)) / 0.1).toFixed(1) - 10).toFixed(1));
   dataset[historicalIndex].y = 50;
-  let rawScoreIndex = parseInt(Math.max(1, rawScore.toFixed(1)) / 0.1) - 10;
+  let rawScoreIndex = parseInt(((Math.max(1, rawScore.toFixed(1)) / 0.1).toFixed(1) - 10).toFixed(1));
   dataset[rawScoreIndex].y = percentileRank;
   let offset = Math.abs(historicalIndex - rawScoreIndex);
   let x1 = ratio * rawScoreIndex / 10;
   let y1 = percentileRank;
-  let tan_a = (percentileRank - 50) / (ratio*(rawScoreIndex - historicalIndex)/10);
+  let tan_a = Math.abs((y1 - 50) / (ratio*(offset)/10));
   let a = Math.atan(tan_a);
-  let h1 = 100 - percentileRank;
+  let h1 = flag === 1 ? 100 - y1 : y1;
   let deltaX1 = h1 / tan_a;
-  let x2 = x1 + deltaX1;
+  let x2 = x1 + flag*deltaX1;
   let y2 = 100;
   let len1 = h1 / Math.sin(a);
-  let x3 = x2 + len1;
+  let x3 = x2 + flag*len1;
   let actualX3 = parseFloat((x3 / ratio).toFixed(1));
 
   let deltaX0 = 50 / tan_a;
   let len0 = Math.sqrt(deltaX0*deltaX0 + 50*50);
-  let x4 = ratio*historicalIndex/10 - deltaX0 - len0*0.5;
+  let x4 = ratio*historicalIndex/10 - flag*deltaX0 - flag*len0*0.5;
   let actualX4 = parseFloat((x4 / ratio).toFixed(1));
+  let lineDataSet = [];
+  if (flag === 1) {
+    lineDataSet = [
+      { x: 0, y: 0 },
+      { x: actualX4, y: 0 },
+      { x: historicalIndex/10, y: 50 },
+      { x: rawScoreIndex/10, y: percentileRank },
+      { x: actualX3, y: 100 },
+      { x: maxScore - 1, y: 100 },
+    ];
+  } else {
+    lineDataSet = [
+      { x: 0, y: 0 },
+      { x: actualX3, y: 0 },
+      { x: rawScoreIndex/10, y: percentileRank },
+      { x: historicalIndex/10, y: 50 },
+      { x: actualX4, y: 100 },
+      { x: maxScore-1, y: 100 },
+    ];
+  }
 
-  let lineDataSet = [
-    { x: 0, y: 0 },
-    { x: actualX4, y: 0 },
-    { x: historicalIndex / 10, y: 50 },
-    { x: rawScoreIndex / 10, y: percentileRank },
-    { x: actualX3, y: 100 },
-    { x: maxScore - 1, y: 100 },
-  ];
+  console.log(lineDataSet);
 
   // The number of datapoints
   let n = 40;
@@ -297,17 +311,19 @@ export const drawOverallRawScoreChart = function({
     // });
 };
 
-export const drawBarChart = function({ attrs, maxVal, target, countY }) {
+export const drawBarChart = function({ attrs, maxVal, target, countY, showLabel, widthT, heightT, barWidth }) {
   let labels = Object.keys(attrs);
   let vals = Object.values(attrs);
+  let lows = vals.map(item => parseFloat(item.low.replace('%', '')));
+  let highs = vals.map(item => parseFloat(item.high.replace('%', '')));
   vals = vals.map(item => parseFloat(item.mean.replace('%', '')));
+  let countX = labels.length;
   let d3 = window.d3;
   let margin = { top: 25, right: 25, bottom: 25, left: 25 }
-    , width = 370
-    , height = 190;
-  let chartWidth = 400;
-  let chartHeight = 220;
-  let barWidth = 34;
+    , width = widthT - 30
+    , height = heightT - 30;
+  let chartWidth = widthT;
+  let chartHeight = heightT;
 
   // 1. Add the SVG to the page and employ #2
   d3.select(`#${target}`).selectAll("svg").remove();
@@ -357,9 +373,9 @@ export const drawBarChart = function({ attrs, maxVal, target, countY }) {
   }
 
   // draw bars
-  for (let i = 0; i < countY; i ++) {
-    svg.append("text")
-      .attr("x", i * width/countY + width/countY/2)
+  for (let i = 0; i < countX; i ++) {
+    showLabel && svg.append("text")
+      .attr("x", i * width/countX + width/countX/2)
       .attr("y", height + 22)
       .attr("dy", 1)
       .attr("font-size", "13px")
@@ -367,11 +383,20 @@ export const drawBarChart = function({ attrs, maxVal, target, countY }) {
       .text(labels[i]);
 
     svg.append("rect")
-      .attr('x', i * width/countY + width/countY/2 - barWidth/2)
-      .attr('y', height * (100 - vals[i]) / 100 + 1)
-      .attr('height', height * (vals[i]) / 100)
+      .attr('x', i * width/countX + width/countX/2 - barWidth/2)
+      .attr('y', height * (maxVal - vals[i]) / maxVal + 1)
+      .attr('height', height * (vals[i]) / maxVal)
       .attr('width', barWidth)
       .attr('stroke', 'none')
       .attr('fill', i === 0 ? 'steelblue' : '#a6bfe8');
+
+    svg.append("g")
+      .append("line")
+      .attr("x1", i * width/countX + width/countX/2)
+      .attr("x2", i * width/countX + width/countX/2)
+      .attr("y1", (maxVal - lows[i]) / maxVal * height)
+      .attr("y2", (maxVal - highs[i]) / maxVal * height)
+      .attr("shape-rendering", "crispEdges")
+      .style("stroke", "#7b7b7b");
   }
 };

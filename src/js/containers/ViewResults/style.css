@@ -46,3 +46,20 @@
 #chart-overall-percentile-line p {
   margin: 0 0 0 10px;
 }
+
+.chart-container {
+  display: flex;
+}
+
+.chart-container .labels {
+  display: flex;
+  margin-left: 66px;
+  margin-top: -60px;
+}
+
+.chart-container .labels p {
+  width: 54px;
+  font-size: 10px;
+  text-align: center;
+  margin-left: -1px;
+}

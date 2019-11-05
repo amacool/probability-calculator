@@ -178,7 +178,6 @@ export const getCalcResult = (rawData, confLevel = 0.9) => {
 
     if (index === 0) {
       suprqMarginOfError = marginOfError;
-      console.log(suprqMarginOfError);
     }
 
     index < 5 && percentileRanksBA.push({

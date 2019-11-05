@@ -15,6 +15,7 @@ import { RawMeans } from "./RawMeans";
 import { getCalcResult } from "../../calculation/logic";
 import { parseRawDataToInt } from "../../helper";
 import { drawOverallPercentileChart, drawOverallRawScoreChart, drawBarChart } from "./charts/OverallCharts";
+import { questionDesc } from "../../constants";
 import './style.css';
 
 const useStyles = makeStyles(theme => ({
@@ -71,14 +72,18 @@ function ViewResults({ history, location, rawData, path }) {
       low: data.overallResults.percentileRank.ciLow.replace('%', ''),
       high: data.overallResults.percentileRank.ciHigh.replace('%', ''),
       val: data.overallResults.percentileRank.percentileRank.replace('%', ''),
-      target: "chart-overall-percentile-bar"
+      target: "chart-overall-percentile-bar",
+      width: 700,
+      height: 150
     });
     drawOverallRawScoreChart({
       rawScore: parseFloat(data.overallResults.rawScore.rawScore),
       percentileRank: parseFloat(data.overallResults.percentileRank.percentileRank.replace('%', '')),
       maxScore: 5,
-      historicalAvgScore: 3.97,
-      target: "chart-overall-percentile-line"
+      historicalAvgScore: 3.9,
+      target: "chart-overall-percentile-line",
+      widthT: 650,
+      heightT: 200
     });
     drawBarChart({
       attrs: {
@@ -90,19 +95,46 @@ function ViewResults({ history, location, rawData, path }) {
       },
       maxVal: 100,
       countY: 5,
-      target: "chart-percentile-by-attr"
+      target: "chart-percentile-by-attr",
+      showLabel: true,
+      barWidth: 34,
+      widthT: 400,
+      heightT: 220
     });
     drawBarChart({
       attrs: {
-        "Overall": data.percentileRanksBA[0],
-        "Usability": data.percentileRanksBA[1],
-        "Credibility": data.percentileRanksBA[2],
-        "Loyalty": data.percentileRanksBA[3],
-        "Appearance": data.percentileRanksBA[4]
+        "Overall": data.rawScoresBA[0],
+        "Usability": data.rawScoresBA[1],
+        "Credibility": data.rawScoresBA[2],
+        "Loyalty": data.rawScoresBA[3],
+        "Appearance": data.rawScoresBA[4]
       },
       maxVal: 5,
       countY: 4,
-      target: "chart-raw-scores-by-attr"
+      target: "chart-raw-scores-by-attr",
+      showLabel: true,
+      barWidth: 34,
+      widthT: 400,
+      heightT: 220
+    });
+    drawBarChart({
+      attrs: {
+        [questionDesc[0]]: data.rawMeansByQ[0],
+        [questionDesc[1]]: data.rawMeansByQ[1],
+        [questionDesc[2]]: data.rawMeansByQ[2],
+        [questionDesc[3]]: data.rawMeansByQ[3],
+        [questionDesc[4]]: data.rawMeansByQ[4],
+        [questionDesc[5]]: data.rawMeansByQ[5],
+        [questionDesc[6]]: data.rawMeansByQ[6],
+        [questionDesc[7]]: data.rawMeansByQ[7]
+      },
+      maxVal: 5,
+      countY: 4,
+      target: "chart-raw-values-by-question",
+      showLabel: false,
+      barWidth: 34,
+      widthT: 450,
+      heightT: 220
     });
   };
 

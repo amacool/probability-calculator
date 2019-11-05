@@ -1,4 +1,16 @@
 import React from "react";
+
+export const questionDesc = [
+  'This website is easy to use.',
+  'It is easy to navigate within the website.',
+  'The information on this website is trustworthy.',
+  'The information on this website is credible.',
+  'How likely are you to recommend this website to a friend or colleauge?',
+  'I will likely visit this website in the future.',
+  'I find the website to be attractive.',
+  'The website has a clean and simple presentation.'
+];
+
 const THead = ({ title, description }) => (
   <div style={{ minHeight: '180px' }}>
     <h3>{title}</h3>
@@ -11,7 +23,7 @@ export const rawDataColumns = [
     field: 'q1',
     title: <THead
       title='Q1: EasyUse'
-      description='It is easy to navigate within the website.'
+      description={questionDesc[0]}
     />,
     heading: 'Q1: EasyUse',
   },
@@ -19,7 +31,7 @@ export const rawDataColumns = [
     field: 'q2',
     title: <THead
       title='Q2: EasyNavigate'
-      description='It is easy to navigate within the website.'
+      description={questionDesc[1]}
     />,
     heading: 'Q2: EasyNavigate',
   },
@@ -27,7 +39,7 @@ export const rawDataColumns = [
     field: 'q3',
     title: <THead
       title='Q3: InfoTrustworthy'
-      description='The information on this website is trustworthy.'
+      description={questionDesc[2]}
     />,
     heading: 'Q3: InfoTrustworthy'
   },
@@ -35,7 +47,7 @@ export const rawDataColumns = [
     field: 'q4',
     title: <THead
       title='Q4: InfoCredible'
-      description='The information on this website is credible.'
+      description={questionDesc[3]}
     />,
     heading: 'Q4: InfoCredible'
   },
@@ -43,7 +55,7 @@ export const rawDataColumns = [
     field: 'q5',
     title: <THead
       title='Q5: NPS'
-      description='How likely are you to recommend this website to a friend or colleauge?'
+      description={questionDesc[4]}
     />,
     heading: 'Q5: NPS'
   },
@@ -51,7 +63,7 @@ export const rawDataColumns = [
     field: 'q6',
     title: <THead
       title='Q6: VisitFuture'
-      description='I will likely visit this website in the future.'
+      description={questionDesc[5]}
     />,
     heading: 'Q6: VisitFuture'
   },
@@ -59,7 +71,7 @@ export const rawDataColumns = [
     field: 'q7',
     title: <THead
       title='Q7: FindAttractive'
-      description='I find the website to be attractive.'
+      description={questionDesc[6]}
     />,
     heading: 'Q7: FindAttractive'
   },
@@ -67,7 +79,7 @@ export const rawDataColumns = [
     field: 'q8',
     title: <THead
       title='Q8: CleanSimple'
-      description='The website has a clean and simple presentation.'
+      description={questionDesc[7]}
     />,
     heading: 'Q8: CleanSimple'
   },
