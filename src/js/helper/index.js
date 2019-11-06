@@ -1,8 +1,8 @@
 import htmlToImage from "html-to-image";
 
-const getFormatedRawData = (data) => {
+const getFormatedRawData = (data, start) => {
   return data.map((item, index) => ({
-    id: index,
+    id: start + index,
     q1: item[0],
     q2: item[1],
     q3: item[2],

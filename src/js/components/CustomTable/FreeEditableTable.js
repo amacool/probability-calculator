@@ -1,44 +1,54 @@
 import React from 'react';
 import BootstrapTable from 'react-bootstrap-table-next';
-import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import cellEditFactory from 'react-bootstrap-table2-editor';
+import { questionDesc, questionHeading } from "../../constants";
+import { getFormatedRawData, getCleanRawData, parseRawDataToInt } from "../../helper";
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
+import './style.css';
 
-const products = [
-  { id: 1, name: "Item 1", price: 100 },
-  { id: 2, name: "Item 2", price: 102 }
-];
-const columns = [{
-  dataField: 'id',
-  text: <p>Product ID</p>
-}, {
-  dataField: 'name',
-  text: 'Product Name'
-}, {
-  dataField: 'price',
-  text: 'Product Price'
-}];
+const THead = ({ title, description }) => (
+  <div style={{ minHeight: '180px' }}>
+    <h3>{title}</h3>
+    <span><i>{description}</i></span>
+  </div>
+);
+
+const getTableHeader = () => {
+  return questionDesc.map((item, key) => ({
+      dataField: `q${key + 1}`,
+      text: <THead
+        title={questionHeading[key]}
+        description={questionDesc[key]}
+      />,
+      sort: true,
+      onSort: (field, order) => {
+        console.log(field, order);
+      }
+    })
+  );
+};
 
 export default ({
-  columnsProp,
   rowsProp,
   onDataChange
 }) => {
-  console.log(columnsProp, rowsProp);
+  const emptyRows = 100 - rowsProp.length > 0 ? [...Array(100 - rowsProp.length)].map(() => [...Array(8)].map(() => '')) : [];
+  const data = [...rowsProp, ...getFormatedRawData(emptyRows, rowsProp.length)];
+  console.log(data);
   return (
     <BootstrapTable
-      keyField='id'
-      data={rowsProp}
-      columns={columnsProp}
+      keyField="id"
+      className="custom-table"
+      data={data}
+      columns={getTableHeader()}
+      rowStyle={ {overflowY:'scroll' } }
       cellEdit={ cellEditFactory({
         mode: 'click',
         blurToSave: true,
+        autoSelectText: true,
         beforeSaveCell(oldValue, newValue, row, column, done) {
           setTimeout(() => {
-            if (window.confirm('Do you want to accep this change?')) {
-              done(); // contine to save the changes
-            } else {
-              done(false); // reject the changes
-            }
+            done();
           }, 0);
           return { async: true };
         }

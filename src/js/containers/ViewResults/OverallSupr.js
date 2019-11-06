@@ -4,7 +4,6 @@ import { ResultHeader } from "./ResultHeader";
 
 export const OverallSupr = ({ result, confLevel, drawChart }) => {
   const [visible, setVisible] = React.useState(true);
-  const historicalAvgScore = "73.9%";
 
   return (
     <div className="result-container">
@@ -85,7 +84,7 @@ export const OverallSupr = ({ result, confLevel, drawChart }) => {
               </tbody>
             </table>
             <div id="chart-overall-percentile-line">
-              <p className="chart-desc">A raw score of {result.rawScore.rawScore} is higher than {historicalAvgScore} of websites in the database</p>
+              <p className="chart-desc">A raw score of {result.rawScore.rawScore} is higher than {result.percentileRank.percentileRank} of websites in the database</p>
             </div>
             <div className="export-btn-container">
               <button className="btn-primary" onClick={() => downloadAsPng('chart-overall-percentile-line', 'Overall SUPR-Q Results - 2')}>Export Chart</button>

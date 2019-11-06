@@ -2,25 +2,62 @@ table {
   border-collapse: collapse;
 }
 
-table.custom-table {
+table.react-bootstrap-table {
   width: 100%;
   border: solid 1px #dcdcdc;
 }
 
-.custom-table thead {
-  background-color: #ddeeff;
+.react-bootstrap-table thead tr {
+  display: block;
 }
 
-.custom-table thead th {
+.react-bootstrap-table thead th {
   padding: 15px;
   border: solid 1px #dcdcdc;
 }
 
-.custom-table tbody tr:nth-child(2n) {
+.react-bootstrap-table tbody {
+  display: block;
+  overflow: auto;
+  height: 500px;
+  width: 100%;
+  border: solid 1px #dcdcdc;
+}
+
+.react-bootstrap-table tbody tr {
+  width: 100%;
+  cursor: text;
+}
+
+.react-bootstrap-table tbody tr:nth-child(2n) {
   background-color: #eee;
 }
 
-.custom-table tbody tr td {
+/*.react-bootstrap-table tbody tr:nth-child(2n) td:first-child {*/
+  /*border-left: solid 3px #dcdcdc;*/
+/*}*/
+
+/*.react-bootstrap-table tbody tr:nth-child(2n + 1) td:first-child {*/
+  /*border-left: solid 3px white;*/
+/*}*/
+
+.react-bootstrap-table tbody tr td {
   padding: 5px 10px;
   border: solid 1px #dcdcdc;
+  height: 15px;
+  width: 142px;
+  max-width: 142px;
+}
+
+.react-bootstrap-table tbody tr td input {
+  max-width: 130px;
+}
+
+.react-bootstrap-table table thead > tr > th {
+  outline: none;
+  background-color: #d5e3fa;
+  border: solid 1px #c4c4c4;
+  padding: 10px;
+  width: 142px;
+  max-width: 142px;
 }

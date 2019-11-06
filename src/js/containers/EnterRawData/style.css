@@ -6,7 +6,51 @@
   margin-left: 20px;
 }
 
+.btn-import-data {
+  margin-left: 20px;
+}
+
 .btn-view-results {
   float: right;
   margin-top: 20px;
+}
+
+.order-columns-container {}
+
+.order-columns-content {
+  border: solid 1px #b7b7b7;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.order-columns-content .selected {
+  background-color: #545454;
+  color: white;
+}
+
+.order-columns-content > div {
+  display: flex;
+  font-size: 14px;
+  line-height: 16px;
+  color: #236189;
+  padding: 3px 5px;
+  cursor: pointer;
+}
+
+.order-columns-content > div > span:first-child {
+  width: 30%;
+  font-weight: bold;
+}
+
+.order-btn-container {
+  margin-top: 15px;
+}
+
+.order-btn-container button {
+  padding: 5px 15px;
+  height: 27px;
+}
+
+.btn-column-move-down {
+  margin-left: 15px;
 }

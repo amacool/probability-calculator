@@ -113,6 +113,9 @@ export const drawOverallRawScoreChart = function({
   widthT,
   heightT
 }) {
+  if (!historicalAvgScore) {
+    return;
+  }
   let d3 = window.d3;
   let margin = { top: 25, right: 25, bottom: 25, left: 25 }
     , width = widthT - 30
@@ -126,47 +129,40 @@ export const drawOverallRawScoreChart = function({
     y: 0
   }));
   let ratio = (chartWidth / chartHeight) * (100 / 4);
-  let flag = percentileRank > 50 ? 1 : -1;
   let historicalIndex = parseInt(((Math.max(1, historicalAvgScore.toFixed(1)) / 0.1).toFixed(1) - 10).toFixed(1));
   dataset[historicalIndex].y = 50;
-  let rawScoreIndex = parseInt(((Math.max(1, rawScore.toFixed(1)) / 0.1).toFixed(1) - 10).toFixed(1));
-  dataset[rawScoreIndex].y = percentileRank;
-  let offset = Math.abs(historicalIndex - rawScoreIndex);
-  let x1 = ratio * rawScoreIndex / 10;
-  let y1 = percentileRank;
-  let tan_a = Math.abs((y1 - 50) / (ratio*(offset)/10));
-  let a = Math.atan(tan_a);
-  let h1 = flag === 1 ? 100 - y1 : y1;
-  let deltaX1 = h1 / tan_a;
-  let x2 = x1 + flag*deltaX1;
-  let len1 = h1 / Math.sin(a);
-  let x3 = x2 + flag*len1;
-  let actualX3 = parseFloat((x3 / ratio).toFixed(1));
-
-  let deltaX0 = 50 / tan_a;
-  let len0 = Math.sqrt(deltaX0*deltaX0 + 50*50);
-  let x4 = ratio*historicalIndex/10 - flag*deltaX0 - flag*len0*0.5;
-  let actualX4 = parseFloat((x4 / ratio).toFixed(1));
-  let lineDataSet = [];
-  if (flag === 1) {
-    lineDataSet = [
-      { x: 0, y: 0 },
-      { x: actualX4, y: 0 },
-      { x: historicalIndex/10, y: 50 },
-      { x: rawScoreIndex/10, y: percentileRank },
-      { x: actualX3, y: 100 },
-      { x: maxScore - 1, y: 100 },
-    ];
-  } else {
-    lineDataSet = [
-      { x: 0, y: 0 },
-      { x: actualX3, y: 0 },
-      { x: rawScoreIndex/10, y: percentileRank },
-      { x: historicalIndex/10, y: 50 },
-      { x: actualX4, y: 100 },
-      { x: maxScore-1, y: 100 },
-    ];
+  let rawScoreIndex = rawScore ? parseInt(((Math.max(1, rawScore.toFixed(1)) / 0.1).toFixed(1) - 10).toFixed(1)) : null;
+  if (rawScoreIndex !== null) {
+    dataset[rawScoreIndex].y = percentileRank;
   }
+  let lineDataSet = [
+    { x: 0,   y: 0 },
+    { x: 0.5, y: 0 },
+    { x: 1,   y: 0 },
+    { x: 1.2, y: 0 },
+    { x: 1.4, y: 0 },
+    { x: 1.6, y: 0 },
+    { x: 1.8, y: 0 },
+    { x: 2,   y: 0 },
+    { x: 2.2, y: 0.01 * 100 },
+    { x: 2.4, y: 0.06 * 100 },
+    { x: 2.5, y: 0.09 * 100 },
+    { x: 2.6, y: 0.14 * 100 },
+    { x: 2.7, y: 0.21 * 100 },
+    { x: 2.8, y: 0.3 * 100 },
+    { x: 2.9, y: 0.42 * 100 },
+    { x: 3,   y: 0.56 * 100 },
+    { x: 3.1, y: 0.7 * 100 },
+    { x: 3.2, y: 0.83 * 100 },
+    { x: 3.3, y: 0.92 * 100 },
+    { x: 3.4, y: 0.98 * 100 },
+    { x: 3.5, y: 100 },
+    { x: 3.6, y: 100 },
+    { x: 3.8, y: 100 },
+    { x: 4,   y: 100 },
+  ];
+  let historicalIndexOnLine = lineDataSet.findIndex((item, index) => item.x <= historicalAvgScore-1 && lineDataSet[index+1].x > historicalAvgScore-1);
+  lineDataSet[historicalIndexOnLine] = { x: historicalAvgScore - 1, y: 50 };
 
   // The number of datapoints
   let n = 40;
@@ -251,8 +247,8 @@ export const drawOverallRawScoreChart = function({
   // draw historical items
   svg.append("g")
     .append("line")
-    .attr("x1", historicalIndex * width / n)
-    .attr("x2", historicalIndex * width / n)
+    .attr("x1", (historicalAvgScore - 1)/(maxScore - 1) * width)
+    .attr("x2", (historicalAvgScore - 1)/(maxScore - 1) * width)
     .attr("y1", 0)
     .attr("y2", height)
     .attr("shape-rendering", "crispEdges")
@@ -260,7 +256,7 @@ export const drawOverallRawScoreChart = function({
     .style("stroke", "#aeaeae");
   svg.append("g")
     .append("text")
-    .attr("x", historicalIndex * width / n - 20)
+    .attr("x", (historicalAvgScore - 1)/(maxScore - 1) * width - 20)
     .attr("y", height + 40)
     .attr("dy", 1)
     .attr("text-anchor", "left")
@@ -292,7 +288,7 @@ export const drawOverallRawScoreChart = function({
     .data(dataset)
     .enter().append("circle")
     .attr("display", function(d, i) {
-      if (d.x === parseFloat(rawScore.toFixed(1)) - 1 && d.y === parseFloat(percentileRank.toFixed(1))) {
+      if (percentileRank && d.x === parseFloat(rawScore.toFixed(1)) - 1 && d.y === parseFloat(percentileRank.toFixed(1))) {
         return "block";
       }
       return "none";
@@ -410,6 +406,9 @@ export const drawSusEquivalentChart = function({
   widthT,
   heightT
 }) {
+  if (!historicalAvgScore) {
+    return;
+  }
   // Use the margin convention practice
   let d3 = window.d3;
   let margin = { top: 25, right: 25, bottom: 25, left: 25 }
@@ -419,62 +418,31 @@ export const drawSusEquivalentChart = function({
   let chartHeight = heightT;
 
   // prepare data set
-  let dataset = [...Array((maxScore - 1) / 0.1 + 1)].map((item, index) => ({
-    x: parseFloat((0.1 * index).toFixed(1)),
-    y: 0
-  }));
-  let ratio = (chartWidth / chartHeight) * (100 / 4);
-  let flag = percentileRank > 50 ? 1 : -1;
-  let historicalIndex = parseInt(((Math.max(1, historicalAvgScore.toFixed(1)) / 0.1).toFixed(1) - 10).toFixed(1));
-  dataset[historicalIndex].y = 50;
-  let rawScoreIndex = parseInt(((Math.max(1, rawScore.toFixed(1)) / 0.1).toFixed(1) - 10).toFixed(1));
-  dataset[rawScoreIndex].y = percentileRank;
-  let offset = Math.abs(historicalIndex - rawScoreIndex);
-  let x1 = ratio * rawScoreIndex / 10;
-  let y1 = percentileRank;
-  let tan_a = Math.abs((y1 - 50) / (ratio*(offset)/10));
-  let a = Math.atan(tan_a);
-  let h1 = flag === 1 ? 100 - y1 : y1;
-  let deltaX1 = h1 / tan_a;
-  let x2 = x1 + flag*deltaX1;
-  let len1 = h1 / Math.sin(a);
-  let x3 = x2 + flag*len1;
-  let actualX3 = parseFloat((x3 / ratio).toFixed(1));
-
-  let deltaX0 = 50 / tan_a;
-  let len0 = Math.sqrt(deltaX0*deltaX0 + 50*50);
-  let x4 = ratio*historicalIndex/10 - flag*deltaX0 - flag*len0*0.5;
-  let actualX4 = parseFloat((x4 / ratio).toFixed(1));
-  let lineDataSet = [];
-  if (flag === 1) {
-    lineDataSet = [
-      { x: 0, y: 0 },
-      { x: actualX4, y: 0 },
-      { x: historicalIndex/10, y: 50 },
-      { x: rawScoreIndex/10, y: percentileRank },
-      { x: actualX3, y: 100 },
-      { x: maxScore - 1, y: 100 },
-    ];
-  } else {
-    lineDataSet = [
-      { x: 0, y: 0 },
-      { x: actualX3, y: 0 },
-      { x: rawScoreIndex/10, y: percentileRank },
-      { x: historicalIndex/10, y: 50 },
-      { x: actualX4, y: 100 },
-      { x: maxScore-1, y: 100 },
-    ];
-  }
-
-  console.log(lineDataSet);
-
-  // The number of datapoints
-  let n = 40;
-  let countY = 5;
+  let lineDataSet = [
+    { x: 0, y: 43.6 },
+    { x: 0, y: 48 },
+    { x: 0.01, y: 52.4 },
+    { x: 0.02, y: 56.8 },
+    { x: 0.06, y: 61.2 },
+    { x: 0.09, y: 63.4 },
+    { x: 0.14, y: 65.6 },
+    { x: 0.21, y: 67.8 },
+    { x: 0.3, y: 70 },
+    { x: 0.42, y: 72.2 },
+    { x: 0.56, y: 74.4 },
+    { x: 0.7, y: 76.6 },
+    { x: 0.83, y: 78.8 },
+    { x: 0.92, y: 81 },
+    { x: 0.98, y: 83.2 },
+    { x: 1, y: 85.4 },
+    { x: 1, y: 87.6 },
+  ];
+  let yMin = (lineDataSet[0].y / 10).toFixed(0) * 10;
+  let yMax = (lineDataSet[lineDataSet.length - 1].y / 10).toFixed(0) * 10;
 
   // 5. X scale will use the index of our data
   let xScale = d3.scaleLinear()
-    .domain([1, maxScore])
+    .domain([0, maxScore])
     .range([0, width]);
 
   // 6. Y scale will use the randomly generate number
@@ -485,10 +453,12 @@ export const drawSusEquivalentChart = function({
   // 7. d3's line generator
   let line = d3.line()
     .x(function(d, i) {
-      return xScale(d.x + 1);
+      console.log(d);
+      return xScale(d.x*100);
     })
     .y(function(d) {
-      return yScale(d.y);
+      console.log(d);
+      return yScale((d.y - yMin)*(100/(yMax - yMin)));
     })
     .curve(d3.curveMonotoneX);
 
@@ -510,6 +480,7 @@ export const drawSusEquivalentChart = function({
     .attr("y2", height + 1)
     .attr("shape-rendering", "crispEdges")
     .style("stroke", "#aeaeae");
+
   for (let i = 0; i < 6; i ++) {
     svg.append("text")
       .attr("x", i * width / (6 - 1))
@@ -519,8 +490,8 @@ export const drawSusEquivalentChart = function({
       .attr("text-anchor", "middle")
       .text(i*20 + '%')
   }
-
   // 4. Call the y axis in a group tag
+
   for (let i = 0; i <= 5; i ++) {
     svg.append("g")
       .append("text")
@@ -529,7 +500,7 @@ export const drawSusEquivalentChart = function({
       .attr("dy", 1)
       .attr("text-anchor", "middle")
       .attr("font-size", "14px")
-      .text((100 - i * 10));
+      .text(yMax - i*(yMax - yMin)/5);
     i < 5 && svg.append("g")
       .append("line")
       .attr("x1", 0)
@@ -548,7 +519,6 @@ export const drawSusEquivalentChart = function({
     .attr("font-size", "13")
     .attr("transform", "rotate(-90)")
     .text("SUS Equivalent Score");
-
   // add chart title
   svg.append("g")
     .append("text")
@@ -558,5 +528,12 @@ export const drawSusEquivalentChart = function({
     .attr("text-anchor", "middle")
     .attr("font-size", "14px")
     .style("fill", "#000")
-    .text('SUPR-Q Percentile Rank for Usability');
+    .text('SUPR-Q Raw Score for Usability');
+
+  svg.append("path")
+    .datum(lineDataSet)
+    .attr("fill", "none")
+    .attr("stroke", "#000000")
+    .attr("stroke-width", "1px")
+    .attr("d", line);
 };

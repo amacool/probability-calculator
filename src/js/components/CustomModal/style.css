@@ -1,0 +1,36 @@
+.custom-modal {
+  width: 690px;
+  background: #f7f7f7;
+  border-radius: 8px;
+  padding: 26px 29px;
+}
+
+.custom-modal .modal-header {
+  font-style: normal;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 21px;
+}
+
+.custom-modal .modal-header h3 {
+  margin: 0 0 10px;
+}
+
+.custom-modal .modal-body {
+  padding: 10px;
+}
+
+.custom-modal .modal-footer {
+  padding: 0 10px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.custom-modal .modal-footer .btn-modal-confirm {
+  margin-left: 15px;
+}
+
+.custom-modal .modal-footer button {
+  padding: 5px 15px;
+  height: 27px;
+}

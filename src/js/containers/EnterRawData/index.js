@@ -3,14 +3,16 @@ import connect from "react-redux/es/connect/connect";
 import { bindActionCreators } from "redux";
 import calcActions from "../../redux/calc/actions";
 import pathActions from "../../redux/path/actions";
-import ExtendedTable from "../../components/CustomTable/ExtendedTable";
 import FreeEditableTable from "../../components/CustomTable/FreeEditableTable";
-import { rawDataColumns } from "../../constants";
 import { getFormatedRawData, getCleanRawData, parseRawDataToInt } from "../../helper";
+import { CustomModal } from "../../components/CustomModal";
+import { questionDesc, questionHeading } from "../../constants";
 import "./style.css";
 
 function EnterRawData({ path, setPath, rawData, updateRawData }) {
-  const [data, setData] = React.useState(getFormatedRawData(rawData));
+  const [data, setData] = React.useState(getFormatedRawData(rawData, 0));
+  const [openImportModal, setOpenImportModal] = React.useState(false);
+  const [curColumn, setCurColumn] = React.useState(0);
 
   const onDataChange = (newData) => {
     updateRawData(getCleanRawData(newData));
@@ -22,6 +24,14 @@ function EnterRawData({ path, setPath, rawData, updateRawData }) {
 
   const onClearValues = () => {
     setData([]);
+  };
+
+  const handleColumnReorder = (direction) => {
+
+  };
+
+  const applyColumnReorder = () => {
+
   };
 
   return (
@@ -46,27 +56,48 @@ function EnterRawData({ path, setPath, rawData, updateRawData }) {
         <div className="btn-container">
           <button className="btn-primary btn-clear-value" onClick={onClearValues}>Clear Values</button>
           <button className="btn-primary btn-column-reorder">Reorder Columns</button>
+          <button className="btn-primary btn-import-data" onClick={() => setOpenImportModal(true)}>Import Data</button>
         </div>
         <div>
           <FreeEditableTable
-            columnsProp={rawDataColumns}
             rowsProp={data}
             onDataChange={onDataChange}
           />
-          <ExtendedTable
-            columnsProp={rawDataColumns}
-            rowsProp={data}
-            addable={true}
-            editable={true}
-            removable={true}
-            sortable={true}
-            draggable={true}
-            paging={true}
-            validType="numeric"
-            onDataChange={onDataChange}
-          />
+          {/*<ExtendedTable*/}
+            {/*columnsProp={rawDataColumns}*/}
+            {/*rowsProp={data}*/}
+            {/*addable={true}*/}
+            {/*editable={true}*/}
+            {/*removable={true}*/}
+            {/*sortable={true}*/}
+            {/*draggable={true}*/}
+            {/*paging={true}*/}
+            {/*validType="numeric"*/}
+            {/*onDataChange={onDataChange}*/}
+          {/*/>*/}
           <button className="btn-secondary btn-view-results">View Results</button>
         </div>
+        <CustomModal
+          open={openImportModal}
+          onCloseModal={() => setOpenImportModal(false)}
+          onConfirm={() => applyColumnReorder()}
+          title="Reorder Columns"
+        >
+          <div className="order-columns-container">
+            <div className="order-columns-content">
+              {questionHeading.map((item, index) => (
+                <div key={index} className={index === curColumn ? "selected" : ""} onClick={() => setCurColumn(index)}>
+                  <span>{item}</span>
+                  <span>{questionDesc[index]}</span>
+                </div>
+              ))}
+            </div>
+            <div className="order-btn-container">
+              <button className="btn-primary" onClick={() => handleColumnReorder(0)}>Move Up</button>
+              <button className="btn-primary btn-column-move-down" onClick={() => handleColumnReorder(1)}>Move Down</button>
+            </div>
+          </div>
+        </CustomModal>
       </div>
     </div>
   );

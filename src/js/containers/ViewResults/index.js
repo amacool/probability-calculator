@@ -85,7 +85,7 @@ function ViewResults({ history, location, rawData, path }) {
       rawScore: parseFloat(data.overallResults.rawScore.rawScore),
       percentileRank: parseFloat(data.overallResults.percentileRank.percentileRank.replace('%', '')),
       maxScore: 5,
-      historicalAvgScore: 3.9,
+      historicalAvgScore: 3.96,
       target: "chart-overall-percentile-line",
       widthT: 650,
       heightT: 200
@@ -159,7 +159,7 @@ function ViewResults({ history, location, rawData, path }) {
     drawSusEquivalentChart({
       rawScore: parseFloat(data.overallResults.rawScore.rawScore),
       percentileRank: parseFloat(data.overallResults.percentileRank.percentileRank.replace('%', '')),
-      maxScore: 5,
+      maxScore: 100,
       historicalAvgScore: 3.9,
       target: "chart-sus-equivalent-chart",
       widthT: 650,
