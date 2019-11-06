@@ -20,68 +20,100 @@ const THead = ({ title, description }) => (
 
 export const rawDataColumns = [
   {
-    field: 'q1',
-    title: <THead
+    dataField: 'q1',
+    text: <THead
       title='Q1: EasyUse'
       description={questionDesc[0]}
     />,
     heading: 'Q1: EasyUse',
+    sort: true,
+    onSort: (field, order) => {
+      // ...
+    }
   },
   {
-    field: 'q2',
-    title: <THead
+    dataField: 'q2',
+    text: <THead
       title='Q2: EasyNavigate'
       description={questionDesc[1]}
     />,
     heading: 'Q2: EasyNavigate',
+    sort: true,
+    onSort: (field, order) => {
+      // ...
+    }
   },
   {
-    field: 'q3',
-    title: <THead
+    dataField: 'q3',
+    text: <THead
       title='Q3: InfoTrustworthy'
       description={questionDesc[2]}
     />,
-    heading: 'Q3: InfoTrustworthy'
+    heading: 'Q3: InfoTrustworthy',
+    sort: true,
+    onSort: (field, order) => {
+      // ...
+    }
   },
   {
-    field: 'q4',
-    title: <THead
+    dataField: 'q4',
+    text: <THead
       title='Q4: InfoCredible'
       description={questionDesc[3]}
     />,
-    heading: 'Q4: InfoCredible'
+    heading: 'Q4: InfoCredible',
+    sort: true,
+    onSort: (field, order) => {
+      // ...
+    }
   },
   {
-    field: 'q5',
-    title: <THead
+    dataField: 'q5',
+    text: <THead
       title='Q5: NPS'
       description={questionDesc[4]}
     />,
-    heading: 'Q5: NPS'
+    heading: 'Q5: NPS',
+    sort: true,
+    onSort: (field, order) => {
+      // ...
+    }
   },
   {
-    field: 'q6',
-    title: <THead
+    dataField: 'q6',
+    text: <THead
       title='Q6: VisitFuture'
       description={questionDesc[5]}
     />,
-    heading: 'Q6: VisitFuture'
+    heading: 'Q6: VisitFuture',
+    sort: true,
+    onSort: (field, order) => {
+      // ...
+    }
   },
   {
-    field: 'q7',
-    title: <THead
+    dataField: 'q7',
+    text: <THead
       title='Q7: FindAttractive'
       description={questionDesc[6]}
     />,
-    heading: 'Q7: FindAttractive'
+    heading: 'Q7: FindAttractive',
+    sort: true,
+    onSort: (field, order) => {
+      // ...
+    }
   },
   {
-    field: 'q8',
-    title: <THead
+    dataField: 'q8',
+    text: <THead
       title='Q8: CleanSimple'
       description={questionDesc[7]}
     />,
-    heading: 'Q8: CleanSimple'
+    heading: 'Q8: CleanSimple',
+    sort: true,
+    onSort: (field, order) => {
+      // ...
+    }
   },
 ];
 export const rawDataColumnNames = ['q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8'];

@@ -4,6 +4,7 @@ import { bindActionCreators } from "redux";
 import calcActions from "../../redux/calc/actions";
 import pathActions from "../../redux/path/actions";
 import ExtendedTable from "../../components/CustomTable/ExtendedTable";
+import FreeEditableTable from "../../components/CustomTable/FreeEditableTable";
 import { rawDataColumns } from "../../constants";
 import { getFormatedRawData, getCleanRawData, parseRawDataToInt } from "../../helper";
 import "./style.css";
@@ -47,6 +48,11 @@ function EnterRawData({ path, setPath, rawData, updateRawData }) {
           <button className="btn-primary btn-column-reorder">Reorder Columns</button>
         </div>
         <div>
+          <FreeEditableTable
+            columnsProp={rawDataColumns}
+            rowsProp={data}
+            onDataChange={onDataChange}
+          />
           <ExtendedTable
             columnsProp={rawDataColumns}
             rowsProp={data}

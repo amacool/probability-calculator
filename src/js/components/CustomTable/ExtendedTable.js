@@ -55,7 +55,6 @@ export default function MaterialTableDemo({
   });
 
   React.useEffect(() => {
-    console.log(state.data);
     onDataChange(state.data);
   }, [state.data]);
 
@@ -101,7 +100,6 @@ export default function MaterialTableDemo({
       title=""
       columns={state.columns}
       data={state.data}
-      onCellClick={() => alert('ff')}
       options={{
         actionsColumnIndex: -1,
         headerStyle: {
