@@ -398,6 +398,7 @@ export const drawBarChart = function({ attrs, maxVal, target, countY, showLabel,
 };
 
 export const drawSusEquivalentChart = function({
+  susScore,
   rawScore,
   percentileRank,
   maxScore,
@@ -437,6 +438,17 @@ export const drawSusEquivalentChart = function({
     { x: 1, y: 85.4 },
     { x: 1, y: 87.6 },
   ];
+  let dotPos = 0;
+  let dotIndex = 0;
+  for (let i = 0; i < lineDataSet.length - 1; i ++) {
+    if (lineDataSet[i].y <= susScore && lineDataSet[i + 1].y > susScore) {
+      dotPos = { x: (lineDataSet[i].x + lineDataSet[i + 1].x)/2, y: susScore };
+      dotIndex = i;
+      break;
+    }
+  }
+  lineDataSet = [...lineDataSet.slice(0, dotIndex + 1), dotPos, ...lineDataSet.slice(dotIndex + 1)];
+  console.log(lineDataSet);
   let yMin = (lineDataSet[0].y / 10).toFixed(0) * 10;
   let yMax = (lineDataSet[lineDataSet.length - 1].y / 10).toFixed(0) * 10;
 
@@ -453,11 +465,9 @@ export const drawSusEquivalentChart = function({
   // 7. d3's line generator
   let line = d3.line()
     .x(function(d, i) {
-      console.log(d);
       return xScale(d.x*100);
     })
     .y(function(d) {
-      console.log(d);
       return yScale((d.y - yMin)*(100/(yMax - yMin)));
     })
     .curve(d3.curveMonotoneX);
@@ -536,4 +546,10 @@ export const drawSusEquivalentChart = function({
     .attr("stroke", "#000000")
     .attr("stroke-width", "1px")
     .attr("d", line);
+
+  svg.append("circle")
+    .attr("fill", "#4f81bd")
+    .attr("cx", dotPos.x * width)
+    .attr("cy", (yMax - dotPos.y)*(100/(yMax - yMin))/100*height)
+    .attr("r", 5);
 };

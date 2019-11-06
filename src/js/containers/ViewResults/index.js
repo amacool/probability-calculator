@@ -159,6 +159,7 @@ function ViewResults({ history, location, rawData, rawColumnOrder }) {
       heightT: 220,
     });
     drawSusEquivalentChart({
+      susScore: parseFloat(data.susEquivalents.susEquivalent[1]),
       rawScore: parseFloat(data.overallResults.rawScore.rawScore),
       percentileRank: parseFloat(data.overallResults.percentileRank.percentileRank.replace('%', '')),
       maxScore: 100,
