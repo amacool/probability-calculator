@@ -13,15 +13,17 @@ import { SusEquivalents } from "./SusEquivalents";
 import { IndividualRawValues } from "./IndividualRawValues";
 import { RawMeans } from "./RawMeans";
 import { getCalcResult } from "../../calculation/logic";
-import { parseRawDataToInt } from "../../helper";
+import { parseRawDataToInt, getSortedData } from "../../helper";
 import {
   drawOverallPercentileChart,
   drawOverallRawScoreChart,
   drawBarChart,
   drawSusEquivalentChart
 } from "./charts/OverallCharts";
-import { questionDesc } from "../../constants";
+import { questionHeading } from "../../constants";
 import './style.css';
+
+const questionDesc = questionHeading.map(item => item.desc);
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -35,7 +37,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function ViewResults({ history, location, rawData, path }) {
+function ViewResults({ history, location, rawData, rawColumnOrder }) {
   const classes = useStyles();
   const [values, setValues] = React.useState({
     confidenceLevel: 0.9
@@ -169,13 +171,12 @@ function ViewResults({ history, location, rawData, path }) {
 
   React.useEffect(() => {
     setLabelWidth(inputLabel.current.offsetWidth);
-
-    const result = getCalcResult(parseRawDataToInt(rawData), values.confidenceLevel);
+    const result = getCalcResult(parseRawDataToInt(getSortedData(rawData, rawColumnOrder)), values.confidenceLevel);
     setResult(result);
   }, []);
 
   React.useEffect(() => {
-    const result = getCalcResult(parseRawDataToInt(rawData), values.confidenceLevel);
+    const result = getCalcResult(parseRawDataToInt(getSortedData(rawData, rawColumnOrder)), values.confidenceLevel);
     setResult(result);
     drawCharts(result);
   }, [values.confidenceLevel]);
@@ -230,7 +231,7 @@ function ViewResults({ history, location, rawData, path }) {
 
 const mapStateToProps = (state) => ({
   rawData: state.Calc.rawData,
-  path: state.Path.path
+  rawColumnOrder: state.Calc.rawColumnOrder
 });
 
 const mapDispatchToProps = dispatch =>

@@ -1,26 +1,41 @@
 import React from "react";
 
 export const questionHeading = [
-  'Q1: EasyUse',
-  'Q2: EasyNavigate',
-  'Q3: InfoTrustworthy',
-  'Q4: InfoCredible',
-  'Q5: NPS',
-  'Q6: VisitFuture',
-  'Q7: FindAttractive',
-  'Q8: CleanSimple'
+  {
+    title: 'Q1: EasyUse',
+    desc: 'This website is easy to use.',
+  },
+  {
+    title: 'Q2: EasyNavigate',
+    desc: 'It is easy to navigate within the website.',
+  },
+  {
+    title: 'Q3: InfoTrustworthy',
+    desc: 'The information on this website is trustworthy.',
+  },
+  {
+    title: 'Q4: InfoCredible',
+    desc: 'The information on this website is credible.',
+  },
+  {
+    title: 'Q5: NPS',
+    desc: 'How likely are you to recommend this website to a friend or colleauge?',
+  },
+  {
+    title: 'Q6: VisitFuture',
+    desc: 'I will likely visit this website in the future.',
+  },
+  {
+    title: 'Q7: FindAttractive',
+    desc: 'I find the website to be attractive.',
+  },
+  {
+    title: 'Q8: CleanSimple',
+    desc: 'The website has a clean and simple presentation.'
+  }
 ];
 
-export const questionDesc = [
-  'This website is easy to use.',
-  'It is easy to navigate within the website.',
-  'The information on this website is trustworthy.',
-  'The information on this website is credible.',
-  'How likely are you to recommend this website to a friend or colleauge?',
-  'I will likely visit this website in the future.',
-  'I find the website to be attractive.',
-  'The website has a clean and simple presentation.'
-];
+export const defaultColumnOrder = [0, 1, 2, 3, 4, 5, 6, 7];
 
 export const rawDataColumnNames = ['q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8'];
 

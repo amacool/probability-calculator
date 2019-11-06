@@ -14,6 +14,22 @@ const getFormatedRawData = (data, start) => {
   }))
 };
 
+const getReorderedData = (rawData, oldOrder, newOrder) => {
+  return rawData.map((row) => {
+    return row.map((item, index) => row[oldOrder.indexOf(newOrder[index])]);
+  });
+};
+
+const getSortedData = (rawData, orders) => {
+  return rawData.map((row) => {
+    let newRow = [];
+    orders.forEach((order, index) => {
+      newRow[order] = row[index];
+    });
+    return newRow;
+  });
+};
+
 const getCleanRawData = (data) => {
   return data.map((row) => Object.values(row).slice(1));
 };
@@ -54,6 +70,8 @@ const downloadAsPng = (target, name) => {
 
 export {
   getFormatedRawData,
+  getReorderedData,
+  getSortedData,
   getCleanRawData,
   parseRawDataToInt,
   getArrSum,

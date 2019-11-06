@@ -20,7 +20,7 @@
 .order-columns-content {
   border: solid 1px #b7b7b7;
   border-radius: 5px;
-  padding: 5px;
+  padding: 5px 0;
 }
 
 .order-columns-content .selected {

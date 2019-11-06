@@ -1,7 +1,7 @@
 import React from 'react';
 import BootstrapTable from 'react-bootstrap-table-next';
 import cellEditFactory from 'react-bootstrap-table2-editor';
-import { questionDesc, questionHeading } from "../../constants";
+import { questionHeading } from "../../constants";
 import { getFormatedRawData, getCleanRawData, parseRawDataToInt } from "../../helper";
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import './style.css';
@@ -13,34 +13,34 @@ const THead = ({ title, description }) => (
   </div>
 );
 
-const getTableHeader = () => {
-  return questionDesc.map((item, key) => ({
-      dataField: `q${key + 1}`,
-      text: <THead
-        title={questionHeading[key]}
-        description={questionDesc[key]}
-      />,
-      sort: true,
-      onSort: (field, order) => {
-        console.log(field, order);
-      }
-    })
-  );
+const getTableHeader = (columnOrder) => {
+  return columnOrder.map((order, key) => ({
+    dataField: `q${key + 1}`,
+    text: <THead
+      title={questionHeading[order].title}
+      description={questionHeading[order].desc}
+    />,
+    sort: true,
+    onSort: (field, order) => {
+      console.log(field, order);
+    }
+  }));
 };
 
 export default ({
+  columnOrder,
   rowsProp,
   onDataChange
 }) => {
   const emptyRows = 100 - rowsProp.length > 0 ? [...Array(100 - rowsProp.length)].map(() => [...Array(8)].map(() => '')) : [];
-  const data = [...rowsProp, ...getFormatedRawData(emptyRows, rowsProp.length)];
-  console.log(data);
+  const data = [...rowsProp, ...getFormatedRawData(emptyRows, rowsProp.length, columnOrder)];
+
   return (
     <BootstrapTable
       keyField="id"
       className="custom-table"
       data={data}
-      columns={getTableHeader()}
+      columns={getTableHeader(columnOrder)}
       rowStyle={ {overflowY:'scroll' } }
       cellEdit={ cellEditFactory({
         mode: 'click',
@@ -49,6 +49,7 @@ export default ({
         beforeSaveCell(oldValue, newValue, row, column, done) {
           setTimeout(() => {
             done();
+            onDataChange({ ...row });
           }, 0);
           return { async: true };
         }

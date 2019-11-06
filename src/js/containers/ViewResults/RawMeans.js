@@ -1,7 +1,7 @@
 import React from "react";
 import { ResultHeader } from "./ResultHeader"
-import { questionDesc } from "../../constants";
-import {downloadAsPng} from "../../helper";
+import { questionHeading } from "../../constants";
+import { downloadAsPng } from "../../helper";
 
 export const RawMeans = ({ result, drawChart }) => {
   const [visible, setVisible] = React.useState(true);
@@ -101,7 +101,7 @@ export const RawMeans = ({ result, drawChart }) => {
               <div>
                 <div id="chart-raw-values-by-question" />
                 <div className="labels">
-                  {questionDesc.filter((item, index) => index !== 4).map(item => <p>{item}</p>)}
+                  {questionHeading.filter((item, index) => index !== 4).map(item => <p>{item.desc}</p>)}
                 </div>
               </div>
               <div>

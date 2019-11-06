@@ -47,6 +47,7 @@ table.react-bootstrap-table {
   height: 15px;
   width: 142px;
   max-width: 142px;
+  min-width: 142px;
 }
 
 .react-bootstrap-table tbody tr td input {
@@ -60,4 +61,5 @@ table.react-bootstrap-table {
   padding: 10px;
   width: 142px;
   max-width: 142px;
+  min-width: 142px;
 }
