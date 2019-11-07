@@ -18,15 +18,17 @@ table.react-bootstrap-table {
 
 .react-bootstrap-table tbody {
   display: block;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   height: 500px;
-  width: 100%;
+  width: calc(100% + 15px);
   border: solid 1px #dcdcdc;
 }
 
 .react-bootstrap-table tbody tr {
   width: 100%;
   cursor: text;
+  display: table;
 }
 
 .react-bootstrap-table tbody tr:nth-child(2n) {
@@ -41,17 +43,21 @@ table.react-bootstrap-table {
   /*border-left: solid 3px white;*/
 /*}*/
 
+.react-bootstrap-table table {
+  width: 100%;
+}
+
 .react-bootstrap-table tbody tr td {
   padding: 5px 10px;
   border: solid 1px #dcdcdc;
   height: 15px;
-  width: 142px;
-  max-width: 142px;
-  min-width: 142px;
+  width: 12%;
+  max-width: 12%;
+  min-width: 12%;
 }
 
 .react-bootstrap-table tbody tr td input {
-  max-width: 130px;
+  max-width: 110px;
 }
 
 .react-bootstrap-table table thead > tr > th {
@@ -59,7 +65,13 @@ table.react-bootstrap-table {
   background-color: #d5e3fa;
   border: solid 1px #c4c4c4;
   padding: 10px;
-  width: 142px;
-  max-width: 142px;
-  min-width: 142px;
+  width: 12%;
+  max-width: 12%;
+  min-width: 12%;
+  word-break: break-word;
+}
+
+.react-bootstrap-table table thead > tr > th p {
+  font-size: 13px;
+  font-weight: normal;
 }

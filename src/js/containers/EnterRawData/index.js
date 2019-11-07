@@ -4,9 +4,9 @@ import { bindActionCreators } from "redux";
 import calcActions from "../../redux/calc/actions";
 import pathActions from "../../redux/path/actions";
 import FreeEditableTable from "../../components/CustomTable/FreeEditableTable";
-import { getFormatedRawData, getCleanRawData, getReorderedData, parseRawDataToInt } from "../../helper";
+import { getFormatedRawData, getReorderedData } from "../../helper";
 import { CustomModal } from "../../components/CustomModal";
-import { questionHeading, defaultColumnOrder } from "../../constants";
+import { questionHeading } from "../../constants";
 import "./style.css";
 
 function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, updateColumnOrder }) {
@@ -16,8 +16,7 @@ function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, u
   const [openImportModal, setOpenImportModal] = React.useState(false);
   const [openReorderModal, setOpenReorderModal] = React.useState(false);
   const [curColumn, setCurColumn] = React.useState(0);
-
-  console.log(rawData);
+  const [importData, setImportData] = React.useState('');
 
   React.useEffect(function() {
     rawData && setData(getFormatedRawData(rawData, 0));
@@ -30,19 +29,33 @@ function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, u
   const onDataChange = (newRow) => {
     const rowId = newRow.id;
     delete newRow.id;
+    if (rowId > rawData.length) {
+      updateRawData(rawData);
+      return false;
+    }
+    if (!Object.values(newRow).some(item => item !== '')) {
+      // all values are empty
+      return false;
+    }
+    let values = Object.values(newRow);
+    let isInvalid = false;
+    for (let i = 0; i < values.length; i ++) {
+      const num = parseInt(values[i]);
+      if (values[i] === "" || isNaN(values[i]) || (i === 4 && (num < 0 || num > 10)) || (i !== 4 && (num <= 0 || num > 5))) {
+        values[i] = NaN;
+        isInvalid = true;
+      }
+    }
+    if (isInvalid) {
+      alert("You have entered one or more invalid values. The values should be between 1 – 5 (or 0 – 10 for NPS).");
+    }
     let newData = [...rawData];
-    newData[rowId] = Object.values(newRow);
+    newData[rowId] = values;
     updateRawData(newData);
-    // console.log(get)
-    // updateRawData(getCleanRawData(newData));
-    // setData(rows.map((item, index) => ({
-    //   ...item,
-    //   ...newData[index]
-    // })));
   };
 
   const onClearValues = () => {
-    setData([]);
+    updateRawData([]);
   };
 
   const handleColumnReorder = (direction) => {
@@ -82,7 +95,7 @@ function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, u
           </p>
         </div>
         <button
-          className="btn-primary"
+          className="btn-primary btn-switch-input"
           onClick={() => {
             path === 'enter-raw' ? setPath('enter-summary') : setPath('enter-raw');
           }}
@@ -101,20 +114,9 @@ function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, u
             columnOrder={columnOrder}
             rowsProp={data}
             onDataChange={onDataChange}
+            initialRowCount={rawData.length*2 < 100 ? 100 : rawData.length * 2}
           />
-          {/*<ExtendedTable*/}
-            {/*columnsProp={rawDataColumns}*/}
-            {/*rowsProp={data}*/}
-            {/*addable={true}*/}
-            {/*editable={true}*/}
-            {/*removable={true}*/}
-            {/*sortable={true}*/}
-            {/*draggable={true}*/}
-            {/*paging={true}*/}
-            {/*validType="numeric"*/}
-            {/*onDataChange={onDataChange}*/}
-          {/*/>*/}
-          <button className="btn-secondary btn-view-results">View Results</button>
+          <button className="btn-secondary btn-view-results" onClick={() => setPath('view-results')}>View Results</button>
         </div>
 
         <CustomModal
@@ -144,13 +146,52 @@ function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, u
         <CustomModal
           open={openImportModal}
           onCloseModal={() => setOpenImportModal(false)}
-          onConfirm={() => {}}
+          onConfirm={() => {
+            try {
+              if (importData === "") {
+                throw "Empty input!";
+              }
+              const rows = importData.split('\n');
+              let validData = [];
+              for (let i = 0; i < rows.length; i++) {
+                if (rows[i] === '') {
+                  continue;
+                }
+                const items = rows[i].split('\t');
+                console.log(items);
+                if (items.length !== 8) {
+                  throw 'Invalid Length! ';
+                }
+                items.forEach((item, index) => {
+                  let num = parseInt(item);
+                  if (isNaN(item)) {
+                    throw "Invalid input! Not a number!";
+                  }
+                  if (item === "") {
+                    throw "There's an empty input!";
+                  }
+                  if (index === 4 && (num < 0 || num > 10)) {
+                    throw "Invalid input for NPS!";
+                  }
+                  if (index !== 4 && (num <= 0 || num > 5)) {
+                    throw "Invalid input for questions!";
+                  }
+                });
+                validData.push(items);
+              }
+              updateColumnOrder([0, 1, 2, 3, 4, 5, 6, 7]);
+              updateRawData(validData);
+              setOpenImportModal(false);
+            } catch (err) {
+              alert(err);
+            }
+          }}
           title="Import Data"
           confirmLabel="Import"
           cancelLabel="Close"
         >
           <div className="import-data-container">
-
+            <textarea onChange={(e) => setImportData(e.target.value)} />
           </div>
         </CustomModal>
       </div>

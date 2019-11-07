@@ -54,3 +54,12 @@
 .btn-column-move-down {
   margin-left: 15px;
 }
+
+.btn-switch-input {
+  width: 260px;
+}
+
+.import-data-container textarea {
+  width: 100%;
+  height: 300px;
+}

@@ -9,7 +9,7 @@ import './style.css';
 const THead = ({ title, description }) => (
   <div style={{ minHeight: '180px' }}>
     <h3>{title}</h3>
-    <span><i>{description}</i></span>
+    <p><i>{description}</i></p>
   </div>
 );
 
@@ -30,9 +30,10 @@ const getTableHeader = (columnOrder) => {
 export default ({
   columnOrder,
   rowsProp,
-  onDataChange
+  onDataChange,
+  initialRowCount
 }) => {
-  const emptyRows = 100 - rowsProp.length > 0 ? [...Array(100 - rowsProp.length)].map(() => [...Array(8)].map(() => '')) : [];
+  const emptyRows = initialRowCount - rowsProp.length > 0 ? [...Array(initialRowCount - rowsProp.length)].map(() => [...Array(8)].map(() => '')) : [];
   const data = [...rowsProp, ...getFormatedRawData(emptyRows, rowsProp.length, columnOrder)];
 
   return (

@@ -6,10 +6,15 @@ const rawData = [
   ['5', '5', '5', '5', '5', '5', '5', '5'],
 ];
 const rawColumnOrder = [0, 1, 2, 3, 4, 5, 6, 7];
+const summaryData = [
+  [4.23, 4.33, 4.33, 3.42, 4.83],
+  [0.4, 0.8, 0.8, 0.4, 0.3]
+];
 
 const initState = {
   rawData,
-  rawColumnOrder
+  rawColumnOrder,
+  summaryData
 };
 
 export default function calcReducer(state = initState, { type, payload }) {
@@ -30,6 +35,24 @@ export default function calcReducer(state = initState, { type, payload }) {
       return {
         ...state,
         rawData: null
+      };
+
+    case actions.UPDATE_SUMMARY_DATA:
+      return {
+        ...state,
+        summaryData: payload
+      };
+
+    // case actions.UPDATE_COLUMN_ORDER:
+    //   return {
+    //     ...state,
+    //     rawColumnOrder: payload
+    //   };
+
+    case actions.CLEAR_SUMMARY_DATA:
+      return {
+        ...state,
+        summaryData: null
       };
 
     default:

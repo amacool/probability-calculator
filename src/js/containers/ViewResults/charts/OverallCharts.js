@@ -448,7 +448,6 @@ export const drawSusEquivalentChart = function({
     }
   }
   lineDataSet = [...lineDataSet.slice(0, dotIndex + 1), dotPos, ...lineDataSet.slice(dotIndex + 1)];
-  console.log(lineDataSet);
   let yMin = (lineDataSet[0].y / 10).toFixed(0) * 10;
   let yMax = (lineDataSet[lineDataSet.length - 1].y / 10).toFixed(0) * 10;
 

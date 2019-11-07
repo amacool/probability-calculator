@@ -171,12 +171,18 @@ function ViewResults({ history, location, rawData, rawColumnOrder }) {
   };
 
   React.useEffect(() => {
+    if (rawData.length === 0) {
+      return;
+    }
     setLabelWidth(inputLabel.current.offsetWidth);
     const result = getCalcResult(parseRawDataToInt(getSortedData(rawData, rawColumnOrder)), values.confidenceLevel);
     setResult(result);
   }, []);
 
   React.useEffect(() => {
+    if (rawData.length === 0) {
+      return;
+    }
     const result = getCalcResult(parseRawDataToInt(getSortedData(rawData, rawColumnOrder)), values.confidenceLevel);
     setResult(result);
     drawCharts(result);

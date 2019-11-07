@@ -4,6 +4,7 @@ import { bindActionCreators } from "redux";
 import pathActions from "../../redux/path/actions";
 import ExtendedTable from "../../components/CustomTable/ExtendedTable";
 import { summaryDataColumns } from "../../constants";
+import FreeEditableTable from "../../components/CustomTable/FreeEditableTable";
 
 const rows = [
   {
@@ -73,7 +74,7 @@ function EnterSummaryData({ path, setPath }) {
           </p>
         </div>
         <button
-          className="btn-primary"
+          className="btn-primary btn-switch-input"
           onClick={() => {
             path === 'enter-raw' ? setPath('enter-summary') : setPath('enter-raw');
           }}
@@ -89,20 +90,26 @@ function EnterSummaryData({ path, setPath }) {
           </button>
         </div>
         <div>
-          <ExtendedTable
-            columnsProp={includeAttr ? summaryDataColumns : summaryDataColumns.slice(0, 2)}
-            rowsProp={includeAttr ? data : getReducedData()}
-            addable={false}
-            editable={true}
-            removable={false}
-            sortable={false}
-            draggable={false}
-            searchable={false}
-            paging={false}
+          {/*<ExtendedTable*/}
+            {/*columnsProp={includeAttr ? summaryDataColumns : summaryDataColumns.slice(0, 2)}*/}
+            {/*rowsProp={includeAttr ? data : getReducedData()}*/}
+            {/*addable={false}*/}
+            {/*editable={true}*/}
+            {/*removable={false}*/}
+            {/*sortable={false}*/}
+            {/*draggable={false}*/}
+            {/*searchable={false}*/}
+            {/*paging={false}*/}
+            {/*onDataChange={onDataChange}*/}
+            {/*validType="number"*/}
+          {/*/>*/}
+          <FreeEditableTable
+            columnOrder={[0, 1, 2, 3, 4, 5]}
+            rowsProp={data}
             onDataChange={onDataChange}
-            validType="number"
+            initialRowCount={3}
           />
-          <button className="btn-secondary btn-view-results">View Results</button>
+          <button className="btn-secondary btn-view-results" onClick={() => setPath('view-results')}>View Results</button>
         </div>
       </div>
     </div>
