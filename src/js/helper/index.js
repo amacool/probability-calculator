@@ -30,12 +30,12 @@ const getSortedData = (rawData, orders) => {
   });
 };
 
-const getCleanRawData = (data) => {
-  return data.map((row) => Object.values(row).slice(1));
-};
-
 const parseRawDataToInt = (data) => {
   return data.map((row) => row.map((item) => parseInt(item)));
+};
+
+const parseRawDataToFloat = (data) => {
+  return data.map((row) => row.map((item) => parseFloat(item)));
 };
 
 const getArrSum = (arr) => {
@@ -68,16 +68,27 @@ const downloadAsPng = (target, name) => {
     });
 };
 
+const exportTable = (data) => {
+  let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
+  let downloadAnchorNode = document.createElement('a');
+  downloadAnchorNode.setAttribute("href", dataStr);
+  downloadAnchorNode.setAttribute("download", "data.json");
+  document.body.appendChild(downloadAnchorNode);
+  downloadAnchorNode.click();
+  downloadAnchorNode.remove();
+};
+
 export {
   getFormatedRawData,
   getReorderedData,
   getSortedData,
-  getCleanRawData,
   parseRawDataToInt,
+  parseRawDataToFloat,
   getArrSum,
   getArrAvg,
   getNonBlankArr,
   getNonBlankCount,
   getProFormat,
-  downloadAsPng
+  downloadAsPng,
+  exportTable
 };

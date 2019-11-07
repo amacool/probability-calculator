@@ -27,13 +27,23 @@ table.react-bootstrap-table {
 }
 
 .custom-table-container.has-scroll .react-bootstrap-table tbody {
-  height: 500px;
   width: calc(100% + 15px);
+}
+
+.custom-table-container.editable .react-bootstrap-table tbody tr {
+  cursor: text;
+}
+
+.custom-table-container.tall .react-bootstrap-table tbody {
+  height: 500px;
+}
+
+.custom-table-container.short .react-bootstrap-table tbody {
+  height: 175px;
 }
 
 .react-bootstrap-table tbody tr {
   width: 100%;
-  cursor: text;
   display: table;
 }
 

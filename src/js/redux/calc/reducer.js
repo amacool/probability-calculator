@@ -11,11 +11,17 @@ const summaryData = [
   ['Standard Deviation', 0.4, 0.8, 0.8, 0.4, 0.3, 0.5],
   ['Sample Size', 3, 3, 3, 3, 3, 3]
 ];
+const emptySummaryData = [
+  ['Raw Score (Mean)', '', '', '', '', '', ''],
+  ['Standard Deviation', '', '', '', '', '', ''],
+  ['Sample Size', '', '', '', '', '', '']
+];
 
 const initState = {
   rawData,
   rawColumnOrder,
-  summaryData
+  summaryData,
+  calcMode: 'raw'
 };
 
 export default function calcReducer(state = initState, { type, payload }) {
@@ -39,22 +45,21 @@ export default function calcReducer(state = initState, { type, payload }) {
       };
 
     case actions.UPDATE_SUMMARY_DATA:
-      console.log(">>>>>", payload)
       return {
         ...state,
         summaryData: payload
       };
 
-    // case actions.UPDATE_COLUMN_ORDER:
-    //   return {
-    //     ...state,
-    //     rawColumnOrder: payload
-    //   };
-
     case actions.CLEAR_SUMMARY_DATA:
       return {
         ...state,
-        summaryData: null
+        summaryData: emptySummaryData
+      };
+
+    case actions.SET_CALC_MODE:
+      return {
+        ...state,
+        calcMode: payload
       };
 
     default:

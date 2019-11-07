@@ -8,10 +8,12 @@ export default ({
   columnsProp,
   rowsProp,
   onDataChange,
-  scroll
+  scroll,
+  editable,
+  className
 }) => {
   return (
-    <div className={`custom-table-container ${scroll ? 'has-scroll' : ''}`}>
+    <div className={`custom-table-container ${scroll ? 'has-scroll' : ''} ${editable ? 'editable' : ''} ${className}`}>
       <BootstrapTable
         keyField="id"
         data={rowsProp}

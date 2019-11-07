@@ -13,7 +13,7 @@ import { SusEquivalents } from "./SusEquivalents";
 import { IndividualRawValues } from "./IndividualRawValues";
 import { RawMeans } from "./RawMeans";
 import { getCalcResult } from "../../calculation/logic";
-import { parseRawDataToInt, getSortedData } from "../../helper";
+import { parseRawDataToInt, parseRawDataToFloat, getSortedData } from "../../helper";
 import {
   drawOverallPercentileChart,
   drawOverallRawScoreChart,
@@ -37,7 +37,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function ViewResults({ history, location, rawData, rawColumnOrder }) {
+function ViewResults({ history, location, rawData, rawColumnOrder, summaryData, calcMode }) {
   const classes = useStyles();
   const [values, setValues] = React.useState({
     confidenceLevel: 0.9
@@ -92,7 +92,7 @@ function ViewResults({ history, location, rawData, rawColumnOrder }) {
       widthT: 650,
       heightT: 200
     });
-    drawBarChart({
+    calcMode !== 'summary-single' && drawBarChart({
       attrs: {
         "Overall": data.percentileRanksBA[0],
         "Usability": data.percentileRanksBA[1],
@@ -109,7 +109,7 @@ function ViewResults({ history, location, rawData, rawColumnOrder }) {
       widthT: 400,
       heightT: 220
     });
-    drawBarChart({
+    calcMode !== 'summary-single' && drawBarChart({
       attrs: {
         "Overall": data.rawScoresBA[0],
         "Usability": data.rawScoresBA[1],
@@ -126,7 +126,7 @@ function ViewResults({ history, location, rawData, rawColumnOrder }) {
       widthT: 400,
       heightT: 220
     });
-    drawBarChart({
+    calcMode === 'raw' && calcMode !== 'summary-single' && drawBarChart({
       attrs: {
         [questionDesc[0]]: data.rawMeansByQ[0],
         [questionDesc[1]]: data.rawMeansByQ[1],
@@ -145,7 +145,7 @@ function ViewResults({ history, location, rawData, rawColumnOrder }) {
       widthT: 450,
       heightT: 220
     });
-    drawBarChart({
+    calcMode === 'raw' && calcMode !== 'summary-single' && drawBarChart({
       attrs: {
         [questionDesc[4]]: data.rawMeansByQ[4]
       },
@@ -158,7 +158,7 @@ function ViewResults({ history, location, rawData, rawColumnOrder }) {
       widthT: 120,
       heightT: 220,
     });
-    drawSusEquivalentChart({
+    calcMode !== 'summary-single' && drawSusEquivalentChart({
       susScore: parseFloat(data.susEquivalents.susEquivalent[1]),
       rawScore: parseFloat(data.overallResults.rawScore.rawScore),
       percentileRank: parseFloat(data.overallResults.percentileRank.percentileRank.replace('%', '')),
@@ -171,19 +171,37 @@ function ViewResults({ history, location, rawData, rawColumnOrder }) {
   };
 
   React.useEffect(() => {
-    if (rawData.length === 0) {
+    if (calcMode === "raw" && rawData.length === 0) {
+      return;
+    } else if (summaryData.length === 0) {
       return;
     }
     setLabelWidth(inputLabel.current.offsetWidth);
-    const result = getCalcResult(parseRawDataToInt(getSortedData(rawData, rawColumnOrder)), values.confidenceLevel);
+    let result = '';
+    if (calcMode === 'raw') {
+      result = getCalcResult(parseRawDataToInt(getSortedData(rawData, rawColumnOrder)), calcMode, values.confidenceLevel);
+    } else if (calcMode === 'summary-all') {
+      result = getCalcResult(parseRawDataToFloat(summaryData.map(item => item.slice(1))), calcMode, values.confidenceLevel);
+    } else if (calcMode === 'summary-single') {
+      result = getCalcResult(parseRawDataToFloat(summaryData.map(item => item.slice(1))), calcMode, values.confidenceLevel);
+    }
     setResult(result);
   }, []);
 
   React.useEffect(() => {
-    if (rawData.length === 0) {
+    if (calcMode === "raw" && rawData.length === 0) {
+      return;
+    } else if (summaryData.length === 0) {
       return;
     }
-    const result = getCalcResult(parseRawDataToInt(getSortedData(rawData, rawColumnOrder)), values.confidenceLevel);
+    let result = '';
+    if (calcMode === 'raw') {
+      result = getCalcResult(parseRawDataToInt(getSortedData(rawData, rawColumnOrder)), calcMode, values.confidenceLevel);
+    } else if (calcMode === 'summary-all') {
+      result = getCalcResult(parseRawDataToFloat(summaryData.map(item => item.slice(1))), calcMode, values.confidenceLevel);
+    } else if (calcMode === 'summary-single') {
+      result = getCalcResult(parseRawDataToFloat(summaryData.map(item => item.slice(1))), calcMode, values.confidenceLevel);
+    }
     setResult(result);
     drawCharts(result);
   }, [values.confidenceLevel]);
@@ -223,11 +241,11 @@ function ViewResults({ history, location, rawData, rawColumnOrder }) {
 
       <div className="view-result-body">
         <OverallSupr result={result.overallResults} confLevel={values.confidenceLevel} drawChart={() => drawCharts(result)} />
-        <PercentileRanks result={result.percentileRanksBA} drawChart={() => drawCharts(result)} />
-        <RawScores result={result.rawScoresBA} drawChart={() => drawCharts(result)} />
-        <SusEquivalents result={result.susEquivalents} drawChart={() => drawCharts(result)} />
-        <IndividualRawValues result={result.individualRawValuesBA} />
-        <RawMeans result={result.rawMeansByQ} drawChart={() => drawCharts(result)} />
+        {calcMode !== 'summary-single' && <PercentileRanks result={result.percentileRanksBA} drawChart={() => drawCharts(result)} />}
+        {calcMode !== 'summary-single' && <RawScores result={result.rawScoresBA} drawChart={() => drawCharts(result)} />}
+        {calcMode !== 'summary-single' && <SusEquivalents result={result.susEquivalents} drawChart={() => drawCharts(result)} />}
+        {calcMode !== 'summary-single' && calcMode !== 'summary-all' && <IndividualRawValues result={result.individualRawValuesBA} />}
+        {calcMode !== 'summary-single' && calcMode !== 'summary-all' && <RawMeans result={result.rawMeansByQ} drawChart={() => drawCharts(result)} />}
         <div>
           <span>Error bars represent {values.confidenceLevel*100}% confidence intervals.</span>
         </div>
@@ -238,7 +256,9 @@ function ViewResults({ history, location, rawData, rawColumnOrder }) {
 
 const mapStateToProps = (state) => ({
   rawData: state.Calc.rawData,
-  rawColumnOrder: state.Calc.rawColumnOrder
+  rawColumnOrder: state.Calc.rawColumnOrder,
+  calcMode: state.Calc.calcMode,
+  summaryData: state.Calc.summaryData
 });
 
 const mapDispatchToProps = dispatch =>

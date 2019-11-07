@@ -31,24 +31,17 @@ const getTableHeader = (columnOrder) => {
 };
 
 const getRowsProp = (initialRowCount, rows, columnOrder) => {
-  console.log(rows);
   const emptyRows = initialRowCount - rows.length > 0 ? [...Array(initialRowCount - rows.length)].map(() => [...Array(8)].map(() => '')) : [];
   return [...rows, ...getFormatedRawData(emptyRows, rows.length, columnOrder)];
 };
 
-function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, updateColumnOrder }) {
+function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, updateColumnOrder, setCalcMode }) {
   const [columnOrder, setColumnOrder] = React.useState(rawColumnOrder || []);
   const [columnOrderT, setColumnOrderT] = React.useState(rawColumnOrder || []);
-  // const [data, setData] = React.useState(getFormatedRawData(rawData || [], 0));
   const [openImportModal, setOpenImportModal] = React.useState(false);
   const [openReorderModal, setOpenReorderModal] = React.useState(false);
   const [curColumn, setCurColumn] = React.useState(0);
   const [importData, setImportData] = React.useState('');
-  console.log(rawData);
-
-  React.useEffect(function() {
-    // rawData && setData(getFormatedRawData(rawData, 0));
-  }, [rawData]);
 
   React.useEffect(function() {
     setColumnOrder(rawColumnOrder || []);
@@ -58,7 +51,6 @@ function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, u
     const rowId = newRow.id;
     delete newRow.id;
     if (rowId > rawData.length) {
-      // updateRawData(rawData);
       return false;
     }
     if (!Object.values(newRow).some(item => item !== '')) {
@@ -142,8 +134,18 @@ function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, u
             columnsProp={getTableHeader(columnOrder)}
             onDataChange={onDataChange}
             scroll={true}
+            editable={true}
+            className="tall"
           />
-          <button className="btn-secondary btn-view-results" onClick={() => setPath('view-results')}>View Results</button>
+          <button
+            className="btn-secondary btn-view-results"
+            onClick={() => {
+              setCalcMode('raw');
+              setPath('view-results');
+            }}
+          >
+            View Results
+          </button>
         </div>
 
         <CustomModal
@@ -185,7 +187,6 @@ function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, u
                   continue;
                 }
                 const items = rows[i].split('\t');
-                console.log(items);
                 if (items.length !== 8) {
                   throw 'Invalid Length! ';
                 }
@@ -238,6 +239,7 @@ const mapDispatchToProps = dispatch =>
       setPath: (data) => pathActions.setPath(data),
       updateRawData: (data) => calcActions.updateRawData(data),
       updateColumnOrder: (data) => calcActions.updateColumnOrder(data),
+      setCalcMode: (data) => calcActions.setCalcMode(data),
     },
     dispatch
   );

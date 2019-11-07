@@ -90,3 +90,15 @@
 .single-label p {
   margin-left: 14px !important;
 }
+
+.tbl-individual-raw-values {
+  width: 80%;
+}
+
+.individual-raw-values-inner {
+  margin-bottom: 5px;
+}
+
+.individual-raw-values-inner + div {
+  font-size: 12px;
+}

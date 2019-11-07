@@ -7,7 +7,6 @@ import FreeEditableTable from "../../components/CustomTable/FreeEditableTable";
 import calcActions from "../../redux/calc/actions";
 
 const getTableHeader = (headings) => {
-  console.log(headings);
   return headings.map((heading, key) => ({
     dataField: `a${key + 1}`,
     text: heading,
@@ -52,7 +51,7 @@ const getReducedRowsProp = (rows) => {
   }));
 };
 
-function EnterSummaryData({ path, setPath, summaryData, updateSummaryData }) {
+function EnterSummaryData({ path, setPath, summaryData, updateSummaryData, clearSummaryData, setCalcMode }) {
   const [includeAttr, setIncludeAttr] = React.useState(false);
 
   const onDataChange = (newRow) => {
@@ -74,12 +73,17 @@ function EnterSummaryData({ path, setPath, summaryData, updateSummaryData }) {
       alert("You have entered one or more invalid values. The values should be between 1 – 5 (or 0 – 10 for NPS).");
     }
     let newData = [...summaryData];
-    newData[rowId] = values;
+    if (includeAttr) {
+      newData[rowId] = values;
+    } else {
+      newData[rowId][1] = values[1];
+    }
+
     updateSummaryData(newData);
   };
 
   const onClearValues = () => {
-    updateSummaryData([]);
+    clearSummaryData();
   };
 
   return (
@@ -114,8 +118,16 @@ function EnterSummaryData({ path, setPath, summaryData, updateSummaryData }) {
             columnsProp={getTableHeader(includeAttr ? summaryHeading : summaryHeading.slice(0, 2))}
             onDataChange={onDataChange}
             scroll={false}
+            editable={true}
           />
-          <button className="btn-secondary btn-view-results" onClick={() => setPath('view-results')}>View Results</button>
+          <button className="btn-secondary btn-view-results"
+            onClick={() => {
+              setCalcMode(includeAttr ? 'summary-all' : 'summary-single');
+              setPath('view-results');
+            }}
+          >
+            View Results
+          </button>
         </div>
       </div>
     </div>
@@ -131,7 +143,9 @@ const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       setPath: (data) => pathActions.setPath(data),
+      setCalcMode: (data) => calcActions.setCalcMode(data),
       updateSummaryData: (data) => calcActions.updateSummaryData(data),
+      clearSummaryData: () => calcActions.clearSummaryData()
     },
     dispatch
   );

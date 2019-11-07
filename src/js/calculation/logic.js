@@ -52,7 +52,7 @@ const get_ci_pr = (N, studySD, rawMean, rawMeanSUPRQ, maxScore, globalInMean, gl
   };
 };
 
-export const getCalcResult = (rawData, confLevel = 0.9) => {
+export const getCalcResult = (data, calcMode, confLevel = 0.9) => {
   // definition of calculation results
   let percentileRanksBA = [];
   let rawScoresBA = [];
@@ -78,11 +78,11 @@ export const getCalcResult = (rawData, confLevel = 0.9) => {
 
   // definition of constants
   const acc = 1;
-  const N = rawData.length;
+  const N = data.length;
   const DF = N - 1;
   const alpha = 1 - confLevel;
   const  z =  zinv(alpha/2);
-  const dataCount = rawData.length;
+  const dataCount = data.length;
   let subScales = {
     suprQ: [],
     usability: [],
@@ -94,79 +94,95 @@ export const getCalcResult = (rawData, confLevel = 0.9) => {
   let rowSUM = [];
 
   // get sub-scales
-  rawData.forEach((row) => {
-    // supr-q
-    if (row[0] && row[1] && row[2] && row[3] && row[4] && row[5] && row[6] && row[7]) {
-      subScales.suprQ.push((row[0] + row[1] + row[2] + row[3] + row[4] / 2 + row[5] + row[6] + row[7])/8);
-    } else {
-      subScales.suprQ.push('');
-    }
-    // usability
-    if (row[0] && row[1]) {
-      subScales.usability.push((row[0] + row[1]) / 2);
-    } else {
-      subScales.usability.push('');
-    }
-    // trust
-    if (row[2] && row[3]) {
-      subScales.trust.push((row[2] + row[3]) / 2);
-    } else {
-      subScales.trust.push('');
-    }
-    // loyalty
-    if (row[4] && row[5]) {
-      subScales.loyalty.push((row[4]/2 + row[5]) / 2);
-    } else {
-      subScales.loyalty.push('');
-    }
-    // appearance
-    if (row[6] && row[7]) {
-      subScales.appearance.push((row[6] + row[7]) / 2);
-    } else {
-      subScales.appearance.push('');
-    }
+  if (calcMode === "raw") {
+    data.forEach((row) => {
+      // supr-q
+      if (row[0] && row[1] && row[2] && row[3] && row[4] && row[5] && row[6] && row[7]) {
+        subScales.suprQ.push((row[0] + row[1] + row[2] + row[3] + row[4] / 2 + row[5] + row[6] + row[7]) / 8);
+      } else {
+        subScales.suprQ.push('');
+      }
+      // usability
+      if (row[0] && row[1]) {
+        subScales.usability.push((row[0] + row[1]) / 2);
+      } else {
+        subScales.usability.push('');
+      }
+      // trust
+      if (row[2] && row[3]) {
+        subScales.trust.push((row[2] + row[3]) / 2);
+      } else {
+        subScales.trust.push('');
+      }
+      // loyalty
+      if (row[4] && row[5]) {
+        subScales.loyalty.push((row[4] / 2 + row[5]) / 2);
+      } else {
+        subScales.loyalty.push('');
+      }
+      // appearance
+      if (row[6] && row[7]) {
+        subScales.appearance.push((row[6] + row[7]) / 2);
+      } else {
+        subScales.appearance.push('');
+      }
 
-    // get question column Data
-    row.forEach((item, index) => qColumnData[index].push(item));
+      // get question column Data
+      row.forEach((item, index) => qColumnData[index].push(item));
 
-    // get RowSUM
-    if (getNonBlankCount(row) === 8) {
-      const rowSumVal = getArrSum(row);
-      rowSUM.push(rowSumVal);
-    } else {
-      testVar.push('');
-    }
-  });
-
+      // get RowSUM
+      if (getNonBlankCount(row) === 8) {
+        const rowSumVal = getArrSum(row);
+        rowSUM.push(rowSumVal);
+      }
+    });
+  } else if (calcMode === "summary-all") {
+    data.forEach((item, index) => {
+      subScales.suprQ.push(data[index][0]);
+      subScales.usability.push(data[index][1]);
+      subScales.trust.push(data[index][2]);
+      subScales.loyalty.push(data[index][3]);
+      subScales.appearance.push(data[index][4]);
+    });
+  }
   // get non-blank, SD, RawScore
-  const stdDevBA = [  // SD in excel
+  const stdDevBA = subScales.suprQ.length > 0 ? [  // SD in excel
     getSD(subScales.suprQ, 1),
     getSD(subScales.usability, 1),
     getSD(subScales.trust, 1),
     getSD(subScales.loyalty, 1),
     getSD(subScales.appearance, 1)
-  ];
-  const rawMeanBA = [  // mean in excel
+  ] : [];
+  const rawMeanBA = subScales.suprQ.length > 0 ? [  // mean in excel
     getArrAvg(getNonBlankArr(subScales.suprQ)),
     getArrAvg(getNonBlankArr(subScales.usability)),
     getArrAvg(getNonBlankArr(subScales.trust)),
     getArrAvg(getNonBlankArr(subScales.loyalty)),
     getArrAvg(getNonBlankArr(subScales.appearance))
-  ];
+  ] : [];
 
   // get CronbachAlpha
-  const stdDevQ = qColumnData.map((item) => getSD(item, 2));
-  const rawMeanQ = qColumnData.map((item) => getArrAvg(getNonBlankArr(item)));
-  const testSD = getSD(rowSUM, 2);
-  const testVar = testSD * testSD;
-  const sumVar = getArrSum(stdDevQ.map((item) => item * item));
-  const cronbachAlpha = N / DF * (1 - (sumVar / testVar));
-  const internalReliability = cronbachAlpha > 0.7 ? 'Good' : 'Poor';
+  let stdDevQ = [];
+  let rawMeanQ = [];
+  let testSD;
+  let testVar;
+  let sumVar;
+  let cronbachAlpha = '';
+  let internalReliability = '';
+  if (calcMode === "raw") {
+    stdDevQ = qColumnData.map((item) => getSD(item, 2));
+    rawMeanQ = qColumnData.map((item) => getArrAvg(getNonBlankArr(item)));
+    testSD = getSD(rowSUM, 2);
+    testVar = testSD * testSD;
+    sumVar = getArrSum(stdDevQ.map((item) => item * item));
+    cronbachAlpha = N / DF * (1 - (sumVar / testVar));
+    internalReliability = cronbachAlpha > 0.7 ? 'Good' : 'Poor';
+  }
 
   // get Percentile Ranks by Attribute, get Raw Scores by Attribute
   // G - Values
   let suprqMarginOfError = '';
-  maxScore.forEach((score, index) => {
+  calcMode !== "summary-single" && maxScore.forEach((score, index) => {
     const {
       prMean,
       ciLowPro,
@@ -252,10 +268,20 @@ export const getCalcResult = (rawData, confLevel = 0.9) => {
       ciHigh: rawScoresBA[0].high,
       stdDev: rawScoresBA[0].stdDev,
       sampleSize: rawScoresBA[0].sampleSize,
-      cronbachAlpha: cronbachAlpha.toFixed(3),
+      cronbachAlpha: cronbachAlpha && cronbachAlpha.toFixed(3),
       internalReliability: internalReliability
     }
   };
+
+  if (calcMode === "summary-single") {
+    overallResults.rawScore.rawScore = data[0][0];
+    overallResults.rawScore.stdDev = data[1][0];
+    overallResults.rawScore.sampleSize = data[2][0];
+
+    return {
+      overallResults
+    };
+  }
 
   // get SUS Equivalents
   const susGlobalLnSD = globalLnSD[6];
