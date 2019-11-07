@@ -8,7 +8,8 @@ table.react-bootstrap-table {
 }
 
 .react-bootstrap-table thead tr {
-  display: block;
+  display: table;
+  width: 100%;
 }
 
 .react-bootstrap-table thead th {
@@ -20,9 +21,14 @@ table.react-bootstrap-table {
   display: block;
   overflow-y: auto;
   overflow-x: hidden;
+  border: solid 1px #dcdcdc;
+  height: unset;
+  margin-top: -1px;
+}
+
+.custom-table-container.has-scroll .react-bootstrap-table tbody {
   height: 500px;
   width: calc(100% + 15px);
-  border: solid 1px #dcdcdc;
 }
 
 .react-bootstrap-table tbody tr {
@@ -34,14 +40,6 @@ table.react-bootstrap-table {
 .react-bootstrap-table tbody tr:nth-child(2n) {
   background-color: #eee;
 }
-
-/*.react-bootstrap-table tbody tr:nth-child(2n) td:first-child {*/
-  /*border-left: solid 3px #dcdcdc;*/
-/*}*/
-
-/*.react-bootstrap-table tbody tr:nth-child(2n + 1) td:first-child {*/
-  /*border-left: solid 3px white;*/
-/*}*/
 
 .react-bootstrap-table table {
   width: 100%;

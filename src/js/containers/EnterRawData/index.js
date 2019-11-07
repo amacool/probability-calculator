@@ -9,17 +9,45 @@ import { CustomModal } from "../../components/CustomModal";
 import { questionHeading } from "../../constants";
 import "./style.css";
 
+const THead = ({ title, description }) => (
+  <div style={{ minHeight: '180px' }}>
+    <h3>{title}</h3>
+    <p><i>{description}</i></p>
+  </div>
+);
+
+const getTableHeader = (columnOrder) => {
+  return columnOrder.map((order, key) => ({
+    dataField: `q${key + 1}`,
+    text: <THead
+      title={questionHeading[order].title}
+      description={questionHeading[order].desc}
+    />,
+    sort: true,
+    onSort: (field, order) => {
+      console.log(field, order);
+    }
+  }));
+};
+
+const getRowsProp = (initialRowCount, rows, columnOrder) => {
+  console.log(rows);
+  const emptyRows = initialRowCount - rows.length > 0 ? [...Array(initialRowCount - rows.length)].map(() => [...Array(8)].map(() => '')) : [];
+  return [...rows, ...getFormatedRawData(emptyRows, rows.length, columnOrder)];
+};
+
 function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, updateColumnOrder }) {
   const [columnOrder, setColumnOrder] = React.useState(rawColumnOrder || []);
   const [columnOrderT, setColumnOrderT] = React.useState(rawColumnOrder || []);
-  const [data, setData] = React.useState(getFormatedRawData(rawData || [], 0));
+  // const [data, setData] = React.useState(getFormatedRawData(rawData || [], 0));
   const [openImportModal, setOpenImportModal] = React.useState(false);
   const [openReorderModal, setOpenReorderModal] = React.useState(false);
   const [curColumn, setCurColumn] = React.useState(0);
   const [importData, setImportData] = React.useState('');
+  console.log(rawData);
 
   React.useEffect(function() {
-    rawData && setData(getFormatedRawData(rawData, 0));
+    // rawData && setData(getFormatedRawData(rawData, 0));
   }, [rawData]);
 
   React.useEffect(function() {
@@ -30,18 +58,17 @@ function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, u
     const rowId = newRow.id;
     delete newRow.id;
     if (rowId > rawData.length) {
-      updateRawData(rawData);
+      // updateRawData(rawData);
       return false;
     }
     if (!Object.values(newRow).some(item => item !== '')) {
-      // all values are empty
       return false;
     }
     let values = Object.values(newRow);
     let isInvalid = false;
     for (let i = 0; i < values.length; i ++) {
       const num = parseInt(values[i]);
-      if (values[i] === "" || isNaN(values[i]) || (i === 4 && (num < 0 || num > 10)) || (i !== 4 && (num <= 0 || num > 5))) {
+      if (values[i] === "" || isNaN(values[i]) || (columnOrder[i] === 4 && (num < 0 || num > 10)) || (columnOrder[i] !== 4 && (num <= 0 || num > 5))) {
         values[i] = NaN;
         isInvalid = true;
       }
@@ -111,10 +138,10 @@ function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, u
         </div>
         <div>
           <FreeEditableTable
-            columnOrder={columnOrder}
-            rowsProp={data}
+            rowsProp={getRowsProp(100, getFormatedRawData(rawData, 0), columnOrder)}
+            columnsProp={getTableHeader(columnOrder)}
             onDataChange={onDataChange}
-            initialRowCount={rawData.length*2 < 100 ? 100 : rawData.length * 2}
+            scroll={true}
           />
           <button className="btn-secondary btn-view-results" onClick={() => setPath('view-results')}>View Results</button>
         </div>

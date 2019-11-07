@@ -2,65 +2,84 @@ import React from "react";
 import connect from "react-redux/es/connect/connect";
 import { bindActionCreators } from "redux";
 import pathActions from "../../redux/path/actions";
-import ExtendedTable from "../../components/CustomTable/ExtendedTable";
-import { summaryDataColumns } from "../../constants";
+import { summaryHeading } from "../../constants";
 import FreeEditableTable from "../../components/CustomTable/FreeEditableTable";
+import calcActions from "../../redux/calc/actions";
 
-const rows = [
-  {
-    id: 0,
-    s0: 'Raw Score (Mean)',
-    s1: '1',
-    s2: '',
-    s3: '',
-    s4: '',
-    s5: '',
-  },
-  {
-    id: 1,
-    s0: 'Standard Deviation',
-    s1: '2',
-    s2: '',
-    s3: '',
-    s4: '',
-    s5: '',
-  },
-  {
-    id: 2,
-    s0: 'Sample Size',
-    s1: '3',
-    s2: '',
-    s3: '',
-    s4: '',
-    s5: '',
-  },
-];
+const getTableHeader = (headings) => {
+  console.log(headings);
+  return headings.map((heading, key) => ({
+    dataField: `a${key + 1}`,
+    text: heading,
+    sort: false,
+    onSort: (field, order) => {
+      console.log(field, order);
+    },
+    headerStyle : (column, colIndex) => {
+      if (colIndex === 1) {
+        return { backgroundColor: '#8aa7d7' };
+      }
+    },
+    style: function callback(cell, row, rowIndex, colIndex) {
+      if (colIndex === 0) {
+        return { backgroundColor: '#d4d4d4', border: "solid 1px #c4c4c4" };
+      }
+    },
+    editable: function callback(cell, row, rowIndex, colIndex) {
+      return colIndex !== 0;
+    },
+  }));
+};
 
-function EnterSummaryData({ path, setPath }) {
+const getRowsProp = (rows) => {
+  return rows.map((item, index) => ({
+    id: index,
+    a1: item[0],
+    a2: item[1],
+    a3: item[2],
+    a4: item[3],
+    a5: item[4],
+    a6: item[5],
+    a7: item[6],
+  }));
+};
+
+const getReducedRowsProp = (rows) => {
+  return rows.map((item, index) => ({
+    id: index,
+    a1: item[0],
+    a2: item[1],
+  }));
+};
+
+function EnterSummaryData({ path, setPath, summaryData, updateSummaryData }) {
   const [includeAttr, setIncludeAttr] = React.useState(false);
-  const [data, setData] = React.useState(rows);
 
-  const getReducedData = () => {
-    return data.map((item) => ({ id: item.id, s0: item.s0, s1: item.s1 }));
-  }
-
-  const onDataChange = (newData) => {
-    console.log('enter summary:', newData);
-    // setData(rows.map((item, index) => ({
-    //   ...item,
-    //   ...newData[index]
-    // })));
+  const onDataChange = (newRow) => {
+    const rowId = newRow.id;
+    delete newRow.id;
+    if (!Object.values(newRow).some(item => item !== '')) {
+      return false;
+    }
+    let values = Object.values(newRow);
+    let isInvalid = false;
+    for (let i = 1; i < values.length; i ++) {
+      const num = parseInt(values[i]);
+      if (values[i] === "" || isNaN(values[i]) || num < 0 || num > 5 || (i === 1 && rowId === 0 && num < 1)) {
+        values[i] = NaN;
+        isInvalid = true;
+      }
+    }
+    if (isInvalid) {
+      alert("You have entered one or more invalid values. The values should be between 1 – 5 (or 0 – 10 for NPS).");
+    }
+    let newData = [...summaryData];
+    newData[rowId] = values;
+    updateSummaryData(newData);
   };
 
   const onClearValues = () => {
-    setData(rows.map((item) => ({
-      ...item,
-      s1: '',
-      s2: '',
-      s3: '',
-      s4: '',
-      s5: ''
-    })));
+    updateSummaryData([]);
   };
 
   return (
@@ -90,24 +109,11 @@ function EnterSummaryData({ path, setPath }) {
           </button>
         </div>
         <div>
-          {/*<ExtendedTable*/}
-            {/*columnsProp={includeAttr ? summaryDataColumns : summaryDataColumns.slice(0, 2)}*/}
-            {/*rowsProp={includeAttr ? data : getReducedData()}*/}
-            {/*addable={false}*/}
-            {/*editable={true}*/}
-            {/*removable={false}*/}
-            {/*sortable={false}*/}
-            {/*draggable={false}*/}
-            {/*searchable={false}*/}
-            {/*paging={false}*/}
-            {/*onDataChange={onDataChange}*/}
-            {/*validType="number"*/}
-          {/*/>*/}
           <FreeEditableTable
-            columnOrder={[0, 1, 2, 3, 4, 5]}
-            rowsProp={data}
+            rowsProp={includeAttr ? getRowsProp(summaryData) : getReducedRowsProp(summaryData)}
+            columnsProp={getTableHeader(includeAttr ? summaryHeading : summaryHeading.slice(0, 2))}
             onDataChange={onDataChange}
-            initialRowCount={3}
+            scroll={false}
           />
           <button className="btn-secondary btn-view-results" onClick={() => setPath('view-results')}>View Results</button>
         </div>
@@ -117,13 +123,15 @@ function EnterSummaryData({ path, setPath }) {
 }
 
 const mapStateToProps = (state) => ({
-  path: state.Path.path
+  path: state.Path.path,
+  summaryData: state.Calc.summaryData
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      setPath: (data) => pathActions.setPath(data)
+      setPath: (data) => pathActions.setPath(data),
+      updateSummaryData: (data) => calcActions.updateSummaryData(data),
     },
     dispatch
   );

@@ -7,8 +7,9 @@ const rawData = [
 ];
 const rawColumnOrder = [0, 1, 2, 3, 4, 5, 6, 7];
 const summaryData = [
-  [4.23, 4.33, 4.33, 3.42, 4.83],
-  [0.4, 0.8, 0.8, 0.4, 0.3]
+  ['Raw Score (Mean)', 4.23, 4.33, 4.33, 3.42, 4.83, 5],
+  ['Standard Deviation', 0.4, 0.8, 0.8, 0.4, 0.3, 0.5],
+  ['Sample Size', 3, 3, 3, 3, 3, 3]
 ];
 
 const initState = {
@@ -38,6 +39,7 @@ export default function calcReducer(state = initState, { type, payload }) {
       };
 
     case actions.UPDATE_SUMMARY_DATA:
+      console.log(">>>>>", payload)
       return {
         ...state,
         summaryData: payload
