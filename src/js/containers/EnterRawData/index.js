@@ -35,6 +35,9 @@ const getTableHeader = (columnOrder) => {
     },
     classes: function callback(cell, row, rowIndex, colIndex) {
       return `col-${rowIndex}-${colIndex}`;
+    },
+    attrs: function callback(cell, row, rowIndex, colIndex) {
+      return { id: `col-${rowIndex}-${colIndex}` };
     }
   }));
 };
