@@ -25,21 +25,36 @@ export default ({
           beforeSaveCell(oldValue, newValue, row, column, done) {
             setTimeout(() => {
               done();
-              onDataChange({ ...row });
+              onDataChange({ ...row }, newValue, parseInt(column.dataField.substr(1)) - 1);
+              const rowIndex = row.id;
+              const colIndex = parseInt(column.dataField.substr(1)) - 1;
+              setCurCell({ row: rowIndex, col: colIndex });
             }, 0);
             return { async: true };
           }
         })}
         rowEvents={{
-          onClick: (e, row, rowIndex) => {
-            setCurCell({})
+          onClick: (e) => {
+            let className = e.target.className;
+            className = className.replace('col-', '');
+            const row = className.split('-')[0];
+            const col = className.split('-')[1];
+            setCurCell({ row, col });
           },
           onKeyDown: (e) => {
             if (e.keyCode === 13) {
-              const cell = document.getElementsByClassName('col-0-1')[0];
+              let row = curCell.row;
+              let col = curCell.col;
+              col ++;
+              if (col >= columnsProp.length) {
+                row ++;
+                col = 0;
+              }
+              const cell = document.getElementsByClassName(`col-${row}-${col}`)[0];
               setTimeout(function() {
                 cell.click();
-              }, 500);
+                setCurCell({ row, col });
+              }, 0);
             }
           }
         }}

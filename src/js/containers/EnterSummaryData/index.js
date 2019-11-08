@@ -27,6 +27,9 @@ const getTableHeader = (headings) => {
     editable: function callback(cell, row, rowIndex, colIndex) {
       return colIndex !== 0;
     },
+    classes: function callback(cell, row, rowIndex, colIndex) {
+      return `col-${rowIndex}-${colIndex}`;
+    }
   }));
 };
 

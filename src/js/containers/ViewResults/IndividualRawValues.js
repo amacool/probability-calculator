@@ -28,7 +28,10 @@ const getTableHeader = (headings) => {
         return { backgroundColor: '#8aa7d7' };
       }
     },
-    editable: false
+    editable: false,
+    classes: function callback(cell, row, rowIndex, colIndex) {
+      return `col-${rowIndex}-${colIndex}`;
+    }
   }));
 };
 

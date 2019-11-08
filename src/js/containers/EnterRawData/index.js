@@ -56,7 +56,7 @@ function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, u
     setColumnOrder(rawColumnOrder || []);
   }, [rawColumnOrder]);
 
-  const onDataChange = (newRow) => {
+  const onDataChange = (newRow, newValue, colId) => {
     const rowId = newRow.id;
     delete newRow.id;
     if (rowId > rawData.length) {
@@ -67,14 +67,16 @@ function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, u
     }
     let values = Object.values(newRow);
     let isInvalid = false;
-    for (let i = 0; i < values.length; i ++) {
-      const num = parseInt(values[i]);
-      if (values[i] === "" || isNaN(values[i]) || (columnOrder[i] === 4 && (num < 0 || num > 10)) || (columnOrder[i] !== 4 && (num <= 0 || num > 5))) {
-        values[i] = NaN;
-        isInvalid = true;
-      }
-    }
-    if (isInvalid) {
+    // for (let i = 0; i < values.length; i ++) {
+    //   const num = parseInt(values[i]);
+    //   if (values[i] === "" || isNaN(values[i]) || (columnOrder[i] === 4 && (num < 0 || num > 10)) || (columnOrder[i] !== 4 && (num <= 0 || num > 5))) {
+    //     values[i] = NaN;
+    //     isInvalid = true;
+    //   }
+    // }
+    const num = parseInt(newValue);
+    if (newValue === "" || isNaN(newValue) || (columnOrder[colId] === 4 && (num < 0 || num > 10)) || (columnOrder[colId] !== 4 && (num <= 0 || num > 5))) {
+      values[colId] = NaN;
       alert("You have entered one or more invalid values. The values should be between 1 – 5 (or 0 – 10 for NPS).");
     }
     let newData = [...rawData];
