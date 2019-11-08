@@ -215,14 +215,14 @@ export const getCalcResult = (data, calcMode, confLevel = 0.9) => {
   // get NPS values
   const { npsMean, npsLow, npsHigh, npsProLow, npsProHigh } = calcNPS(qColumnData[4], z);
   percentileRanksBA.push({
-    mean: '-', //getProFormat(npsMean, acc),
+    mean: '-',
     low: getProFormat(npsProLow, acc),
     high: getProFormat(npsProHigh, acc),
     stdDev: '-',
     sampleSize: dataCount
   });
   rawScoresBA.push({
-    mean: '-',
+    mean: npsMean,
     low: npsLow.toFixed(2),
     high: npsHigh.toFixed(2),
     stdDev: '-',

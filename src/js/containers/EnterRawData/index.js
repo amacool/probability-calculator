@@ -26,6 +26,15 @@ const getTableHeader = (columnOrder) => {
     sort: true,
     onSort: (field, order) => {
       console.log(field, order);
+    },
+    headerStyle: function callback() {
+      return { width: '12%' };
+    },
+    style: function callback() {
+      return { width: '12%' };
+    },
+    classes: function callback(cell, row, rowIndex, colIndex) {
+      return `col-${rowIndex}-${colIndex}`;
     }
   }));
 };
@@ -133,9 +142,7 @@ function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, u
             rowsProp={getRowsProp(100, getFormatedRawData(rawData, 0), columnOrder)}
             columnsProp={getTableHeader(columnOrder)}
             onDataChange={onDataChange}
-            scroll={true}
-            editable={true}
-            className="tall"
+            className="tall has-scroll editable"
           />
           <button
             className="btn-secondary btn-view-results"

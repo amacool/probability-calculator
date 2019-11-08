@@ -30,6 +30,10 @@ table.react-bootstrap-table {
   width: calc(100% + 15px);
 }
 
+.custom-table-container.has-scroll.tall .react-bootstrap-table tbody {
+  height: 500px;
+}
+
 .custom-table-container.editable .react-bootstrap-table tbody tr {
   cursor: text;
 }

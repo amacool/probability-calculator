@@ -52,9 +52,7 @@ export const IndividualRawValues = ({ result }) => {
             <FreeEditableTable
               rowsProp={getRowsProp(100, getFormatedRawData(result))}
               columnsProp={getTableHeader(summaryHeading)}
-              scroll={true}
-              editable={false}
-              className="short tbl-individual-raw-values"
+              className="short tbl-individual-raw-values has-scroll"
             />
             <div className="export-btn-container">
               <button className="btn-primary btn-clear-value" onClick={() => exportTable(result)}>Export Table</button>

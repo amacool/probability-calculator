@@ -8,12 +8,12 @@ export default ({
   columnsProp,
   rowsProp,
   onDataChange,
-  scroll,
   editable,
   className
 }) => {
+  const [curCell, setCurCell] = React.useState({ row: 0, col: 0 });
   return (
-    <div className={`custom-table-container ${scroll ? 'has-scroll' : ''} ${editable ? 'editable' : ''} ${className}`}>
+    <div className={`custom-table-container ${className}`}>
       <BootstrapTable
         keyField="id"
         data={rowsProp}
@@ -32,10 +32,15 @@ export default ({
         })}
         rowEvents={{
           onClick: (e, row, rowIndex) => {
-            // console.log(row, rowIndex);
+            setCurCell({})
           },
           onKeyDown: (e) => {
-            // console.log(e.keyCode);
+            if (e.keyCode === 13) {
+              const cell = document.getElementsByClassName('col-0-1')[0];
+              setTimeout(function() {
+                cell.click();
+              }, 500);
+            }
           }
         }}
       />

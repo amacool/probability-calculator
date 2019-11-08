@@ -52,7 +52,7 @@ const getReducedRowsProp = (rows) => {
 };
 
 function EnterSummaryData({ path, setPath, summaryData, updateSummaryData, clearSummaryData, setCalcMode }) {
-  const [includeAttr, setIncludeAttr] = React.useState(false);
+  const [includeAttr, setIncludeAttr] = React.useState(true);
 
   const onDataChange = (newRow) => {
     const rowId = newRow.id;
@@ -117,8 +117,7 @@ function EnterSummaryData({ path, setPath, summaryData, updateSummaryData, clear
             rowsProp={includeAttr ? getRowsProp(summaryData) : getReducedRowsProp(summaryData)}
             columnsProp={getTableHeader(includeAttr ? summaryHeading : summaryHeading.slice(0, 2))}
             onDataChange={onDataChange}
-            scroll={false}
-            editable={true}
+            className="editable"
           />
           <button className="btn-secondary btn-view-results"
             onClick={() => {

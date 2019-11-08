@@ -44,6 +44,19 @@ export const summaryHeading = [
   'Appearance',
 ];
 
+export const websiteHeading = [
+  'Website Name',
+  'Date Tested',
+  'Study Type',
+  'Industry',
+  'SUPR-Q (Overall)',
+  'Usability',
+  'Trust (Credibility)',
+  'Loyalty',
+  'Appearance',
+  'NPS (Raw %)'
+];
+
 export const defaultColumnOrder = [0, 1, 2, 3, 4, 5, 6, 7];
 
 export const rawDataColumnNames = ['q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8'];

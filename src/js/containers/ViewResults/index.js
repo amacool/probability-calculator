@@ -6,6 +6,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import calcActions from "../../redux/calc/actions";
 import { OverallSupr } from "./OverallSupr";
 import { PercentileRanks } from "./PercentileRanks";
 import { RawScores } from "./RawScores";
@@ -37,7 +38,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function ViewResults({ history, location, rawData, rawColumnOrder, summaryData, calcMode }) {
+function ViewResults({ history, location, rawData, rawColumnOrder, summaryData, calcMode, setCalcResult }) {
   const classes = useStyles();
   const [values, setValues] = React.useState({
     confidenceLevel: 0.9
@@ -186,6 +187,7 @@ function ViewResults({ history, location, rawData, rawColumnOrder, summaryData, 
       result = getCalcResult(parseRawDataToFloat(summaryData.map(item => item.slice(1))), calcMode, values.confidenceLevel);
     }
     setResult(result);
+    setCalcResult(result);
   }, []);
 
   React.useEffect(() => {
@@ -203,6 +205,7 @@ function ViewResults({ history, location, rawData, rawColumnOrder, summaryData, 
       result = getCalcResult(parseRawDataToFloat(summaryData.map(item => item.slice(1))), calcMode, values.confidenceLevel);
     }
     setResult(result);
+    setCalcResult(result);
     drawCharts(result);
   }, [values.confidenceLevel]);
 
@@ -264,7 +267,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      // setPath: (data) => pathActions.setPath(data)
+      setCalcResult: (data) => calcActions.setCalcResult(data)
     },
     dispatch
   );
