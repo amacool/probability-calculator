@@ -13,11 +13,9 @@ export default ({
   editable,
   className
 }) => {
-  // const [curCell, setCurCell] = React.useState({ row: 0, col: 0 });
-
   const navigateToCell = (row, col, keyCode) => {
     keyCode !== 13 && document.getElementsByClassName('react-bootstrap-table-editing-cell')[0].children[0].blur();
-    const cell = document.getElementById(`col-${row}-${col}`);
+    const cell = document.getElementsByClassName(`col-${row}-${col}`)[0];
     setTimeout(function () {
       cell.click();
     }, 0);
@@ -39,7 +37,6 @@ export default ({
               onDataChange({ ...row }, newValue, parseInt(column.dataField.substr(1)) - 1);
               const rowIndex = row.id;
               const colIndex = parseInt(column.dataField.substr(1)) - 1;
-              // setCurCell({ row: rowIndex, col: colIndex });
               curCell = { row: rowIndex, col: colIndex };
             }, 0);
             return { async: true };
@@ -51,7 +48,6 @@ export default ({
             className = className.replace('col-', '');
             const row = parseInt(className.split('-')[0]);
             const col = parseInt(className.split('-')[1]);
-            // setCurCell({ row, col });
             curCell = { row, col };
           },
           onKeyDown: function(e) {
