@@ -11,7 +11,7 @@ const getFormatedRawData = (data, start) => {
     q6: item[5],
     q7: item[6],
     q8: item[7],
-  }))
+  }));
 };
 
 const getReorderedData = (rawData, oldOrder, newOrder) => {
@@ -75,7 +75,7 @@ const exportTable = (data) => {
   let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(str);
   let downloadAnchorNode = document.createElement('a');
   downloadAnchorNode.setAttribute("href", dataStr);
-  downloadAnchorNode.setAttribute("download", "data.json");
+  downloadAnchorNode.setAttribute("download", "data.csv");
   document.body.appendChild(downloadAnchorNode);
   downloadAnchorNode.click();
   downloadAnchorNode.remove();

@@ -17,7 +17,7 @@ export default ({
     keyCode !== 13 && document.getElementsByClassName('react-bootstrap-table-editing-cell')[0].children[0].blur();
     const cell = document.getElementsByClassName(`col-${row}-${col}`)[0];
     setTimeout(function () {
-      cell.click();
+      cell && cell.click();
     }, 0);
   };
 

@@ -222,7 +222,7 @@ export const getCalcResult = (data, calcMode, confLevel = 0.9) => {
     sampleSize: dataCount
   });
   rawScoresBA.push({
-    mean: npsMean,
+    mean: npsMean.toFixed(2),
     low: npsLow.toFixed(2),
     high: npsHigh.toFixed(2),
     stdDev: '-',

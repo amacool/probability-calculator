@@ -35,3 +35,12 @@
   overflow-y: auto;
   overflow-x: hidden;
 }
+
+.tbl-all-websites .react-bootstrap-table tbody tr td.react-bootstrap-table-editing-cell {
+  max-width: 10% !important;
+  width: 10% !important;
+}
+
+.tbl-all-websites .react-bootstrap-table tbody tr td input {
+  max-width: 90px;
+}

@@ -3,6 +3,9 @@ import connect from "react-redux/es/connect/connect";
 import { websiteHeading } from "../../constants";
 import FreeEditableTable from "../../components/CustomTable/FreeEditableTable";
 import "./style.css";
+import {bindActionCreators} from "redux";
+import pathActions from "../../redux/path/actions";
+import calcActions from "../../redux/calc/actions";
 
 const getTableHeader = (headings) => {
   return headings.map((heading, key) => ({
@@ -13,7 +16,7 @@ const getTableHeader = (headings) => {
       console.log(field, order);
     },
     headerStyle : (column, colIndex) => {
-      let style = { width: '10%', fontSize: '14px' };
+      let style = { width: '10%', maxWidth: '10%', fontSize: '14px' };
       if (colIndex === 4) {
         style.backgroundColor = '#8aa7d7';
       } else if (colIndex > 4 && colIndex < 9) {
@@ -26,12 +29,16 @@ const getTableHeader = (headings) => {
     style: function callback() {
       return {
         width: '10%',
+        maxWidth: '10%',
         fontSize: '14px',
         fontWeight: '600',
         padding: '2px 10px'
       };
     },
-    editable: false
+    classes: function callback(cell, row, rowIndex, colIndex) {
+      return `col-${rowIndex}-${colIndex}`;
+    },
+    editable: true
   }));
 };
 
@@ -51,8 +58,32 @@ const getRowsProp = (rows) => {
   }));
 };
 
-function ViewDatabases({ websiteData, calcResult }) {
+function ViewDatabases({ websiteData, updateWebsiteData, calcResult }) {
   const percentileRank = calcResult ? calcResult.percentileRanksBA.map(item => item.mean) : [];
+  const onDataChange = (newRow) => {
+    const rowId = newRow.id;
+    delete newRow.id;
+    if (!Object.values(newRow).some(item => item !== '')) {
+      return false;
+    }
+    let values = Object.values(newRow);
+    // let isInvalid = false;
+    // for (let i = 1; i < values.length; i ++) {
+    //   const num = parseInt(values[i]);
+    //   if (values[i] === "" || isNaN(values[i]) || num < 0 || num > 5 || (i === 1 && rowId === 0 && num < 1)) {
+    //     values[i] = NaN;
+    //     isInvalid = true;
+    //   }
+    // }
+    // if (isInvalid) {
+    //   alert("You have entered one or more invalid values. The values should be between 1 – 5 (or 0 – 10 for NPS).");
+    // }
+    let newData = [...websiteData];
+    newData[rowId] = values;
+
+    updateWebsiteData(newData);
+  };
+
   return (
     <div>
       <div className="content-header">
@@ -72,6 +103,7 @@ function ViewDatabases({ websiteData, calcResult }) {
           <FreeEditableTable
             rowsProp={getRowsProp(websiteData)}
             columnsProp={getTableHeader(websiteHeading)}
+            onDataChange={onDataChange}
             className={`tbl-all-websites ${websiteData.length > 20 ? "has-scroll" : ""}`}
           />
         </div>
@@ -85,4 +117,12 @@ const mapStateToProps = (state) => ({
   calcResult: state.Calc.calcResult
 });
 
-export default connect(mapStateToProps, null)(ViewDatabases);
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      updateWebsiteData: (data) => calcActions.updateWebsiteData(data),
+    },
+    dispatch
+  );
+
+export default connect(mapStateToProps, mapDispatchToProps)(ViewDatabases);

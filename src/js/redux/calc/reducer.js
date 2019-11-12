@@ -97,6 +97,12 @@ export default function calcReducer(state = initState, { type, payload }) {
         calcResult: payload
       };
 
+    case actions.UPDATE_WEBSITE_DATA:
+      return {
+        ...state,
+        websiteData: payload
+      };
+
     default:
       return state;
   }
