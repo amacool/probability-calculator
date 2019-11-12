@@ -23,10 +23,7 @@ const getTableHeader = (columnOrder) => {
       title={questionHeading[order].title}
       description={questionHeading[order].desc}
     />,
-    sort: true,
-    onSort: (field, order) => {
-      console.log(field, order);
-    },
+    sort: false,
     headerStyle: function callback() {
       return { width: '12%' };
     },
@@ -66,7 +63,7 @@ function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, u
       return false;
     }
     let values = Object.values(newRow);
-    let isInvalid = false;
+    // let isInvalid = false;
     // for (let i = 0; i < values.length; i ++) {
     //   const num = parseInt(values[i]);
     //   if (values[i] === "" || isNaN(values[i]) || (columnOrder[i] === 4 && (num < 0 || num > 10)) || (columnOrder[i] !== 4 && (num <= 0 || num > 5))) {

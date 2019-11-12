@@ -20,9 +20,6 @@ const getTableHeader = (headings) => {
     dataField: `q${key + 1}`,
     text: heading,
     sort: false,
-    onSort: (field, order) => {
-      console.log(field, order);
-    },
     headerStyle : (column, colIndex) => {
       if (colIndex === 0) {
         return { backgroundColor: '#8aa7d7' };

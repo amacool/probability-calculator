@@ -1,11 +1,11 @@
 import React from "react";
 import connect from "react-redux/es/connect/connect";
+import { bindActionCreators } from "redux";
 import { websiteHeading } from "../../constants";
 import FreeEditableTable from "../../components/CustomTable/FreeEditableTable";
-import "./style.css";
-import {bindActionCreators} from "redux";
-import pathActions from "../../redux/path/actions";
 import calcActions from "../../redux/calc/actions";
+import { isValidDate } from "../../helper";
+import "./style.css";
 
 const getTableHeader = (headings) => {
   return headings.map((heading, key) => ({
@@ -60,24 +60,23 @@ const getRowsProp = (rows) => {
 
 function ViewDatabases({ websiteData, updateWebsiteData, calcResult }) {
   const percentileRank = calcResult ? calcResult.percentileRanksBA.map(item => item.mean) : [];
-  const onDataChange = (newRow) => {
+  const onDataChange = (newRow, newValue, colId) => {
     const rowId = newRow.id;
     delete newRow.id;
     if (!Object.values(newRow).some(item => item !== '')) {
       return false;
     }
     let values = Object.values(newRow);
-    // let isInvalid = false;
-    // for (let i = 1; i < values.length; i ++) {
-    //   const num = parseInt(values[i]);
-    //   if (values[i] === "" || isNaN(values[i]) || num < 0 || num > 5 || (i === 1 && rowId === 0 && num < 1)) {
-    //     values[i] = NaN;
-    //     isInvalid = true;
-    //   }
-    // }
-    // if (isInvalid) {
-    //   alert("You have entered one or more invalid values. The values should be between 1 – 5 (or 0 – 10 for NPS).");
-    // }
+    let x = parseFloat(newValue.substr(0, newValue.length - 1));
+    let proSign = newValue.substr(newValue.length - 1, 1) === '%';
+    if (
+      (colId >= 4 && (!proSign || isNaN(x) || x < 0 || x > 100)) ||
+      (colId === 1 && !isValidDate(newValue))
+    ) {
+      alert("You have entered one or more invalid values.");
+    }
+
+    console.log(colId >= 4);
     let newData = [...websiteData];
     newData[rowId] = values;
 
