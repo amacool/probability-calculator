@@ -69,11 +69,21 @@ const downloadAsPng = (target, name) => {
 };
 
 const exportTable = (data) => {
-  let str = data.map(item => item.join('\t')).join('\n');
+  let str = data.map(item => item.join(',')).join('\n');
   let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(str);
   let downloadAnchorNode = document.createElement('a');
   downloadAnchorNode.setAttribute("href", dataStr);
-  downloadAnchorNode.setAttribute("download", "data.csv");
+  downloadAnchorNode.setAttribute("download", "table-data.csv");
+  document.body.appendChild(downloadAnchorNode);
+  downloadAnchorNode.click();
+  downloadAnchorNode.remove();
+};
+
+const exportJson = (data) => {
+  let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
+  let downloadAnchorNode = document.createElement('a');
+  downloadAnchorNode.setAttribute("href", dataStr);
+  downloadAnchorNode.setAttribute("download", "calc-params.json");
   document.body.appendChild(downloadAnchorNode);
   downloadAnchorNode.click();
   downloadAnchorNode.remove();
@@ -117,5 +127,6 @@ export {
   getProFormat,
   downloadAsPng,
   exportTable,
+  exportJson,
   isValidDate
 };

@@ -7,6 +7,8 @@ const calcActions = {
   SET_CALC_MODE: 'SET_CALC_MODE',
   SET_CALC_RESULT: 'SET_CALC_RESULT',
   UPDATE_WEBSITE_DATA: 'UPDATE_WEBSITE_DATA',
+  GET_CONSTANTS_DATA: 'GET_CONSTANTS_DATA',
+  SET_CONSTANTS_DATA: 'SET_CONSTANTS_DATA',
 
   updateRawData: (data) => ({ type: calcActions.UPDATE_RAW_DATA, payload: data }),
   updateColumnOrder: (data) => ({ type: calcActions.UPDATE_COLUMN_ORDER, payload: data }),
@@ -19,6 +21,9 @@ const calcActions = {
 
   setCalcMode: (mode) => ({ type: calcActions.SET_CALC_MODE, payload: mode }),
   setCalcResult: (data) => ({ type: calcActions.SET_CALC_RESULT, payload: data }),
+
+  setConstantsData: (data) => ({ type: calcActions.SET_CONSTANTS_DATA, payload: data }),
+  getConstantsData: () => ({ type: calcActions.GET_CONSTANTS_DATA }),
 };
 
 export default calcActions;

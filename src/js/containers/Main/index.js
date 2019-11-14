@@ -7,6 +7,7 @@ import EnterRawData from "../EnterRawData";
 import EnterSummaryData from "../EnterSummaryData";
 import ViewResults from "../ViewResults";
 import ViewDatabases from "../ViewDatabases";
+import ManageSupr from "../ManageSupr";
 import About from "../About";
 import { Logo } from "../../components/Logo";
 import NavTopHeader from "../../components/NavTopHeader";
@@ -33,6 +34,7 @@ function Main({ path, setPath }) {
             {path === 'enter-summary' && <EnterSummaryData/>}
             {path === 'view-results' && <ViewResults/>}
             {path === 'view-databases' && <ViewDatabases/>}
+            {path === 'manage-supr' && <ManageSupr/>}
             {path === 'about' && <About/>}
           </div>
         </div>

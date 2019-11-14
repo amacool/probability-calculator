@@ -49,6 +49,64 @@ function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, u
   const [curColumn, setCurColumn] = React.useState(0);
   const [importData, setImportData] = React.useState('');
 
+  const isValidData = (data) => {
+    try {
+      if (data === "") {
+        throw "Empty input!";
+      }
+      const rows = data.split('\n');
+      let validData = [];
+      for (let i = 0; i < rows.length; i++) {
+        if (rows[i] === '') {
+          continue;
+        }
+        const items = rows[i].split('\t');
+        if (items.length !== 8) {
+          throw 'Invalid Length! ';
+        }
+        items.forEach((item, index) => {
+          let num = parseInt(item);
+          if (isNaN(item)) {
+            throw "Invalid input! Not a number!";
+          }
+          if (item === "") {
+            throw "There's an empty input!";
+          }
+          if (index === 4 && (num < 0 || num > 10)) {
+            throw "Invalid input for NPS!";
+          }
+          if (index !== 4 && (num <= 0 || num > 5)) {
+            throw "Invalid input for questions!";
+          }
+        });
+        validData.push(items);
+      }
+      return validData;
+    } catch (err) {
+      alert(err);
+      return false;
+    }
+  };
+
+  const getClipboardData = (e) => {
+    const clipboardData = e.clipboardData || window.clipboardData;
+    const pastedData = clipboardData.getData('Text');
+    const result = isValidData(pastedData);
+    if (result) {
+      updateColumnOrder([0, 1, 2, 3, 4, 5, 6, 7]);
+      updateRawData(result);
+    }
+    e.stopPropagation();
+    e.preventDefault();
+  };
+
+  React.useEffect(() => {
+    window.addEventListener('paste', getClipboardData);
+    return () => {
+      window.removeEventListener('paste', getClipboardData);
+    }
+  }, []);
+
   React.useEffect(function() {
     setColumnOrder(rawColumnOrder || []);
   }, [rawColumnOrder]);
@@ -182,42 +240,11 @@ function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, u
           open={openImportModal}
           onCloseModal={() => setOpenImportModal(false)}
           onConfirm={() => {
-            try {
-              if (importData === "") {
-                throw "Empty input!";
-              }
-              const rows = importData.split('\n');
-              let validData = [];
-              for (let i = 0; i < rows.length; i++) {
-                if (rows[i] === '') {
-                  continue;
-                }
-                const items = rows[i].split('\t');
-                if (items.length !== 8) {
-                  throw 'Invalid Length! ';
-                }
-                items.forEach((item, index) => {
-                  let num = parseInt(item);
-                  if (isNaN(item)) {
-                    throw "Invalid input! Not a number!";
-                  }
-                  if (item === "") {
-                    throw "There's an empty input!";
-                  }
-                  if (index === 4 && (num < 0 || num > 10)) {
-                    throw "Invalid input for NPS!";
-                  }
-                  if (index !== 4 && (num <= 0 || num > 5)) {
-                    throw "Invalid input for questions!";
-                  }
-                });
-                validData.push(items);
-              }
+            const result = isValidData(importData);
+            if (result) {
               updateColumnOrder([0, 1, 2, 3, 4, 5, 6, 7]);
-              updateRawData(validData);
+              updateRawData(result);
               setOpenImportModal(false);
-            } catch (err) {
-              alert(err);
             }
           }}
           title="Import Data"

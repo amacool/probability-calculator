@@ -26,6 +26,7 @@ function Home({ path, setPath }) {
           <button onClick={() => setPath('enter-summary')} className={`enter-data ${path === 'enter-raw' ? 'active' : ''}`}>Enter Summary Data</button>
           <button onClick={() => setPath('view-results')} className={`${path === 'enter-raw' ? 'active' : ''}`}>View Results Dashboard</button>
           <button onClick={() => setPath('view-databases')} className={`${path === 'enter-raw' ? 'active' : ''}`}>View Database for All Websites</button>
+          <button onClick={() => setPath('manage-supr')} className={`${path === 'manage-sup' ? 'active' : ''}`}>Manage SUPR-Q</button>
           <button onClick={() => setPath('about')} className={`${path === 'enter-raw' ? 'active' : ''}`}>About the SUPR-Q</button>
         </div>
       </div>

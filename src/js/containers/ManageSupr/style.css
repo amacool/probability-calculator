@@ -1,0 +1,30 @@
+.import-constants textarea {
+  height: 30px;
+  width: 100%;
+}
+
+.import-btn-container {
+  margin-top: 10px;
+}
+
+.import-btn-container button {
+  width: 120px;
+  padding: 5px 10px !important;
+  margin-right: 10px;
+}
+
+.import-constants p {
+  padding: 5px;
+  background-color: #d5e3fa;
+}
+
+.btn-import-file input {
+  margin-top: -5px;
+  margin-left: -97px;
+  width: 100px;
+  height: 24px;
+  position: absolute;
+  visibility: hidden;
+  z-index: 1;
+  cursor: pointer;
+}

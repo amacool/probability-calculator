@@ -18,6 +18,8 @@ const emptySummaryData = [
   ['Sample Size', '', '', '', '', '', '']
 ];
 
+const password = "";
+
 const websiteData = [
   ['YouTube', '01/01/2020', 'Usability', 'Entertainment', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%'],
   ['Amazon', '01/01/2020', 'Usability', 'Entertainment', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%'],
@@ -44,13 +46,23 @@ const websiteData = [
   ['Hyatt', '01/01/2020', 'Usability', 'Entertainment', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%'],
 ];
 
+// Max Score
+const maxScore = [5, 5, 5, 5, 5, 10, 100];
+// Global In Mean : SUPR-Q	Usability	Trust	Loyalty	App	Raw NPS
+const globalInMean = [0.04, -0.043, -0.109, 0.139, 0.093, 0.00, -0.0030];
+// Global Ln SD : SUPR-Q	Usability	Trust	Loyalty	App	Raw NPS
+const globalLnSD = [0.279325899, 0.29906667, 0.322811031, 0.410510425, 0.267100878, 0.295020156, 0.398067];
+
 const initState = {
   rawData,
   rawColumnOrder,
   summaryData,
   websiteData,
   calcMode: 'raw',
-  calcResult: null
+  calcResult: null,
+  maxScore,
+  globalInMean,
+  globalLnSD
 };
 
 export default function calcReducer(state = initState, { type, payload }) {
@@ -101,6 +113,21 @@ export default function calcReducer(state = initState, { type, payload }) {
       return {
         ...state,
         websiteData: payload
+      };
+
+    case actions.GET_CONSTANTS_DATA:
+      return {
+        maxScore: state.maxScore,
+        globalInMean: state.globalInMean,
+        globalLnSD: state.globalLnSD,
+      };
+
+    case actions.SET_CONSTANTS_DATA:
+      return {
+        ...state,
+        maxScore: payload.tMaxScore,
+        globalInMean: payload.tGlobalInMean,
+        globalLnSD: payload.tGlobalLnSD,
       };
 
     default:

@@ -14,6 +14,7 @@ function NavTopHeader({ path, setPath }) {
       <div className="right">
         <button onClick={() => setPath('view-databases')} className={`btn-nav ${path === 'view-databases' ? 'active' : ''}`}>All Websites</button>
         <button onClick={() => setPath('about')} className={`btn-nav ${path === 'about' ? 'active' : ''}`}>About the SUPR-Q</button>
+        <button onClick={() => setPath('manage-supr')} className={`btn-nav ${path === 'manage-supr' ? 'active' : ''}`}>Manage SUPR-Q</button>
       </div>
     </div>
   );
