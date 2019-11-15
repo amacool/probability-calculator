@@ -68,6 +68,21 @@ const downloadAsPng = (target, name) => {
     });
 };
 
+const downloadAsSvg = (target, name) => {
+  function filter (node) {
+    console.log(node);
+    return (node.tagName !== 'g');
+  }
+  htmlToImage.toSvgDataURL(document.getElementById(target), {filter: filter})
+    .then(function (dataUrl) {
+      console.log(target);
+      let link = document.createElement('a');
+      link.download = name;
+      link.href = dataUrl;
+      link.click();
+    });
+};
+
 const exportTable = (data) => {
   let str = data.map(item => item.join(',')).join('\n');
   let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(str);
@@ -126,6 +141,7 @@ export {
   getNonBlankCount,
   getProFormat,
   downloadAsPng,
+  downloadAsSvg,
   exportTable,
   exportJson,
   isValidDate

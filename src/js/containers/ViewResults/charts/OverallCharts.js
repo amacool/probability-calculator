@@ -191,6 +191,7 @@ export const drawOverallRawScoreChart = function({
   // 1. Add the SVG to the page and employ #2
   d3.select(`#${target}`).selectAll("svg").remove();
   let svg = d3.select(`#${target}`).append("svg")
+    .attr('id', `${target}-svg`)
     .attr("width", chartWidth + margin.left + margin.right)
     .attr("height", chartHeight + margin.top + margin.bottom)
     .attr("viewBox", `-40 0 ${chartWidth + margin.left + margin.right} ${chartHeight + margin.top + margin.bottom}`)
@@ -324,6 +325,7 @@ export const drawBarChart = function({ attrs, maxVal, target, countY, showLabel,
   // 1. Add the SVG to the page and employ #2
   d3.select(`#${target}`).selectAll("svg").remove();
   let svg = d3.select(`#${target}`).append("svg")
+    .attr('id', `${target}-svg`)
     .attr("width", chartWidth + margin.left + margin.right)
     .attr("height", chartHeight + margin.top + margin.bottom)
     .attr("viewBox", `-40 0 ${chartWidth + margin.left + margin.right} ${chartHeight + margin.top + margin.bottom}`)
@@ -474,6 +476,7 @@ export const drawSusEquivalentChart = function({
   // 1. Add the SVG to the page and employ #2
   d3.select(`#${target}`).selectAll("svg").remove();
   let svg = d3.select(`#${target}`).append("svg")
+    .attr('id', `${target}-svg`)
     .attr("width", chartWidth + margin.left + margin.right)
     .attr("height", chartHeight + margin.top + margin.bottom)
     .attr("viewBox", `-40 0 ${chartWidth + margin.left + margin.right} ${chartHeight + margin.top + margin.bottom}`)

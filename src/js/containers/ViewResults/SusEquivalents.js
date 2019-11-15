@@ -1,6 +1,6 @@
 import React from "react";
 import { ResultHeader } from "./ResultHeader";
-import {downloadAsPng} from "../../helper";
+import { downloadAsPng } from "../../helper";
 
 export const SusEquivalents = ({ result, drawChart }) => {
   const [visible, setVisible] = React.useState(true);

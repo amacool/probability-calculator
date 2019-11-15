@@ -3,6 +3,7 @@ import { Provider } from "react-redux";
 import { store } from "./redux/store";
 import Main from "./containers/Main";
 import "./App.css";
+import './fonts/index.css';
 
 function App() {
   return (
