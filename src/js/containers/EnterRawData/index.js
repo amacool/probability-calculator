@@ -4,24 +4,35 @@ import { bindActionCreators } from "redux";
 import calcActions from "../../redux/calc/actions";
 import pathActions from "../../redux/path/actions";
 import FreeEditableTable from "../../components/CustomTable/FreeEditableTable";
-import { getFormatedRawData, getReorderedData } from "../../helper";
+import {getFormatedRawData, getReorderedData, getSortedData, parseRawDataToInt} from "../../helper";
 import { CustomModal } from "../../components/CustomModal";
 import { questionHeading } from "../../constants";
+import { getCalcResult } from "../../calculation/logic";
 import "./style.css";
 
-const THead = ({ title, description }) => (
-  <div style={{ minHeight: '180px' }}>
-    <h3>{title}</h3>
-    <p><i>{description}</i></p>
+const THead = ({ title, description, mean, SD, sampleSize }) => (
+  <div style={{ minHeight: '180px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+    <div style={{ minHeight: '150px' }}>
+      <h3>{title}</h3>
+      <p><i>{description}</i></p>
+    </div>
+    <div style={{ fontStyle: 'italic', fontWeight: 'normal', color: '#888' }}>
+      <div style={{ display: 'flex' }}><span style={{ width: '50%' }}>Mean: </span><span>{mean}</span></div>
+      <div style={{ display: 'flex' }}><span style={{ width: '50%' }}>SD: </span><span>{SD}</span></div>
+      <div style={{ display: 'flex' }}><span style={{ width: '50%' }}>n: </span><span>{sampleSize}</span></div>
+    </div>
   </div>
 );
 
-const getTableHeader = (columnOrder) => {
+const getTableHeader = (columnOrder, preCalcResult) => {
   return columnOrder.map((order, key) => ({
     dataField: `q${key + 1}`,
     text: <THead
       title={questionHeading[order].title}
       description={questionHeading[order].desc}
+      mean={preCalcResult[order].mean}
+      SD={preCalcResult[order].stdDev}
+      sampleSize={preCalcResult[order].sampleSize}
     />,
     sort: false,
     headerStyle: function callback() {
@@ -48,6 +59,7 @@ function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, u
   const [openReorderModal, setOpenReorderModal] = React.useState(false);
   const [curColumn, setCurColumn] = React.useState(0);
   const [importData, setImportData] = React.useState('');
+  const [preCalcResult, setPreCalcResult] = React.useState([...Array(8)].map(() => []));
 
   const isValidData = (data) => {
     try {
@@ -101,6 +113,7 @@ function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, u
   };
 
   React.useEffect(() => {
+    rawData.length > 1 && setPreCalcResult(getCalcResult(parseRawDataToInt(getSortedData(rawData, rawColumnOrder)), "raw-means"));
     window.addEventListener('paste', getClipboardData);
     return () => {
       window.removeEventListener('paste', getClipboardData);
@@ -137,6 +150,7 @@ function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, u
     let newData = [...rawData];
     newData[rowId] = values;
     updateRawData(newData);
+    newData.length > 1 && setPreCalcResult(getCalcResult(parseRawDataToInt(getSortedData(newData, rawColumnOrder)), "raw-means"));
   };
 
   const onClearValues = () => {
@@ -197,7 +211,7 @@ function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, u
         <div>
           <FreeEditableTable
             rowsProp={getRowsProp(100, getFormatedRawData(rawData, 0), columnOrder)}
-            columnsProp={getTableHeader(columnOrder)}
+            columnsProp={getTableHeader(columnOrder, preCalcResult)}
             onDataChange={onDataChange}
             className="tall has-scroll editable"
           />

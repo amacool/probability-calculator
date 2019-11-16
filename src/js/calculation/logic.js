@@ -94,7 +94,7 @@ export const getCalcResult = (data, calcMode, confLevel = 0.9) => {
   let rowSUM = [];
 
   // get sub-scales
-  if (calcMode === "raw") {
+  if (calcMode === "raw" || calcMode === "raw-means") {
     data.forEach((row) => {
       // supr-q
       if (row[0] && row[1] && row[2] && row[3] && row[4] && row[5] && row[6] && row[7]) {
@@ -169,7 +169,7 @@ export const getCalcResult = (data, calcMode, confLevel = 0.9) => {
   let sumVar;
   let cronbachAlpha = '';
   let internalReliability = '';
-  if (calcMode === "raw") {
+  if (calcMode === "raw" || calcMode === "raw-means") {
     stdDevQ = qColumnData.map((item) => getSD(item, 2));
     rawMeanQ = qColumnData.map((item) => getArrAvg(getNonBlankArr(item)));
     testSD = getSD(rowSUM, 2);
@@ -253,6 +253,10 @@ export const getCalcResult = (data, calcMode, confLevel = 0.9) => {
       sampleSize: dataCount
     });
   });
+
+  if (calcMode === "raw-means") {
+    return rawMeansByQ;
+  }
 
   // get Overall SUPR-Q Results
   overallResults = {
