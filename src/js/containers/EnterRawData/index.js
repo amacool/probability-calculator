@@ -16,11 +16,13 @@ const THead = ({ title, description, mean, SD, sampleSize }) => (
       <h3>{title}</h3>
       <p><i>{description}</i></p>
     </div>
-    <div style={{ fontStyle: 'italic', fontWeight: 'normal', color: '#888' }}>
-      <div style={{ display: 'flex' }}><span style={{ width: '50%' }}>Mean: </span><span>{mean}</span></div>
-      <div style={{ display: 'flex' }}><span style={{ width: '50%' }}>SD: </span><span>{SD}</span></div>
-      <div style={{ display: 'flex' }}><span style={{ width: '50%' }}>n: </span><span>{sampleSize}</span></div>
-    </div>
+    {mean && SD && sampleSize && (
+      <div style={{ fontStyle: 'italic', fontWeight: 'normal', color: '#888' }}>
+        <div style={{ display: 'flex' }}><span style={{ width: '50%' }}>Mean: </span><span>{mean}</span></div>
+        <div style={{ display: 'flex' }}><span style={{ width: '50%' }}>SD: </span><span>{SD}</span></div>
+        <div style={{ display: 'flex' }}><span style={{ width: '50%' }}>n: </span><span>{sampleSize}</span></div>
+      </div>
+    )}
   </div>
 );
 
@@ -67,32 +69,41 @@ function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, u
         throw "Empty input!";
       }
       const rows = data.split('\n');
+      const isSingleValue = (rows.length === 1 || (rows.length === 2 && rows[1] === '')) && rows[0].split('\t').length === 1;
       let validData = [];
+      let msg = '';
       for (let i = 0; i < rows.length; i++) {
         if (rows[i] === '') {
           continue;
         }
-        const items = rows[i].split('\t');
-        if (items.length !== 8) {
-          throw 'Invalid Length! ';
+        let items = rows[i].split('\t');
+        if (items.every(item => item === '' || item.charCodeAt(0) === 13)) {
+          continue;
+        }
+        if (!isSingleValue && items.length !== 8) {
+          msg += 'Invalid Length!\n';
         }
         items.forEach((item, index) => {
           let num = parseInt(item);
           if (isNaN(item)) {
-            throw "Invalid input! Not a number!";
+            msg += "Invalid input! Not a number!\n";
           }
           if (item === "") {
-            throw "There's an empty input!";
+            msg += "There's an empty input!\n";
           }
           if (index === 4 && (num < 0 || num > 10)) {
-            throw "Invalid input for NPS!";
+            item = NaN;
+            msg += "Invalid input for NPS!\n";
           }
           if (index !== 4 && (num <= 0 || num > 5)) {
-            throw "Invalid input for questions!";
+            item = NaN;
+            msg += "Invalid input for questions!\n";
           }
         });
+        items = [...items, ...[...Array(8 - items.length)].map(() => "")];
         validData.push(items);
       }
+      msg && alert(msg);
       return validData;
     } catch (err) {
       alert(err);
@@ -104,21 +115,38 @@ function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, u
     const clipboardData = e.clipboardData || window.clipboardData;
     const pastedData = clipboardData.getData('Text');
     const result = isValidData(pastedData);
-    if (result) {
+
+    // checks if single value
+    if (
+      window.posOnTable &&
+      result &&
+      result.length === 1 &&
+      result[0].every((item, index) => index === 0 || (index > 0 && item === ''))
+    ) {
+      let newData = [...rawData];
+      if (newData[window.posOnTable.row]) {
+        newData[window.posOnTable.row][window.posOnTable.col] = result[0][0];
+      }
+      updateRawData(newData);
+    } else if (result) {
       updateColumnOrder([0, 1, 2, 3, 4, 5, 6, 7]);
       updateRawData(result);
+      result.length > 0 && setPreCalcResult(getCalcResult(parseRawDataToInt(getSortedData(result, [0, 1, 2, 3, 4, 5, 6, 7])), "raw-means"));
     }
     e.stopPropagation();
     e.preventDefault();
   };
 
   React.useEffect(() => {
-    rawData.length > 1 && setPreCalcResult(getCalcResult(parseRawDataToInt(getSortedData(rawData, rawColumnOrder)), "raw-means"));
+    rawData.length > 0 && setPreCalcResult(getCalcResult(parseRawDataToInt(getSortedData(rawData, rawColumnOrder)), "raw-means"));
+  }, []);
+
+  React.useEffect(() => {
     window.addEventListener('paste', getClipboardData);
     return () => {
       window.removeEventListener('paste', getClipboardData);
     }
-  }, []);
+  }, [rawData]);
 
   React.useEffect(function() {
     setColumnOrder(rawColumnOrder || []);
@@ -134,27 +162,20 @@ function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, u
       return false;
     }
     let values = Object.values(newRow);
-    // let isInvalid = false;
-    // for (let i = 0; i < values.length; i ++) {
-    //   const num = parseInt(values[i]);
-    //   if (values[i] === "" || isNaN(values[i]) || (columnOrder[i] === 4 && (num < 0 || num > 10)) || (columnOrder[i] !== 4 && (num <= 0 || num > 5))) {
-    //     values[i] = NaN;
-    //     isInvalid = true;
-    //   }
-    // }
     const num = parseInt(newValue);
     if (newValue === "" || isNaN(newValue) || (columnOrder[colId] === 4 && (num < 0 || num > 10)) || (columnOrder[colId] !== 4 && (num <= 0 || num > 5))) {
-      values[colId] = NaN;
+      values[colId] = newValue ? NaN : "";
       alert("You have entered one or more invalid values. The values should be between 1 – 5 (or 0 – 10 for NPS).");
     }
     let newData = [...rawData];
     newData[rowId] = values;
     updateRawData(newData);
-    newData.length > 1 && setPreCalcResult(getCalcResult(parseRawDataToInt(getSortedData(newData, rawColumnOrder)), "raw-means"));
+    newData.length > 0 && setPreCalcResult(getCalcResult(parseRawDataToInt(getSortedData(newData, rawColumnOrder)), "raw-means"));
   };
 
   const onClearValues = () => {
     updateRawData([]);
+    setPreCalcResult([...Array(8)].map(() => []));
   };
 
   const handleColumnReorder = (direction) => {

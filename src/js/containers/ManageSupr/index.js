@@ -6,13 +6,12 @@ import { md5 } from "../../helper/md5";
 import { exportJson } from "../../helper";
 import "./style.css";
 
-console.log(md5('suprq!'));
-
-function ManageSupr({ setConstantsData, maxScore, globalInMean, globalLnSD }) {
+function ManageSupr({ setConstantsData, updateWebsiteData, websiteData, maxScore, globalInMean, globalLnSD }) {
   const [tMaxScore, setTMaxScore] = React.useState(maxScore);
   const [tGlobalInMean, setTGlobalInMean] = React.useState(globalInMean);
   const [tGlobalLnSD, setTGlobalLnSD] = React.useState(globalLnSD);
   const fileInput = React.useRef();
+  const [validation, setValidation] = React.useState([false, false, false]);
 
   React.useEffect(() => {
     setTMaxScore(maxScore);
@@ -49,7 +48,7 @@ function ManageSupr({ setConstantsData, maxScore, globalInMean, globalLnSD }) {
 
         reader.onload = function() {
           try {
-            const { tMaxScore, tGlobalInMean, tGlobalLnSD } = JSON.parse(reader.result);
+            const { tMaxScore, tGlobalInMean, tGlobalLnSD, tWebsiteData } = JSON.parse(reader.result);
             const v1 = getSplittedData(tMaxScore);
             const v2 = getSplittedData(tGlobalInMean);
             const v3 = getSplittedData(tGlobalLnSD);
@@ -59,19 +58,25 @@ function ManageSupr({ setConstantsData, maxScore, globalInMean, globalLnSD }) {
                 tGlobalInMean: v2,
                 tGlobalLnSD: v3,
               });
+              updateWebsiteData(tWebsiteData);
               alert('Imported Successfully!');
             } else {
               let errMsg = '';
+              let isValid = [false, false, false];
               if (!v1) {
                 errMsg += 'Max Score, ';
+                isValid[0] = true;
               }
               if (!v2) {
                 errMsg += 'Global In Mean, ';
+                isValid[1] = true;
               }
               if (!v3) {
                 errMsg += 'Global Ln SD, ';
+                isValid[2] = true;
               }
               errMsg = errMsg.substr(0, errMsg.length - 2);
+              setValidation(isValid);
               alert("Invalid data input! " + errMsg);
             }
           } catch (err) {
@@ -104,15 +109,15 @@ function ManageSupr({ setConstantsData, maxScore, globalInMean, globalLnSD }) {
         <div className="import-constants">
           <div>
             <p> - Max Score</p>
-            <textarea value={tMaxScore} onChange={(e) => setTMaxScore(e.target.value)} />
+            <textarea value={tMaxScore} onChange={(e) => setTMaxScore(e.target.value)} className={validation[0] ? 'invalid' : ''} />
           </div>
           <div>
             <p> - Global In Mean</p>
-            <textarea value={tGlobalInMean} onChange={(e) => setTGlobalInMean(e.target.value)} />
+            <textarea value={tGlobalInMean} onChange={(e) => setTGlobalInMean(e.target.value)} className={validation[1] ? 'invalid' : ''} />
           </div>
           <div>
             <p> - Global Ln SD</p>
-            <textarea value={tGlobalLnSD} onChange={(e) => setTGlobalLnSD(e.target.value)} />
+            <textarea value={tGlobalLnSD} onChange={(e) => setTGlobalLnSD(e.target.value)} className={validation[2] ? 'invalid' : ''} />
           </div>
         </div>
         <div className="import-btn-container">
@@ -131,16 +136,21 @@ function ManageSupr({ setConstantsData, maxScore, globalInMean, globalLnSD }) {
                 alert('Imported Successfully!');
               } else {
                 let errMsg = '';
+                let isValid = [false, false, false];
                 if (!v1) {
                   errMsg += 'Max Score, ';
+                  isValid[0] = true;
                 }
                 if (!v2) {
                   errMsg += 'Global In Mean, ';
+                  isValid[1] = true;
                 }
                 if (!v3) {
                   errMsg += 'Global Ln SD, ';
+                  isValid[2] = true;
                 }
                 errMsg = errMsg.substr(0, errMsg.length - 2);
+                setValidation(isValid);
                 alert("Invalid data input! " + errMsg);
               }
             }}
@@ -158,6 +168,7 @@ function ManageSupr({ setConstantsData, maxScore, globalInMean, globalLnSD }) {
                   tMaxScore: v1,
                   tGlobalInMean: v2,
                   tGlobalLnSD: v3,
+                  tWebsiteData: websiteData
                 });
               } else {
                 let errMsg = '';
@@ -191,12 +202,14 @@ const mapStateToProps = (state) => ({
   maxScore: state.Calc.maxScore,
   globalInMean: state.Calc.globalInMean,
   globalLnSD: state.Calc.globalLnSD,
+  websiteData: state.Calc.websiteData
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       setConstantsData: (data) => calcActions.setConstantsData(data),
+      updateWebsiteData: (data) => calcActions.updateWebsiteData(data)
     },
     dispatch
   );

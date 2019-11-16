@@ -60,6 +60,72 @@ const getRowsProp = (rows) => {
 
 function ViewDatabases({ websiteData, updateWebsiteData, calcResult }) {
   const percentileRank = calcResult ? calcResult.percentileRanksBA.map(item => item.mean) : [];
+
+  const isValidData = (data) => {
+    try {
+      if (data === "") {
+        throw "Empty input!";
+      }
+      const rows = data.split('\n');
+      const isSingleValue = (rows.length === 1 || (rows.length === 2 && rows[1] === '')) && rows[0].split('\t').length === 1;
+      let validData = [];
+      let msg = '';
+      for (let i = 0; i < rows.length; i++) {
+        if (rows[i] === '') {
+          continue;
+        }
+        let items = rows[i].split('\t');
+        if (items.every(item => item === '' || item.charCodeAt(0) === 13)) {
+          continue;
+        }
+        if (!isSingleValue && items.length !== 10) {
+          msg += 'Invalid Length!\n';
+        }
+        items.forEach((item, index) => {
+          let x = parseFloat(item.substr(0, item.length - 1));
+          let proSign = item.substr(item.length - 1, 1) === '%';
+          if (
+            (index >= 4 && (!proSign || isNaN(x) || x < 0 || x > 100)) ||
+            (index === 1 && !isValidDate(item))
+          ) {
+            msg += "You have entered one or more invalid values.\n";
+          }
+        });
+        items = [...items, ...[...Array(10 - items.length)].map(() => "")];
+        validData.push(items);
+      }
+      msg && alert(msg);
+      return validData;
+    } catch (err) {
+      alert(err);
+      return false;
+    }
+  };
+
+  const getClipboardData = (e) => {
+    const clipboardData = e.clipboardData || window.clipboardData;
+    const pastedData = clipboardData.getData('Text');
+    const result = isValidData(pastedData);
+
+    // checks if single value
+    if (
+      window.posOnTable &&
+      result &&
+      result.length === 1 &&
+      result[0].every((item, index) => index === 0 || (index > 0 && item === ''))
+    ) {
+      let newData = [...websiteData];
+      if (newData[window.posOnTable.row]) {
+        newData[window.posOnTable.row][window.posOnTable.col] = result[0][0];
+      }
+      updateWebsiteData(newData);
+    } else if (result) {
+      updateWebsiteData(result);
+    }
+    e.stopPropagation();
+    e.preventDefault();
+  };
+
   const onDataChange = (newRow, newValue, colId) => {
     const rowId = newRow.id;
     delete newRow.id;
@@ -76,12 +142,18 @@ function ViewDatabases({ websiteData, updateWebsiteData, calcResult }) {
       alert("You have entered one or more invalid values.");
     }
 
-    console.log(colId >= 4);
     let newData = [...websiteData];
     newData[rowId] = values;
 
     updateWebsiteData(newData);
   };
+
+  React.useEffect(() => {
+    window.addEventListener('paste', getClipboardData);
+    return () => {
+      window.removeEventListener('paste', getClipboardData);
+    }
+  }, [websiteData]);
 
   return (
     <div>

@@ -18,6 +18,7 @@ export default ({
     const cell = document.getElementsByClassName(`col-${row}-${col}`)[0];
     setTimeout(function () {
       cell && cell.click();
+      window.posOnTable = { row, col };
     }, 0);
   };
 
@@ -38,6 +39,7 @@ export default ({
               const rowIndex = row.id;
               const colIndex = parseInt(column.dataField.substr(1)) - 1;
               curCell = {row: rowIndex, col: colIndex};
+              window.posOnTable = null;
             }, 0);
             return { async: true };
           }
@@ -49,6 +51,7 @@ export default ({
             const row = parseInt(className.split('-')[0]);
             const col = parseInt(className.split('-')[1]);
             curCell = { row, col };
+            window.posOnTable = { row, col };
           },
           onKeyDown: function(e) {
             let row = curCell.row;

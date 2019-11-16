@@ -6,6 +6,10 @@
   height: 30px;
 }
 
+.import-constants textarea.invalid {
+  border: solid 2px red;
+}
+
 .import-btn-container {
   margin-top: 10px;
 }
