@@ -68,8 +68,14 @@ table.react-bootstrap-table {
   min-width: 12%;
 }
 
+.react-bootstrap-table tbody tr td.react-bootstrap-table-editing-cell {
+  padding: 0;
+}
+
 .react-bootstrap-table tbody tr td input {
-  max-width: 110px;
+  width: calc(100% - 24px);
+  height: 28px;
+  padding: 0 10px;
 }
 
 .react-bootstrap-table table thead > tr > th {

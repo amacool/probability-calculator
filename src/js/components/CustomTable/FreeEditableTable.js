@@ -32,15 +32,13 @@ export default ({
           blurToSave: true,
           autoSelectText: true,
           beforeSaveCell(oldValue, newValue, row, column, done) {
-            if (oldValue !== newValue) {
-              setTimeout(() => {
-                done();
-                onDataChange({...row}, newValue, parseInt(column.dataField.substr(1)) - 1);
-                const rowIndex = row.id;
-                const colIndex = parseInt(column.dataField.substr(1)) - 1;
-                curCell = {row: rowIndex, col: colIndex};
-              }, 0);
-            }
+            setTimeout(() => {
+              done();
+              oldValue !== newValue && onDataChange({...row}, newValue, parseInt(column.dataField.substr(1)) - 1);
+              const rowIndex = row.id;
+              const colIndex = parseInt(column.dataField.substr(1)) - 1;
+              curCell = {row: rowIndex, col: colIndex};
+            }, 0);
             return { async: true };
           }
         })}

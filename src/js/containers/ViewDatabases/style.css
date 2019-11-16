@@ -42,5 +42,5 @@
 }
 
 .tbl-all-websites .react-bootstrap-table tbody tr td input {
-  max-width: 90px;
+  height: 18px;
 }
