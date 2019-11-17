@@ -54,26 +54,29 @@ const getReducedRowsProp = (rows) => {
   }));
 };
 
-function EnterSummaryData({ path, setPath, summaryData, updateSummaryData, clearSummaryData, setCalcMode }) {
-  const [includeAttr, setIncludeAttr] = React.useState(true);
+function EnterSummaryData({
+  path,
+  calcMode,
+  setPath,
+  summaryData,
+  updateSummaryData,
+  clearSummaryData,
+  setCalcMode
+}) {
+  const [includeAttr, setIncludeAttr] = React.useState(calcMode === 'summary-all');
+  console.log(calcMode);
 
-  const onDataChange = (newRow) => {
+  const onDataChange = (newRow, newValue, colId) => {
     const rowId = newRow.id;
     delete newRow.id;
     if (!Object.values(newRow).some(item => item !== '')) {
       return false;
     }
     let values = Object.values(newRow);
-    let isInvalid = false;
-    for (let i = 1; i < values.length; i ++) {
-      const num = parseInt(values[i]);
-      if (values[i] === "" || isNaN(values[i]) || num < 0 || num > 5 || (i === 1 && rowId === 0 && num < 1)) {
-        values[i] = 'NaN';
-        isInvalid = true;
-      }
-    }
-    if (isInvalid) {
-      alert("You have entered one or more invalid values. The values should be between 1 – 5 (or 0 – 10 for NPS).");
+    const num = parseInt(newValue);
+    if (newValue === "" || isNaN(newValue) || num < 0 || num > 5 || (colId === 1 && rowId === 0 && num < 1)) {
+      values[colId] = newValue ? 'NaN' : "";
+      alert("You have entered one or more invalid values.");
     }
     let newData = [...summaryData];
     if (includeAttr) {
@@ -102,7 +105,13 @@ function EnterSummaryData({ path, setPath, summaryData, updateSummaryData, clear
         <button
           className="btn-primary btn-switch-input"
           onClick={() => {
-            path === 'enter-raw' ? setPath('enter-summary') : setPath('enter-raw');
+            if (path === 'enter-raw') {
+              setCalcMode('summary-all');
+              setPath('enter-summary');
+            } else {
+              setCalcMode('raw');
+              setPath('enter-raw');
+            }
           }}
         >
           {path === 'enter-raw' ? 'Switch to Summary Data Entry' : 'Switch to Raw Data Entry'}
@@ -111,7 +120,13 @@ function EnterSummaryData({ path, setPath, summaryData, updateSummaryData, clear
       <div className="content-body">
         <div className="btn-container">
           <button className="btn-primary btn-clear-value" onClick={onClearValues}>Clear Values</button>
-          <button className="btn-primary btn-column-reorder" onClick={() => setIncludeAttr(!includeAttr)}>
+          <button
+            className="btn-primary btn-column-reorder"
+            onClick={() => {
+              setCalcMode(includeAttr ? 'summary-single' : 'summary-all');
+              setIncludeAttr(!includeAttr);
+            }}
+          >
             {!includeAttr ? 'Include Columns for Attributes' : 'Remove Columns for Attributes'}
           </button>
         </div>
@@ -138,6 +153,7 @@ function EnterSummaryData({ path, setPath, summaryData, updateSummaryData, clear
 
 const mapStateToProps = (state) => ({
   path: state.Path.path,
+  calcMode: state.Calc.calcMode,
   summaryData: state.Calc.summaryData
 });
 

@@ -228,7 +228,13 @@ function EnterRawData({
         <button
           className="btn-primary btn-switch-input"
           onClick={() => {
-            path === 'enter-raw' ? setPath('enter-summary') : setPath('enter-raw');
+            if (path === 'enter-raw') {
+              setCalcMode('summary-all');
+              setPath('enter-summary');
+            } else {
+              setCalcMode('raw');
+              setPath('enter-raw');
+            }
           }}
         >
           {path === 'enter-raw' ? 'Switch to Summary Data Entry' : 'Switch to Raw Data Entry'}

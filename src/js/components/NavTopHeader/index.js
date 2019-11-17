@@ -4,11 +4,22 @@ import { bindActionCreators } from "redux";
 import pathActions from "../../redux/path/actions";
 import "./style.css";
 
-function NavTopHeader({ path, setPath }) {
+function NavTopHeader({ path, calcMode, setPath }) {
   return (
     <div className="nav-header">
       <div className="left">
-        <button onClick={() => setPath('enter-raw')} className={`btn-nav ${path === 'enter-raw' || path === 'enter-summary' ? 'active' : ''}`}>Enter Data</button>
+        <button
+          onClick={() => {
+            if (calcMode === 'raw') {
+              setPath('enter-raw');
+            } else {
+              setPath('enter-summary');
+            }
+          }}
+          className={`btn-nav ${path === 'enter-raw' || path === 'enter-summary' ? 'active' : ''}`}
+        >
+          Enter Data
+        </button>
         <button onClick={() => setPath('view-results')} className={`btn-nav ${path === 'view-results' ? 'active' : ''}`}>View Results</button>
       </div>
       <div className="right">
@@ -21,7 +32,8 @@ function NavTopHeader({ path, setPath }) {
 }
 
 const mapStateToProps = (state) => ({
-  path: state.Path.path
+  path: state.Path.path,
+  calcMode: state.Calc.calcMode
 });
 
 const mapDispatchToProps = dispatch =>
