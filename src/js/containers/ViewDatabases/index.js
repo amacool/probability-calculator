@@ -59,7 +59,7 @@ const getRowsProp = (rows) => {
 };
 
 function ViewDatabases({ websiteData, updateWebsiteData, calcResult }) {
-  const percentileRank = calcResult ? calcResult.percentileRanksBA.map(item => item.mean) : [];
+  const percentileRank = calcResult && calcResult.percentileRanksBA ? calcResult.percentileRanksBA.map(item => item.mean) : [];
 
   const isValidData = (data) => {
     try {

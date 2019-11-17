@@ -1,57 +1,21 @@
 import actions from './actions';
 
-const rawData = [
-  ['1', '2', '3', '4', '4', '5', '5', '5'],
-  ['4', '5', '5', '4', '5', '2', '4', '5'],
-  ['5', '5', '5', '5', '5', '5', '5', '5'],
-];
+const rawData = [];
 const rawColumnOrder = [0, 1, 2, 3, 4, 5, 6, 7];
-
-const summaryData = [
-  ['Raw Score (Mean)', 4.23, 4.33, 4.33, 3.42, 4.83, 5],
-  ['Standard Deviation', 0.4, 0.8, 0.8, 0.4, 0.3, 0.5],
-  ['Sample Size', 3, 3, 3, 3, 3, 3]
-];
 const emptySummaryData = [
   ['Raw Score (Mean)', '', '', '', '', '', ''],
   ['Standard Deviation', '', '', '', '', '', ''],
   ['Sample Size', '', '', '', '', '', '']
 ];
-
-const password = "";
-
-const websiteData = [
-  ['YouTube', '01/01/2020', 'Usability', 'Entertainment', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%'],
-  ['Amazon', '01/01/2020', 'Usability', 'Entertainment', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%'],
-  ['Hyatt', '01/01/2020', 'Usability', 'Entertainment', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%'],
-  ['Hyatt', '01/01/2020', 'Usability', 'Entertainment', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%'],
-  ['YouTube', '01/01/2020', 'Usability', 'Entertainment', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%'],
-  ['Amazon', '01/01/2020', 'Usability', 'Entertainment', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%'],
-  ['YouTube', '01/01/2020', 'Usability', 'Entertainment', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%'],
-  ['YouTube', '01/01/2020', 'Usability', 'Entertainment', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%'],
-  ['Amazon', '01/01/2020', 'Usability', 'Entertainment', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%'],
-  ['Hyatt', '01/01/2020', 'Usability', 'Entertainment', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%'],
-  ['Hyatt', '01/01/2020', 'Usability', 'Entertainment', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%'],
-  ['YouTube', '01/01/2020', 'Usability', 'Entertainment', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%'],
-  ['Amazon', '01/01/2020', 'Usability', 'Entertainment', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%'],
-  ['Hyatt', '01/01/2020', 'Usability', 'Entertainment', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%'],
-  ['Hyatt', '01/01/2020', 'Usability', 'Entertainment', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%'],
-  ['YouTube', '01/01/2020', 'Usability', 'Entertainment', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%'],
-  ['Amazon', '01/01/2020', 'Usability', 'Entertainment', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%'],
-  ['YouTube', '01/01/2020', 'Usability', 'Entertainment', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%'],
-  ['YouTube', '01/01/2020', 'Usability', 'Entertainment', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%'],
-  ['Amazon', '01/01/2020', 'Usability', 'Entertainment', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%'],
-  ['Hyatt', '01/01/2020', 'Usability', 'Entertainment', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%'],
-  ['Hyatt', '01/01/2020', 'Usability', 'Entertainment', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%'],
-  ['Hyatt', '01/01/2020', 'Usability', 'Entertainment', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%', '99.8%'],
-];
+const summaryData = emptySummaryData;
+const websiteData = JSON.parse(localStorage.getItem('tWebsiteData')) || [];
 
 // Max Score
-const maxScore = [5, 5, 5, 5, 5, 10, 100];
+const maxScore = JSON.parse(localStorage.getItem('tMaxScore')) || [];
 // Global In Mean : SUPR-Q	Usability	Trust	Loyalty	App	Raw NPS
-const globalInMean = [0.04, -0.043, -0.109, 0.139, 0.093, 0.00, -0.0030];
+const globalInMean = JSON.parse(localStorage.getItem('tGlobalInMean')) || [];
 // Global Ln SD : SUPR-Q	Usability	Trust	Loyalty	App	Raw NPS
-const globalLnSD = [0.279325899, 0.29906667, 0.322811031, 0.410510425, 0.267100878, 0.295020156, 0.398067];
+const globalLnSD = JSON.parse(localStorage.getItem('tGlobalLnSD')) || [];
 
 const initState = {
   rawData,

@@ -7,7 +7,6 @@ const initState = {
 export default function pathReducer(state = initState, { type, payload }) {
   switch (type) {
     case actions.SET_PATH:
-      console.log(type, payload);
       return {
         path: payload
       };

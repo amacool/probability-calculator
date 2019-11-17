@@ -68,7 +68,7 @@ function EnterSummaryData({ path, setPath, summaryData, updateSummaryData, clear
     for (let i = 1; i < values.length; i ++) {
       const num = parseInt(values[i]);
       if (values[i] === "" || isNaN(values[i]) || num < 0 || num > 5 || (i === 1 && rowId === 0 && num < 1)) {
-        values[i] = NaN;
+        values[i] = 'NaN';
         isInvalid = true;
       }
     }

@@ -4,10 +4,10 @@ import { bindActionCreators } from "redux";
 import calcActions from "../../redux/calc/actions";
 import pathActions from "../../redux/path/actions";
 import FreeEditableTable from "../../components/CustomTable/FreeEditableTable";
-import {getFormatedRawData, getReorderedData, getSortedData, parseRawDataToInt} from "../../helper";
+import { getFormatedRawData, getReorderedData, getSortedData, parseRawDataToInt } from "../../helper";
 import { CustomModal } from "../../components/CustomModal";
 import { questionHeading } from "../../constants";
-import { getCalcResult } from "../../calculation/logic";
+import { getRawMeans } from "../../calculation/logic";
 import "./style.css";
 
 const THead = ({ title, description, mean, SD, sampleSize }) => (
@@ -54,7 +54,15 @@ const getRowsProp = (initialRowCount, rows, columnOrder) => {
   return [...rows, ...getFormatedRawData(emptyRows, rows.length, columnOrder)];
 };
 
-function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, updateColumnOrder, setCalcMode }) {
+function EnterRawData({
+  path,
+  setPath,
+  rawData,
+  rawColumnOrder,
+  updateRawData,
+  updateColumnOrder,
+  setCalcMode
+}) {
   const [columnOrder, setColumnOrder] = React.useState(rawColumnOrder || []);
   const [columnOrderT, setColumnOrderT] = React.useState(rawColumnOrder || []);
   const [openImportModal, setOpenImportModal] = React.useState(false);
@@ -92,11 +100,11 @@ function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, u
             msg += "There's an empty input!\n";
           }
           if (index === 4 && (num < 0 || num > 10)) {
-            item = NaN;
+            item = 'NaN';
             msg += "Invalid input for NPS!\n";
           }
           if (index !== 4 && (num <= 0 || num > 5)) {
-            item = NaN;
+            item = 'NaN';
             msg += "Invalid input for questions!\n";
           }
         });
@@ -112,6 +120,9 @@ function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, u
   };
 
   const getClipboardData = (e) => {
+    if (openImportModal || !window.posOnTable) {
+      return;
+    }
     const clipboardData = e.clipboardData || window.clipboardData;
     const pastedData = clipboardData.getData('Text');
     const result = isValidData(pastedData);
@@ -131,14 +142,14 @@ function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, u
     } else if (result) {
       updateColumnOrder([0, 1, 2, 3, 4, 5, 6, 7]);
       updateRawData(result);
-      result.length > 0 && setPreCalcResult(getCalcResult(parseRawDataToInt(getSortedData(result, [0, 1, 2, 3, 4, 5, 6, 7])), "raw-means"));
+      result.length > 0 && setPreCalcResult(getRawMeans(parseRawDataToInt(getSortedData(result, [0, 1, 2, 3, 4, 5, 6, 7]))));
     }
     e.stopPropagation();
     e.preventDefault();
   };
 
   React.useEffect(() => {
-    rawData.length > 0 && setPreCalcResult(getCalcResult(parseRawDataToInt(getSortedData(rawData, rawColumnOrder)), "raw-means"));
+    rawData.length > 0 && setPreCalcResult(getRawMeans(parseRawDataToInt(getSortedData(rawData, rawColumnOrder))));
   }, []);
 
   React.useEffect(() => {
@@ -146,7 +157,7 @@ function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, u
     return () => {
       window.removeEventListener('paste', getClipboardData);
     }
-  }, [rawData]);
+  }, [rawData, openImportModal]);
 
   React.useEffect(function() {
     setColumnOrder(rawColumnOrder || []);
@@ -164,13 +175,13 @@ function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, u
     let values = Object.values(newRow);
     const num = parseInt(newValue);
     if (newValue === "" || isNaN(newValue) || (columnOrder[colId] === 4 && (num < 0 || num > 10)) || (columnOrder[colId] !== 4 && (num <= 0 || num > 5))) {
-      values[colId] = newValue ? NaN : "";
+      values[colId] = newValue ? 'NaN' : "";
       alert("You have entered one or more invalid values. The values should be between 1 – 5 (or 0 – 10 for NPS).");
     }
     let newData = [...rawData];
     newData[rowId] = values;
     updateRawData(newData);
-    newData.length > 0 && setPreCalcResult(getCalcResult(parseRawDataToInt(getSortedData(newData, rawColumnOrder)), "raw-means"));
+    newData.length > 0 && setPreCalcResult(getRawMeans(parseRawDataToInt(getSortedData(newData, rawColumnOrder))));
   };
 
   const onClearValues = () => {
@@ -279,6 +290,8 @@ function EnterRawData({ path, setPath, rawData, rawColumnOrder, updateRawData, u
             if (result) {
               updateColumnOrder([0, 1, 2, 3, 4, 5, 6, 7]);
               updateRawData(result);
+              console.log(parseRawDataToInt(getSortedData(result, [0, 1, 2, 3, 4, 5, 6, 7])));
+              result.length > 0 && setPreCalcResult(getRawMeans(parseRawDataToInt(getSortedData(result, [0, 1, 2, 3, 4, 5, 6, 7]))));
               setOpenImportModal(false);
             }
           }}

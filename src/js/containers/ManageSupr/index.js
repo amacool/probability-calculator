@@ -59,6 +59,10 @@ function ManageSupr({ setConstantsData, updateWebsiteData, websiteData, maxScore
                 tGlobalLnSD: v3,
               });
               updateWebsiteData(tWebsiteData);
+              localStorage.setItem('tMaxScore', JSON.stringify(v1));
+              localStorage.setItem('tGlobalInMean', JSON.stringify(v2));
+              localStorage.setItem('tGlobalLnSD', JSON.stringify(v3));
+              localStorage.setItem('tWebsiteData', JSON.stringify(tWebsiteData));
               alert('Imported Successfully!');
             } else {
               let errMsg = '';
@@ -76,7 +80,6 @@ function ManageSupr({ setConstantsData, updateWebsiteData, websiteData, maxScore
                 isValid[2] = true;
               }
               errMsg = errMsg.substr(0, errMsg.length - 2);
-              setValidation(isValid);
               alert("Invalid data input! " + errMsg);
             }
           } catch (err) {
@@ -127,12 +130,17 @@ function ManageSupr({ setConstantsData, updateWebsiteData, websiteData, maxScore
               const v1 = getSplittedData(tMaxScore);
               const v2 = getSplittedData(tGlobalInMean);
               const v3 = getSplittedData(tGlobalLnSD);
+              const tWebsiteData = getSplittedData(websiteData);
               if (v1 && v2 && v3) {
                 setConstantsData({
                   tMaxScore: v1,
                   tGlobalInMean: v2,
                   tGlobalLnSD: v3,
                 });
+                localStorage.setItem('tMaxScore', JSON.stringify(v1));
+                localStorage.setItem('tGlobalInMean', JSON.stringify(v2));
+                localStorage.setItem('tGlobalLnSD', JSON.stringify(v3));
+                localStorage.setItem('tWebsiteData', JSON.stringify(tWebsiteData));
                 alert('Imported Successfully!');
               } else {
                 let errMsg = '';

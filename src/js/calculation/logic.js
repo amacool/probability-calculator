@@ -1,4 +1,3 @@
-import { maxScore, globalInMean, globalLnSD } from "./constants";
 import {
   calcNPS,
   calcCiForQ,
@@ -52,7 +51,33 @@ const get_ci_pr = (N, studySD, rawMean, rawMeanSUPRQ, maxScore, globalInMean, gl
   };
 };
 
-export const getCalcResult = (data, calcMode, confLevel = 0.9) => {
+export const getRawMeans = (data) => {
+  let stdDevQ = [];
+  let rawMeanQ = [];
+  let rawMeansByQ = [];
+  let qColumnData = [...Array(8)].map(() => []);
+  const dataCount = data.length;
+
+  data.forEach((row) => {
+    // get question column Data
+    row.forEach((item, index) => qColumnData[index].push(item));
+  });
+
+  stdDevQ = qColumnData.map((item) => getSD(item, 2));
+  rawMeanQ = qColumnData.map((item) => getArrAvg(getNonBlankArr(item)));
+  // get Raw Means by Questionnaire Item
+  stdDevQ.forEach((item, index) => {
+    rawMeansByQ.push({
+      mean: rawMeanQ[index].toFixed(2),
+      stdDev: stdDevQ[index].toFixed(1),
+      sampleSize: dataCount
+    });
+  });
+
+  return rawMeansByQ;
+};
+
+export const getCalcResult = (data, calcMode, confLevel = 0.9, maxScore, globalInMean, globalLnSD) => {
   // definition of calculation results
   let percentileRanksBA = [];
   let rawScoresBA = [];
@@ -182,7 +207,7 @@ export const getCalcResult = (data, calcMode, confLevel = 0.9) => {
   // get Percentile Ranks by Attribute, get Raw Scores by Attribute
   // G - Values
   let suprqMarginOfError = '';
-  calcMode !== "summary-single" && maxScore.forEach((score, index) => {
+  calcMode !== "summary-single" && calcMode !== "raw-means" && maxScore.forEach((score, index) => {
     const {
       prMean,
       ciLowPro,

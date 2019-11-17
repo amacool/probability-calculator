@@ -38,7 +38,16 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function ViewResults({ history, location, rawData, rawColumnOrder, summaryData, calcMode, setCalcResult }) {
+function ViewResults({
+  rawData,
+  rawColumnOrder,
+  summaryData,
+  calcMode,
+  setCalcResult,
+  maxScore,
+  globalInMean,
+  globalLnSD
+}) {
   const classes = useStyles();
   const [values, setValues] = React.useState({
     confidenceLevel: 0.9
@@ -75,7 +84,26 @@ function ViewResults({ history, location, rawData, rawColumnOrder, summaryData, 
   const inputLabel = React.useRef(null);
   const [labelWidth, setLabelWidth] = React.useState(0);
 
+  const doValidation = () => {
+    if (calcMode === "raw" && rawData.length === 0) {
+      alert('Enter raw data!');
+      return false;
+    }
+    if (summaryData.length === 0) {
+      alert('Enter summary data!');
+      return false;
+    }
+    if (maxScore.length < 1 || globalInMean.length < 1 || globalLnSD.length < 1) {
+      alert('One or more static values are empty!');
+      return false;
+    }
+    return true;
+  };
+
   const drawCharts = (data) => {
+    if (!doValidation()) {
+      return;
+    }
     drawOverallPercentileChart({
       low: data.overallResults.percentileRank.ciLow.replace('%', ''),
       high: data.overallResults.percentileRank.ciHigh.replace('%', ''),
@@ -172,19 +200,17 @@ function ViewResults({ history, location, rawData, rawColumnOrder, summaryData, 
   };
 
   React.useEffect(() => {
-    if (calcMode === "raw" && rawData.length === 0) {
-      return;
-    } else if (summaryData.length === 0) {
+    setLabelWidth(inputLabel.current.offsetWidth);
+    if (!doValidation()) {
       return;
     }
-    setLabelWidth(inputLabel.current.offsetWidth);
     let result = '';
     if (calcMode === 'raw') {
-      result = getCalcResult(parseRawDataToInt(getSortedData(rawData, rawColumnOrder)), calcMode, values.confidenceLevel);
+      result = getCalcResult(parseRawDataToInt(getSortedData(rawData, rawColumnOrder)), calcMode, values.confidenceLevel, maxScore, globalInMean, globalLnSD);
     } else if (calcMode === 'summary-all') {
-      result = getCalcResult(parseRawDataToFloat(summaryData.map(item => item.slice(1))), calcMode, values.confidenceLevel);
+      result = getCalcResult(parseRawDataToFloat(summaryData.map(item => item.slice(1))), calcMode, values.confidenceLevel, maxScore, globalInMean, globalLnSD);
     } else if (calcMode === 'summary-single') {
-      result = getCalcResult(parseRawDataToFloat(summaryData.map(item => item.slice(1))), calcMode, values.confidenceLevel);
+      result = getCalcResult(parseRawDataToFloat(summaryData.map(item => item.slice(1))), calcMode, values.confidenceLevel, maxScore, globalInMean, globalLnSD);
     }
     setResult(result);
     setCalcResult(result);
@@ -192,17 +218,23 @@ function ViewResults({ history, location, rawData, rawColumnOrder, summaryData, 
 
   React.useEffect(() => {
     if (calcMode === "raw" && rawData.length === 0) {
+      alert('Enter raw data!');
       return;
     } else if (summaryData.length === 0) {
+      alert('Enter summary data!');
+      return;
+    }
+    if (maxScore.length < 1 || globalInMean.length < 1 || globalLnSD.length < 1) {
+      alert('One or more static values are empty!');
       return;
     }
     let result = '';
     if (calcMode === 'raw') {
-      result = getCalcResult(parseRawDataToInt(getSortedData(rawData, rawColumnOrder)), calcMode, values.confidenceLevel);
+      result = getCalcResult(parseRawDataToInt(getSortedData(rawData, rawColumnOrder)), calcMode, values.confidenceLevel, maxScore, globalInMean, globalLnSD);
     } else if (calcMode === 'summary-all') {
-      result = getCalcResult(parseRawDataToFloat(summaryData.map(item => item.slice(1))), calcMode, values.confidenceLevel);
+      result = getCalcResult(parseRawDataToFloat(summaryData.map(item => item.slice(1))), calcMode, values.confidenceLevel, maxScore, globalInMean, globalLnSD);
     } else if (calcMode === 'summary-single') {
-      result = getCalcResult(parseRawDataToFloat(summaryData.map(item => item.slice(1))), calcMode, values.confidenceLevel);
+      result = getCalcResult(parseRawDataToFloat(summaryData.map(item => item.slice(1))), calcMode, values.confidenceLevel, maxScore, globalInMean, globalLnSD);
     }
     setResult(result);
     setCalcResult(result);
@@ -261,7 +293,10 @@ const mapStateToProps = (state) => ({
   rawData: state.Calc.rawData,
   rawColumnOrder: state.Calc.rawColumnOrder,
   calcMode: state.Calc.calcMode,
-  summaryData: state.Calc.summaryData
+  summaryData: state.Calc.summaryData,
+  maxScore: state.Calc.maxScore,
+  globalInMean: state.Calc.globalInMean,
+  globalLnSD: state.Calc.globalLnSD
 });
 
 const mapDispatchToProps = dispatch =>
