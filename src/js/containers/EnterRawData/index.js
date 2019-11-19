@@ -252,6 +252,7 @@ function EnterRawData({
             columnsProp={getTableHeader(columnOrder, preCalcResult)}
             onDataChange={onDataChange}
             className="tall has-scroll editable"
+            nonEmptyRowCount={rawData.length}
           />
           <button
             className="btn-secondary btn-view-results"

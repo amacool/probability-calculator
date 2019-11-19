@@ -63,13 +63,13 @@ export const getRawMeans = (data) => {
     row.forEach((item, index) => qColumnData[index].push(item));
   });
 
-  stdDevQ = qColumnData.map((item) => getSD(item, 2));
+  stdDevQ = qColumnData.map((item) => getSD(getNonBlankArr(item), 2));
   rawMeanQ = qColumnData.map((item) => getArrAvg(getNonBlankArr(item)));
   // get Raw Means by Questionnaire Item
   stdDevQ.forEach((item, index) => {
     rawMeansByQ.push({
       mean: rawMeanQ[index].toFixed(2),
-      stdDev: stdDevQ[index].toFixed(1),
+      stdDev: stdDevQ[index].toFixed(2),
       sampleSize: dataCount
     });
   });
@@ -195,7 +195,7 @@ export const getCalcResult = (data, calcMode, confLevel = 0.9, maxScore, globalI
   let cronbachAlpha = '';
   let internalReliability = '';
   if (calcMode === "raw" || calcMode === "raw-means") {
-    stdDevQ = qColumnData.map((item) => getSD(item, 2));
+    stdDevQ = qColumnData.map((item) => getSD(getNonBlankArr(item), 2));
     rawMeanQ = qColumnData.map((item) => getArrAvg(getNonBlankArr(item)));
     testSD = getSD(rowSUM, 2);
     testVar = testSD * testSD;

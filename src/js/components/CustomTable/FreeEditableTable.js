@@ -11,7 +11,8 @@ export default ({
   rowsProp,
   onDataChange,
   editable,
-  className
+  className,
+  nonEmptyRowCount
 }) => {
   const navigateToCell = (row, col, keyCode) => {
     keyCode !== 13 && document.getElementsByClassName('react-bootstrap-table-editing-cell')[0].children[0].blur();
@@ -34,12 +35,16 @@ export default ({
           autoSelectText: true,
           beforeSaveCell(oldValue, newValue, row, column, done) {
             setTimeout(() => {
-              done();
-              oldValue !== newValue && onDataChange({...row}, newValue, parseInt(column.dataField.substr(1)) - 1);
               const rowIndex = row.id;
               const colIndex = parseInt(column.dataField.substr(1)) - 1;
-              curCell = {row: rowIndex, col: colIndex};
-              window.posOnTable = null;
+              if (rowIndex <= nonEmptyRowCount) {
+                done();
+                oldValue !== newValue && onDataChange({...row}, newValue, parseInt(column.dataField.substr(1)) - 1);
+                curCell = {row: rowIndex, col: colIndex};
+                window.posOnTable = null;
+              } else {
+                done(false);
+              }
             }, 0);
             return { async: true };
           }

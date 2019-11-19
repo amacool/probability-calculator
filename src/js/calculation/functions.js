@@ -5,7 +5,7 @@ import {globalInMean, globalLnSD} from "./constants";
 const getMean = function (data) {
   return data.reduce(function (a, b) {
     return Number(a) + Number(b);
-  }) / data.length;
+  }, 0) / data.length;
 };
 
 // Standard deviation

@@ -47,7 +47,7 @@ const getArrAvg = (arr) => {
 };
 
 const getNonBlankArr = (arr) => {
-  return arr.filter((item) => item !== '');
+  return arr.filter((item) => item !== '' && item !== 'NaN' && !isNaN(item));
 };
 
 const getNonBlankCount = (arr) => {
@@ -70,7 +70,6 @@ const downloadAsPng = (target, name) => {
 
 const downloadAsSvg = (target, name) => {
   function filter (node) {
-    console.log(node);
     return (node.tagName !== 'g');
   }
   htmlToImage.toSvgDataURL(document.getElementById(target), {filter: filter})

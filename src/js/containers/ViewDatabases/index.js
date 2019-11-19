@@ -43,7 +43,8 @@ const getTableHeader = (headings) => {
 };
 
 const getRowsProp = (rows) => {
-  return rows.map((item, index) => ({
+  let data = rows.length > 0 ? rows : [['', '', '', '', '', '', '', '', '', '']];
+  return data.map((item, index) => ({
     id: index,
     a1: item[0],
     a2: item[1],
@@ -176,6 +177,7 @@ function ViewDatabases({ websiteData, updateWebsiteData, calcResult }) {
             columnsProp={getTableHeader(websiteHeading)}
             onDataChange={onDataChange}
             className={`tbl-all-websites ${websiteData.length > 20 ? "has-scroll" : ""}`}
+            nonEmptyRowCount={websiteData.length}
           />
         </div>
       </div>
