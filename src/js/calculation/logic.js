@@ -70,7 +70,7 @@ export const getRawMeans = (data) => {
     rawMeansByQ.push({
       mean: rawMeanQ[index].toFixed(2),
       stdDev: stdDevQ[index].toFixed(2),
-      sampleSize: dataCount
+      sampleSize: getNonBlankCount(qColumnData[index])
     });
   });
 
@@ -123,7 +123,7 @@ export const getCalcResult = (data, calcMode, confLevel = 0.9, maxScore, globalI
     data.forEach((row) => {
       // supr-q
       if (row[0] && row[1] && row[2] && row[3] && row[4] && row[5] && row[6] && row[7]) {
-        subScales.suprQ.push((row[0] + row[1] + row[2] + row[3] + row[4] / 2 + row[5] + row[6] + row[7]) / 8);
+        subScales.suprQ.push(parseFloat(((row[0] + row[1] + row[2] + row[3] + row[4] / 2 + row[5] + row[6] + row[7]) / 8).toFixed(2)));
       } else {
         subScales.suprQ.push('');
       }
@@ -201,7 +201,7 @@ export const getCalcResult = (data, calcMode, confLevel = 0.9, maxScore, globalI
     testVar = testSD * testSD;
     sumVar = getArrSum(stdDevQ.map((item) => item * item));
     cronbachAlpha = N / DF * (1 - (sumVar / testVar));
-    internalReliability = cronbachAlpha > 0.7 ? 'Good' : 'Poor';
+    internalReliability = isNaN(cronbachAlpha) ? '' : cronbachAlpha > 0.7 ? 'Good' : 'Poor';
   }
 
   // get Percentile Ranks by Attribute, get Raw Scores by Attribute
@@ -275,7 +275,7 @@ export const getCalcResult = (data, calcMode, confLevel = 0.9, maxScore, globalI
       low: lowq.toFixed(2),
       high: highq.toFixed(2),
       stdDev: stdDevQ[index].toFixed(1),
-      sampleSize: dataCount
+      sampleSize: getNonBlankCount(qColumnData[index])
     });
   });
 

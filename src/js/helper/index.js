@@ -51,7 +51,7 @@ const getNonBlankArr = (arr) => {
 };
 
 const getNonBlankCount = (arr) => {
-  return arr.filter((item) => item !== '').length;
+  return arr.filter((item) => item !== '' && item !== 'NaN' && !isNaN(item)).length;
 };
 
 const getProFormat = (val, num) => {
