@@ -56,7 +56,6 @@ export const getRawMeans = (data) => {
   let rawMeanQ = [];
   let rawMeansByQ = [];
   let qColumnData = [...Array(8)].map(() => []);
-  const dataCount = data.length;
 
   data.forEach((row) => {
     // get question column Data

@@ -3,15 +3,25 @@ import connect from "react-redux/es/connect/connect";
 import { bindActionCreators } from "redux";
 import calcActions from "../../redux/calc/actions";
 import { md5 } from "../../helper/md5";
-import { exportJson } from "../../helper";
+import { exportJson, authCheck } from "../../helper";
 import "./style.css";
 
-function ManageSupr({ setConstantsData, updateWebsiteData, websiteData, maxScore, globalInMean, globalLnSD }) {
+function ManageSupr({
+  setConstantsData,
+  updateWebsiteData,
+  websiteData,
+  maxScore,
+  globalInMean,
+  globalLnSD,
+  curAdminPwd
+}) {
   const [tMaxScore, setTMaxScore] = React.useState(maxScore);
   const [tGlobalInMean, setTGlobalInMean] = React.useState(globalInMean);
   const [tGlobalLnSD, setTGlobalLnSD] = React.useState(globalLnSD);
   const fileInput = React.useRef();
   const [validation, setValidation] = React.useState([false, false, false]);
+  const [adminPwd, setAdminPwd] = React.useState('');
+  const [userPwd, setUserPwd] = React.useState('');
 
   React.useEffect(() => {
     setTMaxScore(maxScore);
@@ -119,47 +129,69 @@ function ManageSupr({ setConstantsData, updateWebsiteData, websiteData, maxScore
             <textarea value={tGlobalLnSD} onChange={(e) => setTGlobalLnSD(e.target.value)} className={validation[2] ? 'invalid' : ''} />
           </div>
         </div>
+        <h3 className="rating-card-heading">SET PASSWORD</h3>
+        <p>Set admin and user passwords.</p>
+        <div className="import-constants">
+          <div>
+            <p> - Current Admin</p>
+            <input type="password" value={curAdminPwd} onChange={(e) => setAdminPwd(e.target.value)} />
+          </div>
+          <div>
+            <p> - New Admin</p>
+            <input type="password" value={adminPwd} onChange={(e) => setAdminPwd(e.target.value)} />
+            <span> : {md5(adminPwd)}</span>
+          </div>
+          <div>
+            <p> - New User</p>
+            <input type="password" value={userPwd} onChange={(e) => setUserPwd(e.target.value)} />
+            <span> : {md5(userPwd)}</span>
+          </div>
+        </div>
         <div className="import-btn-container">
-          <button
-            className="btn-primary btn-set-data"
-            onClick={() => {
-              const v1 = getSplittedData(tMaxScore);
-              const v2 = getSplittedData(tGlobalInMean);
-              const v3 = getSplittedData(tGlobalLnSD);
-              const tWebsiteData = getSplittedData(websiteData);
-              if (v1 && v2 && v3) {
-                setConstantsData({
-                  tMaxScore: v1,
-                  tGlobalInMean: v2,
-                  tGlobalLnSD: v3,
-                });
-                alert('Imported Successfully!');
-              } else {
-                let errMsg = '';
-                let isValid = [false, false, false];
-                if (!v1) {
-                  errMsg += 'Max Score, ';
-                  isValid[0] = true;
-                }
-                if (!v2) {
-                  errMsg += 'Global In Mean, ';
-                  isValid[1] = true;
-                }
-                if (!v3) {
-                  errMsg += 'Global Ln SD, ';
-                  isValid[2] = true;
-                }
-                errMsg = errMsg.substr(0, errMsg.length - 2);
-                setValidation(isValid);
-                alert("Invalid data input! " + errMsg);
-              }
-            }}
-          >
-            Import
-          </button>
+          {/*<button*/}
+            {/*className="btn-primary btn-set-data"*/}
+            {/*onClick={() => {*/}
+              {/*const v1 = getSplittedData(tMaxScore);*/}
+              {/*const v2 = getSplittedData(tGlobalInMean);*/}
+              {/*const v3 = getSplittedData(tGlobalLnSD);*/}
+              {/*const tWebsiteData = getSplittedData(websiteData);*/}
+              {/*if (v1 && v2 && v3) {*/}
+                {/*setConstantsData({*/}
+                  {/*tMaxScore: v1,*/}
+                  {/*tGlobalInMean: v2,*/}
+                  {/*tGlobalLnSD: v3,*/}
+                {/*});*/}
+                {/*alert('Imported Successfully!');*/}
+              {/*} else {*/}
+                {/*let errMsg = '';*/}
+                {/*let isValid = [false, false, false];*/}
+                {/*if (!v1) {*/}
+                  {/*errMsg += 'Max Score, ';*/}
+                  {/*isValid[0] = true;*/}
+                {/*}*/}
+                {/*if (!v2) {*/}
+                  {/*errMsg += 'Global In Mean, ';*/}
+                  {/*isValid[1] = true;*/}
+                {/*}*/}
+                {/*if (!v3) {*/}
+                  {/*errMsg += 'Global Ln SD, ';*/}
+                  {/*isValid[2] = true;*/}
+                {/*}*/}
+                {/*errMsg = errMsg.substr(0, errMsg.length - 2);*/}
+                {/*setValidation(isValid);*/}
+                {/*alert("Invalid data input! " + errMsg);*/}
+              {/*}*/}
+            {/*}}*/}
+          {/*>*/}
+            {/*Import*/}
+          {/*</button>*/}
           <button
             className="btn-secondary"
             onClick={() => {
+              if (!authCheck(curAdminPwd, adminPwd, true)) {
+                alert('Incorrect Admin Password!');
+                return;
+              }
               const v1 = getSplittedData(tMaxScore);
               const v2 = getSplittedData(tGlobalInMean);
               const v3 = getSplittedData(tGlobalLnSD);
@@ -188,7 +220,16 @@ function ManageSupr({ setConstantsData, updateWebsiteData, websiteData, maxScore
           >
             Export to File
           </button>
-          <button className="btn-secondary btn-import-file" onClick={() => document.getElementById('file-input').click()}>
+          <button
+            className="btn-secondary btn-import-file"
+            onClick={() => {
+              if (!authCheck(curAdminPwd, adminPwd, true)) {
+                alert('Incorrect Admin Password!');
+                return;
+              }
+              document.getElementById('file-input').click();
+            }
+          }>
             <span>Import from File</span>
             <input id="file-input" type="file" ref={fileInput} />
           </button>
@@ -202,7 +243,8 @@ const mapStateToProps = (state) => ({
   maxScore: state.Calc.maxScore,
   globalInMean: state.Calc.globalInMean,
   globalLnSD: state.Calc.globalLnSD,
-  websiteData: state.Calc.websiteData
+  websiteData: state.Calc.websiteData,
+  curAdminPwd: state.Calc.curAdminPwd
 });
 
 const mapDispatchToProps = dispatch =>
