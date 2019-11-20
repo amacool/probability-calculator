@@ -59,10 +59,6 @@ function ManageSupr({ setConstantsData, updateWebsiteData, websiteData, maxScore
                 tGlobalLnSD: v3,
               });
               updateWebsiteData(tWebsiteData);
-              localStorage.setItem('tMaxScore', JSON.stringify(v1));
-              localStorage.setItem('tGlobalInMean', JSON.stringify(v2));
-              localStorage.setItem('tGlobalLnSD', JSON.stringify(v3));
-              localStorage.setItem('tWebsiteData', JSON.stringify(tWebsiteData));
               alert('Imported Successfully!');
             } else {
               let errMsg = '';
@@ -137,10 +133,6 @@ function ManageSupr({ setConstantsData, updateWebsiteData, websiteData, maxScore
                   tGlobalInMean: v2,
                   tGlobalLnSD: v3,
                 });
-                localStorage.setItem('tMaxScore', JSON.stringify(v1));
-                localStorage.setItem('tGlobalInMean', JSON.stringify(v2));
-                localStorage.setItem('tGlobalLnSD', JSON.stringify(v3));
-                localStorage.setItem('tWebsiteData', JSON.stringify(tWebsiteData));
                 alert('Imported Successfully!');
               } else {
                 let errMsg = '';

@@ -1,4 +1,5 @@
-import actions from './actions';
+import actions from "./actions";
+import { params } from "../../../calcParams";
 
 const rawData = [];
 const rawColumnOrder = [0, 1, 2, 3, 4, 5, 6, 7];
@@ -8,14 +9,14 @@ const emptySummaryData = [
   ['Sample Size', '', '', '', '', '', '']
 ];
 const summaryData = emptySummaryData;
-const websiteData = JSON.parse(localStorage.getItem('tWebsiteData')) || [];
+const websiteData = params.tWebsiteData;
 
 // Max Score
-const maxScore = JSON.parse(localStorage.getItem('tMaxScore')) || [];
+const maxScore = params.tMaxScore;
 // Global In Mean : SUPR-Q	Usability	Trust	Loyalty	App	Raw NPS
-const globalInMean = JSON.parse(localStorage.getItem('tGlobalInMean')) || [];
+const globalInMean = params.tGlobalInMean;
 // Global Ln SD : SUPR-Q	Usability	Trust	Loyalty	App	Raw NPS
-const globalLnSD = JSON.parse(localStorage.getItem('tGlobalLnSD')) || [];
+const globalLnSD = params.tGlobalLnSD;
 
 const initState = {
   rawData,
