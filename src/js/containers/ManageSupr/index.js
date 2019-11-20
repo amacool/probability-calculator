@@ -13,7 +13,7 @@ function ManageSupr({
   maxScore,
   globalInMean,
   globalLnSD,
-  curAdminPwd
+  hashedAdminPwd
 }) {
   const [tMaxScore, setTMaxScore] = React.useState(maxScore);
   const [tGlobalInMean, setTGlobalInMean] = React.useState(globalInMean);
@@ -21,6 +21,7 @@ function ManageSupr({
   const fileInput = React.useRef();
   const [validation, setValidation] = React.useState([false, false, false]);
   const [adminPwd, setAdminPwd] = React.useState('');
+  const [newAdminPwd, setNewAdminPwd] = React.useState('');
   const [userPwd, setUserPwd] = React.useState('');
 
   React.useEffect(() => {
@@ -133,18 +134,18 @@ function ManageSupr({
         <p>Set admin and user passwords.</p>
         <div className="import-constants">
           <div>
-            <p> - Current Admin</p>
-            <input type="password" value={curAdminPwd} onChange={(e) => setAdminPwd(e.target.value)} />
+            <p> - Current Admin Password</p>
+            <input type="password" value={adminPwd} onChange={(e) => setAdminPwd(e.target.value)} className={!adminPwd ? 'invalid' : ''} />
           </div>
           <div>
-            <p> - New Admin</p>
-            <input type="password" value={adminPwd} onChange={(e) => setAdminPwd(e.target.value)} />
-            <span> : {md5(adminPwd)}</span>
+            <p> - New Admin Password</p>
+            <input type="password" value={newAdminPwd} onChange={(e) => setNewAdminPwd(e.target.value)} className={!newAdminPwd ? 'invalid' : ''} />
+            <span> : {newAdminPwd && md5(newAdminPwd)}</span>
           </div>
           <div>
-            <p> - New User</p>
-            <input type="password" value={userPwd} onChange={(e) => setUserPwd(e.target.value)} />
-            <span> : {md5(userPwd)}</span>
+            <p> - New User Password</p>
+            <input type="password" value={userPwd} onChange={(e) => setUserPwd(e.target.value)} className={!userPwd ? 'invalid' : ''} />
+            <span> : {userPwd && md5(userPwd)}</span>
           </div>
         </div>
         <div className="import-btn-container">
@@ -188,8 +189,16 @@ function ManageSupr({
           <button
             className="btn-secondary"
             onClick={() => {
-              if (!authCheck(curAdminPwd, adminPwd, true)) {
+              if (!authCheck(hashedAdminPwd, adminPwd, true)) {
                 alert('Incorrect Admin Password!');
+                return;
+              }
+              if (!adminPwd) {
+                alert('Please Input Admin Password!');
+                return;
+              }
+              if (!userPwd) {
+                alert('Please Input User Password!');
                 return;
               }
               const v1 = getSplittedData(tMaxScore);
@@ -204,16 +213,21 @@ function ManageSupr({
                 });
               } else {
                 let errMsg = '';
+                let isValid = [false, false, false];
                 if (!v1) {
                   errMsg += 'Max Score, ';
+                  isValid[0] = true;
                 }
                 if (!v2) {
                   errMsg += 'Global In Mean, ';
+                  isValid[1] = true;
                 }
                 if (!v3) {
                   errMsg += 'Global Ln SD, ';
+                  isValid[2] = true;
                 }
                 errMsg = errMsg.substr(0, errMsg.length - 2);
+                setValidation(isValid);
                 alert("Invalid data input! " + errMsg);
               }
             }}
@@ -223,7 +237,7 @@ function ManageSupr({
           <button
             className="btn-secondary btn-import-file"
             onClick={() => {
-              if (!authCheck(curAdminPwd, adminPwd, true)) {
+              if (!authCheck(hashedAdminPwd, adminPwd, true)) {
                 alert('Incorrect Admin Password!');
                 return;
               }
