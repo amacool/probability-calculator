@@ -19,7 +19,6 @@ function ManageSupr({
   const [tGlobalInMean, setTGlobalInMean] = React.useState(globalInMean);
   const [tGlobalLnSD, setTGlobalLnSD] = React.useState(globalLnSD);
   const fileInput = React.useRef();
-  const [validation, setValidation] = React.useState([false, false, false]);
   const [adminPwd, setAdminPwd] = React.useState('');
   const [newAdminPwd, setNewAdminPwd] = React.useState('');
   const [userPwd, setUserPwd] = React.useState('');
@@ -119,15 +118,15 @@ function ManageSupr({
         <div className="import-constants">
           <div>
             <p> - Max Score</p>
-            <textarea value={tMaxScore} onChange={(e) => setTMaxScore(e.target.value)} className={validation[0] ? 'invalid' : ''} />
+            <textarea value={tMaxScore} onChange={(e) => setTMaxScore(e.target.value)} className={!getSplittedData(tMaxScore) ? 'invalid' : ''} />
           </div>
           <div>
             <p> - Global In Mean</p>
-            <textarea value={tGlobalInMean} onChange={(e) => setTGlobalInMean(e.target.value)} className={validation[1] ? 'invalid' : ''} />
+            <textarea value={tGlobalInMean} onChange={(e) => setTGlobalInMean(e.target.value)} className={!getSplittedData(tGlobalInMean) ? 'invalid' : ''} />
           </div>
           <div>
             <p> - Global Ln SD</p>
-            <textarea value={tGlobalLnSD} onChange={(e) => setTGlobalLnSD(e.target.value)} className={validation[2] ? 'invalid' : ''} />
+            <textarea value={tGlobalLnSD} onChange={(e) => setTGlobalLnSD(e.target.value)} className={!getSplittedData(tGlobalLnSD) ? 'invalid' : ''} />
           </div>
         </div>
         <h3 className="rating-card-heading">SET PASSWORD</h3>
@@ -140,12 +139,12 @@ function ManageSupr({
           <div>
             <p> - New Admin Password</p>
             <input type="password" value={newAdminPwd} onChange={(e) => setNewAdminPwd(e.target.value)} className={!newAdminPwd ? 'invalid' : ''} />
-            <span> : {newAdminPwd && md5(newAdminPwd)}</span>
+            <span>{newAdminPwd && md5(newAdminPwd)}</span>
           </div>
           <div>
             <p> - New User Password</p>
             <input type="password" value={userPwd} onChange={(e) => setUserPwd(e.target.value)} className={!userPwd ? 'invalid' : ''} />
-            <span> : {userPwd && md5(userPwd)}</span>
+            <span>{userPwd && md5(userPwd)}</span>
           </div>
         </div>
         <div className="import-btn-container">
@@ -165,21 +164,16 @@ function ManageSupr({
                 {/*alert('Imported Successfully!');*/}
               {/*} else {*/}
                 {/*let errMsg = '';*/}
-                {/*let isValid = [false, false, false];*/}
                 {/*if (!v1) {*/}
                   {/*errMsg += 'Max Score, ';*/}
-                  {/*isValid[0] = true;*/}
                 {/*}*/}
                 {/*if (!v2) {*/}
                   {/*errMsg += 'Global In Mean, ';*/}
-                  {/*isValid[1] = true;*/}
                 {/*}*/}
                 {/*if (!v3) {*/}
                   {/*errMsg += 'Global Ln SD, ';*/}
-                  {/*isValid[2] = true;*/}
                 {/*}*/}
                 {/*errMsg = errMsg.substr(0, errMsg.length - 2);*/}
-                {/*setValidation(isValid);*/}
                 {/*alert("Invalid data input! " + errMsg);*/}
               {/*}*/}
             {/*}}*/}
@@ -193,7 +187,7 @@ function ManageSupr({
                 alert('Incorrect Admin Password!');
                 return;
               }
-              if (!adminPwd) {
+              if (!newAdminPwd) {
                 alert('Please Input Admin Password!');
                 return;
               }
@@ -209,25 +203,22 @@ function ManageSupr({
                   tMaxScore: v1,
                   tGlobalInMean: v2,
                   tGlobalLnSD: v3,
-                  tWebsiteData: websiteData
+                  tWebsiteData: websiteData,
+                  hashedAdminPwd: md5(newAdminPwd),
+                  hashedUserPwd: md5(userPwd)
                 });
               } else {
                 let errMsg = '';
-                let isValid = [false, false, false];
                 if (!v1) {
                   errMsg += 'Max Score, ';
-                  isValid[0] = true;
                 }
                 if (!v2) {
                   errMsg += 'Global In Mean, ';
-                  isValid[1] = true;
                 }
                 if (!v3) {
                   errMsg += 'Global Ln SD, ';
-                  isValid[2] = true;
                 }
                 errMsg = errMsg.substr(0, errMsg.length - 2);
-                setValidation(isValid);
                 alert("Invalid data input! " + errMsg);
               }
             }}
@@ -258,7 +249,7 @@ const mapStateToProps = (state) => ({
   globalInMean: state.Calc.globalInMean,
   globalLnSD: state.Calc.globalLnSD,
   websiteData: state.Calc.websiteData,
-  curAdminPwd: state.Calc.curAdminPwd
+  hashedAdminPwd: state.Calc.hashedAdminPwd
 });
 
 const mapDispatchToProps = dispatch =>

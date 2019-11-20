@@ -18,6 +18,9 @@ const globalInMean = params.tGlobalInMean;
 // Global Ln SD : SUPR-Q	Usability	Trust	Loyalty	App	Raw NPS
 const globalLnSD = params.tGlobalLnSD;
 
+const hashedAdminPwd = params.hashedAdminPwd;
+const hashedUserPwd = params.hashedUserPwd;
+
 const initState = {
   rawData,
   rawColumnOrder,
@@ -27,7 +30,9 @@ const initState = {
   calcResult: null,
   maxScore,
   globalInMean,
-  globalLnSD
+  globalLnSD,
+  hashedAdminPwd,
+  hashedUserPwd
 };
 
 export default function calcReducer(state = initState, { type, payload }) {

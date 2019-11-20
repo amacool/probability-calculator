@@ -4,6 +4,8 @@
   width: calc(100% - 22px);
   font-size: 20px;
   height: 30px;
+  outline: none;
+  border-width: 2px;
 }
 
 .import-constants textarea.invalid {
@@ -16,8 +18,9 @@
   width: 30%;
   font-size: 20px;
   height: 30px;
-  border: solid 1px #a9a9a9;
+  border: solid 2px #a9a9a9;
   outline: none;
+  margin-right: 20px;
 }
 
 .import-constants input.invalid {
