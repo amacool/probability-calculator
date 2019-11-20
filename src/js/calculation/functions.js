@@ -1,5 +1,4 @@
 import { tinv } from "./ibetainv";
-import {globalInMean, globalLnSD} from "./constants";
 
 // Arithmetic mean
 const getMean = function (data) {
@@ -120,7 +119,7 @@ const npsgroups = (vals, type) => {
 	return nps_count;
 };
 
-const calcNPS = (q5, z) => {
+const calcNPS = (q5, z, globalInMean, globalLnSD) => {
   var numNPS = q5.length;
   var promoters = npsgroups (q5, 'p');
   var passives = npsgroups (q5, 'v');
