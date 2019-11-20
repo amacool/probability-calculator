@@ -183,7 +183,7 @@ function ManageSupr({
           <button
             className="btn-secondary"
             onClick={() => {
-              if (!authCheck(hashedAdminPwd, adminPwd, true)) {
+              if (!authCheck(hashedAdminPwd, adminPwd)) {
                 alert('Incorrect Admin Password!');
                 return;
               }
@@ -228,7 +228,7 @@ function ManageSupr({
           <button
             className="btn-secondary btn-import-file"
             onClick={() => {
-              if (!authCheck(hashedAdminPwd, adminPwd, true)) {
+              if (!authCheck(hashedAdminPwd, adminPwd)) {
                 alert('Incorrect Admin Password!');
                 return;
               }

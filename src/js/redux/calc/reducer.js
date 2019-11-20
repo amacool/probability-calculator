@@ -32,7 +32,8 @@ const initState = {
   globalInMean,
   globalLnSD,
   hashedAdminPwd,
-  hashedUserPwd
+  hashedUserPwd,
+  isAuthenticated: false
 };
 
 export default function calcReducer(state = initState, { type, payload }) {
@@ -98,6 +99,13 @@ export default function calcReducer(state = initState, { type, payload }) {
         maxScore: payload.tMaxScore,
         globalInMean: payload.tGlobalInMean,
         globalLnSD: payload.tGlobalLnSD,
+      };
+
+    case actions.SET_AUTHENTICATION:
+      console.log(payload);
+      return {
+        ...state,
+        isAuthenticated: payload
       };
 
     default:

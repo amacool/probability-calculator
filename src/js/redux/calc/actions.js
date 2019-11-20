@@ -9,6 +9,7 @@ const calcActions = {
   UPDATE_WEBSITE_DATA: 'UPDATE_WEBSITE_DATA',
   GET_CONSTANTS_DATA: 'GET_CONSTANTS_DATA',
   SET_CONSTANTS_DATA: 'SET_CONSTANTS_DATA',
+  SET_AUTHENTICATION: 'SET_AUTHENTICATION',
 
   updateRawData: (data) => ({ type: calcActions.UPDATE_RAW_DATA, payload: data }),
   updateColumnOrder: (data) => ({ type: calcActions.UPDATE_COLUMN_ORDER, payload: data }),
@@ -24,6 +25,8 @@ const calcActions = {
 
   setConstantsData: (data) => ({ type: calcActions.SET_CONSTANTS_DATA, payload: data }),
   getConstantsData: () => ({ type: calcActions.GET_CONSTANTS_DATA }),
+
+  setAuthentication: (data) => ({ type: calcActions.SET_AUTHENTICATION, payload: data }),
 };
 
 export default calcActions;
