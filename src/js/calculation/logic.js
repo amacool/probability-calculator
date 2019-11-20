@@ -238,7 +238,7 @@ export const getCalcResult = (data, calcMode, confLevel = 0.9, maxScore, globalI
   });
 
   // get NPS values
-  const { npsMean, npsLow, npsHigh, npsProLow, npsProHigh } = calcNPS(qColumnData[4], z);
+  const { npsMean, npsLow, npsHigh, npsProLow, npsProHigh } = calcNPS(qColumnData[4], z, globalInMean, globalLnSD);
   percentileRanksBA.push({
     mean: '-',
     low: getProFormat(npsProLow, acc),
