@@ -4,7 +4,7 @@ import { bindActionCreators } from "redux";
 import pathActions from "../../redux/path/actions";
 import "./style.css";
 
-function NavTopHeader({ path, calcMode, setPath }) {
+function NavTopHeader({ path, calcMode, setPath, isAuthenticated }) {
   return (
     <div className="nav-header">
       <div className="left">
@@ -25,7 +25,7 @@ function NavTopHeader({ path, calcMode, setPath }) {
       <div className="right">
         <button onClick={() => setPath('view-databases')} className={`btn-nav ${path === 'view-databases' ? 'active' : ''}`}>All Websites</button>
         <button onClick={() => setPath('about')} className={`btn-nav ${path === 'about' ? 'active' : ''}`}>About the SUPR-Q</button>
-        <button onClick={() => setPath('manage-supr')} className={`btn-nav ${path === 'manage-supr' ? 'active' : ''}`}>Manage SUPR-Q</button>
+        {isAuthenticated === 1 && <button onClick={() => setPath('manage-supr')} className={`btn-nav ${path === 'manage-supr' ? 'active' : ''}`}>Manage SUPR-Q</button>}
       </div>
     </div>
   );
@@ -33,7 +33,8 @@ function NavTopHeader({ path, calcMode, setPath }) {
 
 const mapStateToProps = (state) => ({
   path: state.Path.path,
-  calcMode: state.Calc.calcMode
+  calcMode: state.Calc.calcMode,
+  isAuthenticated: state.Calc.isAuthenticated
 });
 
 const mapDispatchToProps = dispatch =>

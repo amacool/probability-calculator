@@ -13,7 +13,9 @@ function ManageSupr({
   maxScore,
   globalInMean,
   globalLnSD,
-  hashedAdminPwd
+  isAuthenticated,
+  hashedAdminPwd,
+  setAuthentication
 }) {
   const [tMaxScore, setTMaxScore] = React.useState(maxScore);
   const [tGlobalInMean, setTGlobalInMean] = React.useState(globalInMean);
@@ -22,12 +24,22 @@ function ManageSupr({
   const [adminPwd, setAdminPwd] = React.useState('');
   const [newAdminPwd, setNewAdminPwd] = React.useState('');
   const [userPwd, setUserPwd] = React.useState('');
+  const [password, setPassword] = React.useState('');
 
   React.useEffect(() => {
     setTMaxScore(maxScore);
     setTGlobalInMean(globalInMean);
     setTGlobalLnSD(globalLnSD);
   }, [maxScore, globalInMean, globalLnSD]);
+
+  const handleLogIn = () => {
+    const isAdmin = authCheck(hashedAdminPwd, password);
+    if (!isAdmin) {
+      alert('Incorrect Password!');
+    } else {
+      setAuthentication(isAdmin ? 1 : 2);
+    }
+  };
 
   const getSplittedData = (data) => {
     if (typeof data === "object") {
@@ -102,144 +114,162 @@ function ManageSupr({
 
   return (
     <div>
-      <div className="content-header">
-        <div>
-          <h2>Manage SUPR-Q</h2>
-          <p>
-            Import predefined calculation variables and websites data.
-            <br/>
-            Set authorization to the app.
-          </p>
-        </div>
-      </div>
-      <div className="content-body">
-        <h3 className="rating-card-heading">IMPORT & EXPORT DATA</h3>
-        <p>Separate values by comma(,) or copy and paste from excel.</p>
-        <div className="import-constants">
-          <div>
-            <p> - Max Score</p>
-            <textarea value={tMaxScore} onChange={(e) => setTMaxScore(e.target.value)} className={!getSplittedData(tMaxScore) ? 'invalid' : ''} />
+      {isAuthenticated ? (
+        <>
+          <div className="content-header">
+            <div>
+              <h2>Manage SUPR-Q</h2>
+              <p>
+                Import predefined calculation variables and websites data.
+                <br/>
+                Set authorization to the app.
+              </p>
+            </div>
           </div>
-          <div>
-            <p> - Global In Mean</p>
-            <textarea value={tGlobalInMean} onChange={(e) => setTGlobalInMean(e.target.value)} className={!getSplittedData(tGlobalInMean) ? 'invalid' : ''} />
-          </div>
-          <div>
-            <p> - Global Ln SD</p>
-            <textarea value={tGlobalLnSD} onChange={(e) => setTGlobalLnSD(e.target.value)} className={!getSplittedData(tGlobalLnSD) ? 'invalid' : ''} />
-          </div>
-        </div>
-        <h3 className="rating-card-heading">SET PASSWORD</h3>
-        <p>Set admin and user passwords.</p>
-        <div className="import-constants">
-          <div>
-            <p> - Current Admin Password</p>
-            <input type="password" value={adminPwd} onChange={(e) => setAdminPwd(e.target.value)} className={!adminPwd ? 'invalid' : ''} />
-          </div>
-          <div>
-            <p> - New Admin Password</p>
-            <input type="password" value={newAdminPwd} onChange={(e) => setNewAdminPwd(e.target.value)} className={!newAdminPwd ? 'invalid' : ''} />
-            <span>{newAdminPwd && md5(newAdminPwd)}</span>
-          </div>
-          <div>
-            <p> - New User Password</p>
-            <input type="password" value={userPwd} onChange={(e) => setUserPwd(e.target.value)} className={!userPwd ? 'invalid' : ''} />
-            <span>{userPwd && md5(userPwd)}</span>
-          </div>
-        </div>
-        <div className="import-btn-container">
-          {/*<button*/}
-            {/*className="btn-primary btn-set-data"*/}
-            {/*onClick={() => {*/}
-              {/*const v1 = getSplittedData(tMaxScore);*/}
-              {/*const v2 = getSplittedData(tGlobalInMean);*/}
-              {/*const v3 = getSplittedData(tGlobalLnSD);*/}
-              {/*const tWebsiteData = getSplittedData(websiteData);*/}
-              {/*if (v1 && v2 && v3) {*/}
-                {/*setConstantsData({*/}
-                  {/*tMaxScore: v1,*/}
-                  {/*tGlobalInMean: v2,*/}
-                  {/*tGlobalLnSD: v3,*/}
-                {/*});*/}
-                {/*alert('Imported Successfully!');*/}
-              {/*} else {*/}
-                {/*let errMsg = '';*/}
-                {/*if (!v1) {*/}
-                  {/*errMsg += 'Max Score, ';*/}
-                {/*}*/}
-                {/*if (!v2) {*/}
-                  {/*errMsg += 'Global In Mean, ';*/}
-                {/*}*/}
-                {/*if (!v3) {*/}
-                  {/*errMsg += 'Global Ln SD, ';*/}
-                {/*}*/}
-                {/*errMsg = errMsg.substr(0, errMsg.length - 2);*/}
-                {/*alert("Invalid data input! " + errMsg);*/}
-              {/*}*/}
-            {/*}}*/}
-          {/*>*/}
-            {/*Import*/}
-          {/*</button>*/}
-          <button
-            className="btn-secondary"
-            onClick={() => {
-              if (!authCheck(hashedAdminPwd, adminPwd)) {
-                alert('Incorrect Admin Password!');
-                return;
-              }
-              if (!newAdminPwd) {
-                alert('Please Input Admin Password!');
-                return;
-              }
-              if (!userPwd) {
-                alert('Please Input User Password!');
-                return;
-              }
-              const v1 = getSplittedData(tMaxScore);
-              const v2 = getSplittedData(tGlobalInMean);
-              const v3 = getSplittedData(tGlobalLnSD);
-              if (v1 && v2 && v3) {
-                exportJson({
-                  tMaxScore: v1,
-                  tGlobalInMean: v2,
-                  tGlobalLnSD: v3,
-                  tWebsiteData: websiteData,
-                  hashedAdminPwd: md5(newAdminPwd),
-                  hashedUserPwd: md5(userPwd)
-                });
-              } else {
-                let errMsg = '';
-                if (!v1) {
-                  errMsg += 'Max Score, ';
+          <div className="content-body">
+            <h3 className="rating-card-heading">IMPORT & EXPORT DATA</h3>
+            <p>Separate values by comma(,) or copy and paste from excel.</p>
+            <div className="import-constants">
+              <div>
+                <p> - Max Score</p>
+                <textarea value={tMaxScore} onChange={(e) => setTMaxScore(e.target.value)} className={!getSplittedData(tMaxScore) ? 'invalid' : ''} />
+              </div>
+              <div>
+                <p> - Global In Mean</p>
+                <textarea value={tGlobalInMean} onChange={(e) => setTGlobalInMean(e.target.value)} className={!getSplittedData(tGlobalInMean) ? 'invalid' : ''} />
+              </div>
+              <div>
+                <p> - Global Ln SD</p>
+                <textarea value={tGlobalLnSD} onChange={(e) => setTGlobalLnSD(e.target.value)} className={!getSplittedData(tGlobalLnSD) ? 'invalid' : ''} />
+              </div>
+            </div>
+            <h3 className="rating-card-heading">SET PASSWORD</h3>
+            <p>Set admin and user passwords.</p>
+            <div className="import-constants">
+              <div>
+                <p> - Current Admin Password</p>
+                <input type="password" value={adminPwd} onChange={(e) => setAdminPwd(e.target.value)} className={!adminPwd ? 'invalid' : ''} />
+              </div>
+              <div>
+                <p> - New Admin Password</p>
+                <input type="password" value={newAdminPwd} onChange={(e) => setNewAdminPwd(e.target.value)} className={!newAdminPwd ? 'invalid' : ''} />
+                <span>{newAdminPwd && md5(newAdminPwd)}</span>
+              </div>
+              <div>
+                <p> - New User Password</p>
+                <input type="password" value={userPwd} onChange={(e) => setUserPwd(e.target.value)} className={!userPwd ? 'invalid' : ''} />
+                <span>{userPwd && md5(userPwd)}</span>
+              </div>
+            </div>
+            <div className="import-btn-container">
+              {/*<button*/}
+                {/*className="btn-primary btn-set-data"*/}
+                {/*onClick={() => {*/}
+                  {/*const v1 = getSplittedData(tMaxScore);*/}
+                  {/*const v2 = getSplittedData(tGlobalInMean);*/}
+                  {/*const v3 = getSplittedData(tGlobalLnSD);*/}
+                  {/*const tWebsiteData = getSplittedData(websiteData);*/}
+                  {/*if (v1 && v2 && v3) {*/}
+                    {/*setConstantsData({*/}
+                      {/*tMaxScore: v1,*/}
+                      {/*tGlobalInMean: v2,*/}
+                      {/*tGlobalLnSD: v3,*/}
+                    {/*});*/}
+                    {/*alert('Imported Successfully!');*/}
+                  {/*} else {*/}
+                    {/*let errMsg = '';*/}
+                    {/*if (!v1) {*/}
+                      {/*errMsg += 'Max Score, ';*/}
+                    {/*}*/}
+                    {/*if (!v2) {*/}
+                      {/*errMsg += 'Global In Mean, ';*/}
+                    {/*}*/}
+                    {/*if (!v3) {*/}
+                      {/*errMsg += 'Global Ln SD, ';*/}
+                    {/*}*/}
+                    {/*errMsg = errMsg.substr(0, errMsg.length - 2);*/}
+                    {/*alert("Invalid data input! " + errMsg);*/}
+                  {/*}*/}
+                {/*}}*/}
+              {/*>*/}
+                {/*Import*/}
+              {/*</button>*/}
+              <button
+                className="btn-secondary"
+                onClick={() => {
+                  if (!authCheck(hashedAdminPwd, adminPwd)) {
+                    alert('Incorrect Admin Password!');
+                    return;
+                  }
+                  if (!newAdminPwd) {
+                    alert('Please Input Admin Password!');
+                    return;
+                  }
+                  if (!userPwd) {
+                    alert('Please Input User Password!');
+                    return;
+                  }
+                  const v1 = getSplittedData(tMaxScore);
+                  const v2 = getSplittedData(tGlobalInMean);
+                  const v3 = getSplittedData(tGlobalLnSD);
+                  if (v1 && v2 && v3) {
+                    exportJson({
+                      tMaxScore: v1,
+                      tGlobalInMean: v2,
+                      tGlobalLnSD: v3,
+                      tWebsiteData: websiteData,
+                      hashedAdminPwd: md5(newAdminPwd),
+                      hashedUserPwd: md5(userPwd)
+                    });
+                  } else {
+                    let errMsg = '';
+                    if (!v1) {
+                      errMsg += 'Max Score, ';
+                    }
+                    if (!v2) {
+                      errMsg += 'Global In Mean, ';
+                    }
+                    if (!v3) {
+                      errMsg += 'Global Ln SD, ';
+                    }
+                    errMsg = errMsg.substr(0, errMsg.length - 2);
+                    alert("Invalid data input! " + errMsg);
+                  }
+                }}
+              >
+                Export to File
+              </button>
+              <button
+                className="btn-secondary btn-import-file"
+                onClick={() => {
+                  if (!authCheck(hashedAdminPwd, adminPwd)) {
+                    alert('Incorrect Admin Password!');
+                    return;
+                  }
+                  document.getElementById('file-input').click();
                 }
-                if (!v2) {
-                  errMsg += 'Global In Mean, ';
+              }>
+                <span>Import from File</span>
+                <input id="file-input" type="file" ref={fileInput} />
+              </button>
+            </div>
+          </div>
+        </>) : (
+          <div className="login-wrapper">
+            <span>Please input password.</span>
+            <input
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              onKeyDown={e => {
+                if (e.keyCode === 13) {
+                  handleLogIn();
                 }
-                if (!v3) {
-                  errMsg += 'Global Ln SD, ';
-                }
-                errMsg = errMsg.substr(0, errMsg.length - 2);
-                alert("Invalid data input! " + errMsg);
-              }
-            }}
-          >
-            Export to File
-          </button>
-          <button
-            className="btn-secondary btn-import-file"
-            onClick={() => {
-              if (!authCheck(hashedAdminPwd, adminPwd)) {
-                alert('Incorrect Admin Password!');
-                return;
-              }
-              document.getElementById('file-input').click();
-            }
-          }>
-            <span>Import from File</span>
-            <input id="file-input" type="file" ref={fileInput} />
-          </button>
-        </div>
-      </div>
+              }}
+            />
+            <button onClick={handleLogIn}>Sign In</button>
+          </div>
+        )}
     </div>
   );
 }
@@ -249,14 +279,16 @@ const mapStateToProps = (state) => ({
   globalInMean: state.Calc.globalInMean,
   globalLnSD: state.Calc.globalLnSD,
   websiteData: state.Calc.websiteData,
-  hashedAdminPwd: state.Calc.hashedAdminPwd
+  hashedAdminPwd: state.Calc.hashedAdminPwd,
+  isAuthenticated: state.Calc.isAuthenticated
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       setConstantsData: (data) => calcActions.setConstantsData(data),
-      updateWebsiteData: (data) => calcActions.updateWebsiteData(data)
+      updateWebsiteData: (data) => calcActions.updateWebsiteData(data),
+      setAuthentication: (data) => calcActions.setAuthentication(data)
     },
     dispatch
   );

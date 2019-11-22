@@ -12,34 +12,3 @@
   padding: 50px 100px 80px;
   text-align: left;
 }
-
-.login-wrapper {
-  width: 350px;
-  margin: 0 auto;
-}
-
-.login-wrapper span {
-  margin-bottom: 15px;
-}
-
-.login-wrapper input {
-  border-radius: 5px;
-  padding: 10px;
-  font-size: 20px;
-  height: 30px;
-  border: solid 2px #a9a9a9;
-  outline: none;
-  width: calc(100% - 24px);
-  margin-top: 15px;
-  text-align: center;
-}
-
-.login-wrapper button {
-  width: 100%;
-  padding: 10px;
-  font-size: 25px;
-  border-radius: 0;
-  background-color: #335588;
-  color: white;
-  margin: 20px auto;
-}
