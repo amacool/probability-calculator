@@ -11,6 +11,7 @@ function Home({
   path,
   setPath,
   setCalcMode,
+  isAuthenticated
 }) {
   return (
     <div className="container home-container">
@@ -47,6 +48,7 @@ function Home({
           </button>
           <button onClick={() => setPath('view-results')} className={`${path === 'enter-raw' ? 'active' : ''}`}>View Results Dashboard</button>
           <button onClick={() => setPath('view-databases')} className={`${path === 'enter-raw' ? 'active' : ''}`}>View Database for All Websites</button>
+          {isAuthenticated === 1 && <button onClick={() => setPath('manage-supr')} className={`${path === 'manage-supr' ? 'active' : ''}`}>Manage SUPR-Q</button>}
           <button onClick={() => setPath('about')} className={`${path === 'enter-raw' ? 'active' : ''}`}>About the SUPR-Q</button>
         </div>
       </div>

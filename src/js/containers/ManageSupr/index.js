@@ -162,38 +162,6 @@ function ManageSupr({
               </div>
             </div>
             <div className="import-btn-container">
-              {/*<button*/}
-                {/*className="btn-primary btn-set-data"*/}
-                {/*onClick={() => {*/}
-                  {/*const v1 = getSplittedData(tMaxScore);*/}
-                  {/*const v2 = getSplittedData(tGlobalInMean);*/}
-                  {/*const v3 = getSplittedData(tGlobalLnSD);*/}
-                  {/*const tWebsiteData = getSplittedData(websiteData);*/}
-                  {/*if (v1 && v2 && v3) {*/}
-                    {/*setConstantsData({*/}
-                      {/*tMaxScore: v1,*/}
-                      {/*tGlobalInMean: v2,*/}
-                      {/*tGlobalLnSD: v3,*/}
-                    {/*});*/}
-                    {/*alert('Imported Successfully!');*/}
-                  {/*} else {*/}
-                    {/*let errMsg = '';*/}
-                    {/*if (!v1) {*/}
-                      {/*errMsg += 'Max Score, ';*/}
-                    {/*}*/}
-                    {/*if (!v2) {*/}
-                      {/*errMsg += 'Global In Mean, ';*/}
-                    {/*}*/}
-                    {/*if (!v3) {*/}
-                      {/*errMsg += 'Global Ln SD, ';*/}
-                    {/*}*/}
-                    {/*errMsg = errMsg.substr(0, errMsg.length - 2);*/}
-                    {/*alert("Invalid data input! " + errMsg);*/}
-                  {/*}*/}
-                {/*}}*/}
-              {/*>*/}
-                {/*Import*/}
-              {/*</button>*/}
               <button
                 className="btn-secondary"
                 onClick={() => {

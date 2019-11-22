@@ -5,6 +5,7 @@ import pathActions from "../../redux/path/actions";
 import { summaryHeading } from "../../constants";
 import FreeEditableTable from "../../components/CustomTable/FreeEditableTable";
 import calcActions from "../../redux/calc/actions";
+import "./style.css";
 
 const getTableHeader = (headings) => {
   return headings.map((heading, key) => ({
@@ -16,13 +17,15 @@ const getTableHeader = (headings) => {
     },
     headerStyle : (column, colIndex) => {
       if (colIndex === 1) {
-        return { backgroundColor: '#8aa7d7' };
+        return { backgroundColor: '#8aa7d7', width: '12%' };
       }
+      return { width: '12%' };
     },
     style: function callback(cell, row, rowIndex, colIndex) {
       if (colIndex === 0) {
-        return { backgroundColor: '#d4d4d4', border: "solid 1px #c4c4c4" };
+        return { backgroundColor: '#d4d4d4', border: "solid 1px #c4c4c4", width: '12%' };
       }
+      return { width: '12%' };
     },
     editable: function callback(cell, row, rowIndex, colIndex) {
       return colIndex !== 0;
@@ -134,7 +137,8 @@ function EnterSummaryData({
             rowsProp={includeAttr ? getRowsProp(summaryData) : getReducedRowsProp(summaryData)}
             columnsProp={getTableHeader(includeAttr ? summaryHeading : summaryHeading.slice(0, 2))}
             onDataChange={onDataChange}
-            className="editable"
+            className="tbl-summary editable"
+            nonEmptyRowCount={3}
           />
           <button className="btn-secondary btn-view-results"
             onClick={() => {

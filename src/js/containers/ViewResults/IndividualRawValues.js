@@ -22,8 +22,11 @@ const getTableHeader = (headings) => {
     sort: false,
     headerStyle : (column, colIndex) => {
       if (colIndex === 0) {
-        return { backgroundColor: '#8aa7d7' };
+        return { backgroundColor: '#8aa7d7', width: '12%' };
       }
+    },
+    style: function callback() {
+      return { width: '12%' };
     },
     editable: false,
     classes: function callback(cell, row, rowIndex, colIndex) {

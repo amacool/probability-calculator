@@ -251,7 +251,7 @@ function EnterRawData({
             rowsProp={getRowsProp(100, getFormatedRawData(rawData, 0), columnOrder)}
             columnsProp={getTableHeader(columnOrder, preCalcResult)}
             onDataChange={onDataChange}
-            className="tall has-scroll editable"
+            className="tbl-raw-data tall has-scroll editable"
             nonEmptyRowCount={rawData.length}
           />
           <button

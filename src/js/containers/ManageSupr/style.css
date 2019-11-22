@@ -55,7 +55,8 @@
 
 .login-wrapper {
   width: 350px;
-  margin: 0 auto;
+  margin: 150px auto 0;
+  text-align: center;
 }
 
 .login-wrapper span {
@@ -82,4 +83,6 @@
   background-color: #335588;
   color: white;
   margin: 20px auto;
+  border: none;
+  cursor: pointer;
 }

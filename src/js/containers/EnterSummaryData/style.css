@@ -1,0 +1,4 @@
+.tbl-summary .react-bootstrap-table tbody tr td.react-bootstrap-table-editing-cell {
+  max-width: 12% !important;
+  width: 12% !important;
+}

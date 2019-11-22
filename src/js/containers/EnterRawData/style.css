@@ -63,3 +63,8 @@
   width: 100%;
   height: 300px;
 }
+
+.tbl-raw-data .react-bootstrap-table tbody tr td.react-bootstrap-table-editing-cell {
+  max-width: 12% !important;
+  width: 12% !important;
+}
