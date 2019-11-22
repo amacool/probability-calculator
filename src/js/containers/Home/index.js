@@ -43,7 +43,7 @@ function Home({
             }}
             className={`enter-data ${path === 'enter-raw' ? 'active' : ''}`}
           >
-          Enter Summary Data
+            Enter Summary Data
           </button>
           <button onClick={() => setPath('view-results')} className={`${path === 'enter-raw' ? 'active' : ''}`}>View Results Dashboard</button>
           <button onClick={() => setPath('view-databases')} className={`${path === 'enter-raw' ? 'active' : ''}`}>View Database for All Websites</button>

@@ -1,13 +1,19 @@
 import React from "react";
+import { bindActionCreators } from "redux";
+import connect from "react-redux/es/connect/connect";
 import { RatingAttrCard } from "./RatingAttrCard";
+import pathActions from "../../redux/path/actions";
 import "./style.css";
 
-export default function About() {
+function About({ setPath }) {
   return (
     <div>
       <div className="content-header">
         <div>
-          <h2>About the SUPR-Q</h2>
+          <div className="about-header">
+            <h2>About the SUPR-Q</h2>
+            <button className="btn-secondary" onClick={() => setPath('manage-supr')}>Manage SUPR-Q</button>
+          </div>
           <p>
             The SUPR-Q (Standardized User Experience Percentile Rank Questionnaire) is a psychometrically valid and reliable 8-item questionnaire that measures the critical aspects of the website user-experience: usability, credibility, loyalty and appearance.<br/>
             <br/>
@@ -62,3 +68,13 @@ export default function About() {
     </div>
   );
 }
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      setPath: (data) => pathActions.setPath(data),
+    },
+    dispatch
+  );
+
+export default connect(null, mapDispatchToProps)(About);

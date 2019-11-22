@@ -64,7 +64,6 @@ function EnterSummaryData({
   setCalcMode
 }) {
   const [includeAttr, setIncludeAttr] = React.useState(calcMode === 'summary-all');
-  console.log(calcMode);
 
   const onDataChange = (newRow, newValue, colId) => {
     const rowId = newRow.id;

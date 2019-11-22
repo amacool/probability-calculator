@@ -62,7 +62,7 @@ function ManageSupr({
   };
 
   React.useEffect(() => {
-    fileInput.current.addEventListener('change', function() {
+    fileInput.current && fileInput.current.addEventListener('change', function() {
       let file = fileInput.current.files[0];
       if (!file) return;
       if (file.name.match(/\.(json)$/)) {

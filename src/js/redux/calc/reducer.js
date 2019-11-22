@@ -102,7 +102,6 @@ export default function calcReducer(state = initState, { type, payload }) {
       };
 
     case actions.SET_AUTHENTICATION:
-      console.log(payload);
       return {
         ...state,
         isAuthenticated: payload
