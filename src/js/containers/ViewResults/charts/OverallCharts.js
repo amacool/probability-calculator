@@ -128,7 +128,6 @@ export const drawOverallRawScoreChart = function({
     x: parseFloat((0.1 * index).toFixed(1)),
     y: 0
   }));
-  let ratio = (chartWidth / chartHeight) * (100 / 4);
   let historicalIndex = parseInt(((Math.max(1, historicalAvgScore.toFixed(1)) / 0.1).toFixed(1) - 10).toFixed(1));
   dataset[historicalIndex].y = 50;
   let rawScoreIndex = rawScore ? parseInt(((Math.max(1, rawScore.toFixed(1)) / 0.1).toFixed(1) - 10).toFixed(1)) : null;
@@ -165,7 +164,6 @@ export const drawOverallRawScoreChart = function({
   lineDataSet[historicalIndexOnLine] = { x: historicalAvgScore - 1, y: 50 };
 
   // The number of datapoints
-  let n = 40;
   let countY = 5;
 
   // 5. X scale will use the index of our data

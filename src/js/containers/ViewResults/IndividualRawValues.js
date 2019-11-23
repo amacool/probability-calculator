@@ -42,6 +42,8 @@ const getRowsProp = (initialRowCount, rows) => {
 
 export const IndividualRawValues = ({ result }) => {
   const [visible, setVisible] = React.useState(true);
+  console.log(result);
+  console.log(summaryHeading);
   return (
     <div className="result-container">
       <ResultHeader
@@ -58,7 +60,7 @@ export const IndividualRawValues = ({ result }) => {
               className="short tbl-individual-raw-values has-scroll"
             />
             <div className="export-btn-container">
-              <button className="btn-primary btn-clear-value" onClick={() => exportTable(result)}>Export Table</button>
+              <button className="btn-primary btn-clear-value" onClick={() => exportTable([summaryHeading.slice(1), ...result])}>Export Table</button>
             </div>
           </div>
           <div className="">Rows correspond to order entered under Raw Data Entry</div>

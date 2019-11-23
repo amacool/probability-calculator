@@ -1,5 +1,5 @@
 import React from "react";
-import { downloadAsPng, downloadAsSvg } from "../../helper";
+import { downloadAsPng } from "../../helper";
 import { ResultHeader } from "./ResultHeader";
 
 export const OverallSupr = ({ result, confLevel, drawChart }) => {
