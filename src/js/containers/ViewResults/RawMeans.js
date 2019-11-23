@@ -25,8 +25,8 @@ export const RawMeans = ({ result, drawChart }) => {
                 <th className="tg-cly1 cell-dark-grey" rowSpan="2"></th>
                 <th className="tg-cly1 cell-light-blue" rowSpan="2">Raw Mean</th>
                 <th className="tg-cly1 cell-dark-grey" colSpan="2">Confidence Interval</th>
-                <th className="tg-cly1 cell-dark-grey" rowSpan="2">Standard Deviation</th>
-                <th className="tg-cly1 cell-dark-grey" rowSpan="2">Sample Size</th>
+                <th className="tg-cly1 cell-dark-grey" rowSpan="2">Standard<br/>Deviation</th>
+                <th className="tg-cly1 cell-dark-grey" rowSpan="2">Sample<br/>Size</th>
               </tr>
               <tr>
                 <td className="tg-cly1 cell-dark-grey">Low</td>

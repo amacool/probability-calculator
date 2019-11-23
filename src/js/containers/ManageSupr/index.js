@@ -234,6 +234,7 @@ function ManageSupr({
                   handleLogIn();
                 }
               }}
+              autoFocus
             />
             <button onClick={handleLogIn}>Sign In</button>
           </div>

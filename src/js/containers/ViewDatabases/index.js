@@ -7,7 +7,7 @@ import calcActions from "../../redux/calc/actions";
 import { isValidDate } from "../../helper";
 import "./style.css";
 
-const getTableHeader = (headings) => {
+const getTableHeader = (headings, editable) => {
   return headings.map((heading, key) => ({
     dataField: `a${key + 1}`,
     text: heading,
@@ -38,7 +38,7 @@ const getTableHeader = (headings) => {
     classes: function callback(cell, row, rowIndex, colIndex) {
       return `col-${rowIndex}-${colIndex}`;
     },
-    editable: true
+    editable
   }));
 };
 
@@ -59,7 +59,7 @@ const getRowsProp = (rows) => {
   }));
 };
 
-function ViewDatabases({ websiteData, updateWebsiteData, calcResult }) {
+function ViewDatabases({ websiteData, updateWebsiteData, calcResult, isAuthenticated }) {
   const percentileRank = calcResult && calcResult.percentileRanksBA ? calcResult.percentileRanksBA.map(item => item.mean) : [];
 
   const isValidData = (data) => {
@@ -174,7 +174,7 @@ function ViewDatabases({ websiteData, updateWebsiteData, calcResult }) {
         <div>
           <FreeEditableTable
             rowsProp={getRowsProp(websiteData)}
-            columnsProp={getTableHeader(websiteHeading)}
+            columnsProp={getTableHeader(websiteHeading, isAuthenticated === 1)}
             onDataChange={onDataChange}
             className={`tbl-all-websites ${websiteData.length > 20 ? "has-scroll" : ""}`}
             nonEmptyRowCount={websiteData.length}
@@ -187,7 +187,8 @@ function ViewDatabases({ websiteData, updateWebsiteData, calcResult }) {
 
 const mapStateToProps = (state) => ({
   websiteData: state.Calc.websiteData,
-  calcResult: state.Calc.calcResult
+  calcResult: state.Calc.calcResult,
+  isAuthenticated: state.Calc.isAuthenticated
 });
 
 const mapDispatchToProps = dispatch =>

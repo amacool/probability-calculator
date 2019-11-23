@@ -42,8 +42,7 @@ const getRowsProp = (initialRowCount, rows) => {
 
 export const IndividualRawValues = ({ result }) => {
   const [visible, setVisible] = React.useState(true);
-  console.log(result);
-  console.log(summaryHeading);
+
   return (
     <div className="result-container">
       <ResultHeader

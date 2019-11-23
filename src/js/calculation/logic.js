@@ -39,7 +39,7 @@ const get_ci_pr = (N, studySD, rawMean, rawMeanSUPRQ, maxScore, globalInMean, gl
   const prMean = (1 - gProReflect).toFixed(3);
   const ciHighPro = (1 - hProReflect).toFixed(3);
   const ciLowVal = rawMean - margin;
-  const ciHighVal = rawMean + margin;
+  const ciHighVal = Math.min(rawMean + margin, 5);
 
   return {
     prMean,
@@ -101,6 +101,7 @@ export const getCalcResult = (data, calcMode, confLevel = 0.9, maxScore, globalI
   let rawMeansByQ = [];
 
   // definition of constants
+  const attrNames = ['suprQ', 'usability', 'trust', 'loyalty', 'appearance'];
   const acc = 1;
   const N = data.length;
   const DF = N - 1;
@@ -225,14 +226,14 @@ export const getCalcResult = (data, calcMode, confLevel = 0.9, maxScore, globalI
       low: getProFormat(ciLowPro, acc),
       high: getProFormat(ciHighPro, acc),
       stdDev: getProFormat(stdDevBA[index], acc),
-      sampleSize: dataCount
+      sampleSize: getNonBlankCount(subScales[attrNames[index]])
     });
     index < 5 && rawScoresBA.push({
       mean: rawMeanBA[index].toFixed(2),
       low: ciLowVal.toFixed(2),
       high: ciHighVal.toFixed(2),
       stdDev: stdDevBA[index].toFixed(1),
-      sampleSize: dataCount
+      sampleSize: getNonBlankCount(subScales[attrNames[index]])
     });
   });
 
@@ -256,18 +257,23 @@ export const getCalcResult = (data, calcMode, confLevel = 0.9, maxScore, globalI
   // get Individual Raw Values by Attribute
   subScales.suprQ.forEach((item, index) => {
     individualRawValuesBA.push([
-      subScales.suprQ[index],
-      subScales.usability[index],
-      subScales.trust[index],
-      subScales.loyalty[index],
-      subScales.appearance[index]
+      parseFloat(subScales.suprQ[index]).toFixed(2),
+      parseFloat(subScales.usability[index]).toFixed(2),
+      parseFloat(subScales.trust[index]).toFixed(2),
+      parseFloat(subScales.loyalty[index]).toFixed(2),
+      parseFloat(subScales.appearance[index]).toFixed(2)
     ]);
   });
 
   // get Raw Means by Questionnaire Item
   stdDevQ.forEach((item, index) => {
     // get confidence interval by questions
-    const { highq, lowq } = calcCiForQ(qColumnData[index], confLevel);
+    let { highq, lowq } = calcCiForQ(qColumnData[index], confLevel);
+    if (index !== 4) {
+      highq = Math.min(highq, 5);
+    } else {
+      highq = Math.min(highq, 10);
+    }
 
     rawMeansByQ.push({
       mean: rawMeanQ[index].toFixed(2),
