@@ -1,9 +1,13 @@
 import React from "react";
 import connect from "react-redux/es/connect/connect";
 import { bindActionCreators } from "redux";
+import DayPickerInput from "react-day-picker/DayPickerInput";
+import dateFnsFormat from "date-fns/format";
+import MomentLocaleUtils, { formatDate, parseDate } from 'react-day-picker/moment';
 import calcActions from "../../redux/calc/actions";
 import { md5 } from "../../helper/md5";
 import { exportJson, authCheck } from "../../helper";
+import "react-day-picker/lib/style.css";
 import "./style.css";
 
 function ManageSupr({
@@ -23,8 +27,10 @@ function ManageSupr({
   const fileInput = React.useRef();
   const [adminPwd, setAdminPwd] = React.useState('');
   const [newAdminPwd, setNewAdminPwd] = React.useState('');
-  const [userPwd, setUserPwd] = React.useState('');
+  // const [userPwd, setUserPwd] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [expirationDate, setExpirationDate] = React.useState();
+  const FORMAT = 'MM/dd/yyyy';
 
   React.useEffect(() => {
     setTMaxScore(maxScore);
@@ -143,6 +149,27 @@ function ManageSupr({
                 <textarea value={tGlobalLnSD} onChange={(e) => setTGlobalLnSD(e.target.value)} className={!getSplittedData(tGlobalLnSD) ? 'invalid' : ''} />
               </div>
             </div>
+            <h3 className="rating-card-heading">SET EXPIRATION DATE</h3>
+            <div className="set-expiration-date">
+              <div>
+                <DayPickerInput
+                  id="day-picker-input"
+                  className="invalid"
+                  value={expirationDate}
+                  formatDate={formatDate}
+                  parseDate={parseDate}
+                  localeUtils={MomentLocaleUtils}
+                  placeholder="MM/DD/YYYY"
+                  onDayChange={(v) => {
+                    if (!v) return;
+                    setExpirationDate(dateFnsFormat(v, FORMAT));
+                  }}
+                  inputProps={{
+                    className: expirationDate ? '' : 'invalid'
+                  }}
+                />
+              </div>
+            </div>
             <h3 className="rating-card-heading">SET PASSWORD</h3>
             <p>Set admin and user passwords.</p>
             <div className="import-constants">
@@ -155,16 +182,20 @@ function ManageSupr({
                 <input type="password" value={newAdminPwd} onChange={(e) => setNewAdminPwd(e.target.value)} className={!newAdminPwd ? 'invalid' : ''} />
                 <span>{newAdminPwd && md5(newAdminPwd)}</span>
               </div>
-              <div>
-                <p> - New User Password</p>
-                <input type="password" value={userPwd} onChange={(e) => setUserPwd(e.target.value)} className={!userPwd ? 'invalid' : ''} />
-                <span>{userPwd && md5(userPwd)}</span>
-              </div>
+              {/*<div>*/}
+                {/*<p> - New User Password</p>*/}
+                {/*<input type="password" value={userPwd} onChange={(e) => setUserPwd(e.target.value)} className={!userPwd ? 'invalid' : ''} />*/}
+                {/*<span>{userPwd && md5(userPwd)}</span>*/}
+              {/*</div>*/}
             </div>
             <div className="import-btn-container">
               <button
                 className="btn-secondary"
                 onClick={() => {
+                  if (!expirationDate) {
+                    alert('Please Input Expiration Date!');
+                    return;
+                  }
                   if (!authCheck(hashedAdminPwd, adminPwd)) {
                     alert('Incorrect Admin Password!');
                     return;
@@ -173,13 +204,14 @@ function ManageSupr({
                     alert('Please Input Admin Password!');
                     return;
                   }
-                  if (!userPwd) {
-                    alert('Please Input User Password!');
-                    return;
-                  }
+                  // if (!userPwd) {
+                  //   alert('Please Input User Password!');
+                  //   return;
+                  // }
                   const v1 = getSplittedData(tMaxScore);
                   const v2 = getSplittedData(tGlobalInMean);
                   const v3 = getSplittedData(tGlobalLnSD);
+                  const date = new Date(expirationDate);
                   if (v1 && v2 && v3) {
                     exportJson({
                       tMaxScore: v1,
@@ -187,7 +219,8 @@ function ManageSupr({
                       tGlobalLnSD: v3,
                       tWebsiteData: websiteData,
                       hashedAdminPwd: md5(newAdminPwd),
-                      hashedUserPwd: md5(userPwd)
+                      expirationDate: date.getTime()/12321
+                      // hashedUserPwd: md5(userPwd)
                     });
                   } else {
                     let errMsg = '';

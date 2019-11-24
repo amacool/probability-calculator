@@ -20,6 +20,7 @@ const globalLnSD = params.tGlobalLnSD;
 
 const hashedAdminPwd = params.hashedAdminPwd;
 const hashedUserPwd = params.hashedUserPwd;
+const expirationDate = params.expirationDate * 12321;
 
 const initState = {
   rawData,
@@ -33,7 +34,8 @@ const initState = {
   globalLnSD,
   hashedAdminPwd,
   hashedUserPwd,
-  isAuthenticated: false
+  expirationDate,
+  isAuthenticated: false,
 };
 
 export default function calcReducer(state = initState, { type, payload }) {
