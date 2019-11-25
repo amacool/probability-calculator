@@ -3,6 +3,7 @@ import connect from "react-redux/es/connect/connect";
 import { bindActionCreators } from "redux";
 import { websiteHeading } from "../../constants";
 import FreeEditableTable from "../../components/CustomTable/FreeEditableTable";
+import pathActions from "../../redux/path/actions";
 import calcActions from "../../redux/calc/actions";
 import { isValidDate } from "../../helper";
 import "./style.css";
@@ -59,7 +60,7 @@ const getRowsProp = (rows) => {
   }));
 };
 
-function ViewDatabases({ websiteData, updateWebsiteData, calcResult, isAuthenticated }) {
+function ViewDatabases({ websiteData, updateWebsiteData, calcResult, isAuthenticated, setPath }) {
   const percentileRank = calcResult && calcResult.percentileRanksBA ? calcResult.percentileRanksBA.map(item => item.mean) : [];
 
   const isValidData = (data) => {
@@ -165,6 +166,7 @@ function ViewDatabases({ websiteData, updateWebsiteData, calcResult, isAuthentic
         </div>
       </div>
       <div className="content-body">
+        {isAuthenticated === 1 && <button className="btn-secondary" onClick={() => setPath('manage-supr')}>Export</button>}
         <div className="study-tab-container">
           <div className="study-tab">
             <div>Current Study</div>
@@ -195,6 +197,7 @@ const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       updateWebsiteData: (data) => calcActions.updateWebsiteData(data),
+      setPath: (data) => pathActions.setPath(data)
     },
     dispatch
   );
