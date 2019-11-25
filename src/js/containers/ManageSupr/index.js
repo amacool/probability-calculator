@@ -4,6 +4,7 @@ import { bindActionCreators } from "redux";
 import DayPickerInput from "react-day-picker/DayPickerInput";
 import dateFnsFormat from "date-fns/format";
 import MomentLocaleUtils, { formatDate, parseDate } from 'react-day-picker/moment';
+import { toast } from 'react-toastify';
 import calcActions from "../../redux/calc/actions";
 import { md5 } from "../../helper/md5";
 import { exportJson, authCheck } from "../../helper";
@@ -41,7 +42,7 @@ function ManageSupr({
   const handleLogIn = () => {
     const isAdmin = authCheck(hashedAdminPwd, password);
     if (!isAdmin) {
-      alert('Incorrect Password!');
+      toast.error('Incorrect Password!', {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 10000});
     } else {
       setAuthentication(isAdmin ? 1 : 2);
     }
@@ -87,7 +88,7 @@ function ManageSupr({
                 tGlobalLnSD: v3,
               });
               updateWebsiteData(tWebsiteData);
-              alert('Imported Successfully!');
+              toast.info('Imported Successfully!', {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 10000});
             } else {
               let errMsg = '';
               let isValid = [false, false, false];
@@ -104,10 +105,10 @@ function ManageSupr({
                 isValid[2] = true;
               }
               errMsg = errMsg.substr(0, errMsg.length - 2);
-              alert("Invalid data input! " + errMsg);
+              toast.error("Invalid data input! " + errMsg, {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 10000});
             }
           } catch (err) {
-            alert("Invalid data format!");
+            toast.error("Invalid data format!", {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 10000});
           }
         };
 
@@ -193,15 +194,15 @@ function ManageSupr({
                 className="btn-secondary"
                 onClick={() => {
                   if (!expirationDate) {
-                    alert('Please Input Expiration Date!');
+                    toast.error("Please Input Expiration Date!", {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 10000});
                     return;
                   }
                   if (!authCheck(hashedAdminPwd, adminPwd)) {
-                    alert('Incorrect Admin Password!');
+                    toast.error("Incorrect Admin Password!", {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 10000});
                     return;
                   }
                   if (!newAdminPwd) {
-                    alert('Please Input Admin Password!');
+                    toast.error("Please Input Admin Password!", {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 10000});
                     return;
                   }
                   // if (!userPwd) {
@@ -234,7 +235,7 @@ function ManageSupr({
                       errMsg += 'Global Ln SD, ';
                     }
                     errMsg = errMsg.substr(0, errMsg.length - 2);
-                    alert("Invalid data input! " + errMsg);
+                    toast.error("Invalid data input! " + errMsg, {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 10000});
                   }
                 }}
               >

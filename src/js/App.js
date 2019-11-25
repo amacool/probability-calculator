@@ -1,5 +1,7 @@
 import React from "react";
 import connect from "react-redux/es/connect/connect";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Main from "./containers/Main";
 import "./App.css";
 import './fonts/index.css';
@@ -23,6 +25,7 @@ function App({ expirationDate }) {
           </div>
         </div>
       </div>
+      <ToastContainer/>
     </div>
   );
 }
