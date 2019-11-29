@@ -61,7 +61,10 @@ const getRowsProp = (rows) => {
 };
 
 function ViewDatabases({ websiteData, updateWebsiteData, calcResult, isAuthenticated, setPath }) {
-  const percentileRank = calcResult && calcResult.percentileRanksBA ? calcResult.percentileRanksBA.map(item => item.mean) : [];
+  let percentileRank = calcResult && calcResult.percentileRanksBA ? calcResult.percentileRanksBA.map(item => item.mean) : [];
+  if (percentileRank !== [] && calcResult !== null && calcResult.rawScoresBA) {
+    percentileRank[5] = calcResult.rawScoresBA[5].mean * 100 + '%';
+  }
 
   const isValidData = (data) => {
     try {

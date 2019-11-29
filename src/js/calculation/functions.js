@@ -166,6 +166,43 @@ const calcCiForQ = (q, confLevel) => {
   return { lowq, highq };
 };
 
+const get_ci_pr = (N, studySD, rawMean, rawMeanSUPRQ, maxScore, globalInMean, globalLnSD, confLevel, acc) => {
+  const SE = studySD / Math.sqrt(N);
+  const t = getTINV(confLevel, N - 1);
+  const margin = SE * t;
+  const marginOfError = margin / rawMean;
+  const studyMean = rawMean > maxScore ? 4.999999999 : rawMeanSUPRQ;
+  const studyMeanRef = Math.log(maxScore - studyMean);
+  const low = studyMean - margin < 1 ? 1 : studyMean - margin;
+  const high = studyMean + margin > maxScore ? maxScore : studyMean + margin;
+  const gZReflect = (studyMeanRef - globalInMean) / globalLnSD;
+  const gProReflect = getND(gZReflect).toFixed(3);
+
+  const lowLnReflect = Math.log(maxScore - low);
+  const lZReflect = (lowLnReflect - globalInMean) / globalLnSD;
+  const lProReflect = getND(lZReflect).toFixed(3);
+
+  const highLnReflect = Math.log(maxScore - high);
+  const hZReflect = (highLnReflect - globalInMean) / globalLnSD;
+  let hProReflect = high === maxScore ? 0.00000001 : getND(hZReflect);
+  hProReflect = hProReflect.toFixed(acc);
+
+  const ciLowPro = (1 - lProReflect).toFixed(3);
+  const prMean = (1 - gProReflect).toFixed(3);
+  const ciHighPro = (1 - hProReflect).toFixed(3);
+  const ciLowVal = rawMean - margin;
+  const ciHighVal = Math.min(rawMean + margin, 5);
+
+  return {
+    prMean,
+    ciLowPro,
+    ciHighPro,
+    ciLowVal,
+    ciHighVal,
+    marginOfError
+  };
+};
+
 export {
   calcNPS,
   calcCiForQ,
@@ -173,5 +210,6 @@ export {
   getSD,
   getND,
   getTINV,
-  zinv
+  zinv,
+  get_ci_pr
 };

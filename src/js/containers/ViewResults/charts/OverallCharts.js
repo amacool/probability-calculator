@@ -17,8 +17,6 @@ export const drawOverallPercentileChart = function({ low, high, val, target, wid
     },
   ];
 
-  // accessor functions
-  // let barLabel = function(d) { return d['Name']; };
   let barValue = function(d) { return parseFloat(d['Value']); };
 
   // scales
@@ -27,7 +25,6 @@ export const drawOverallPercentileChart = function({ low, high, val, target, wid
     return yScale(i);
   };
   let x = d3.scaleLinear().domain([0, 100]).range([0, maxBarWidth]);
-  // let x = d3.scale.linear().domain([0, d3.max(data, barValue)]).range([0, maxBarWidth]);
 
   // initialization
   d3.select(`#${target}`).selectAll("svg").remove();
@@ -40,6 +37,7 @@ export const drawOverallPercentileChart = function({ low, high, val, target, wid
 
   let gridContainer = chart.append('g')
     .attr('transform', 'translate(' + barLabelWidth + ', 0)');
+
   // vertical grid lines
   gridContainer.selectAll("line").data(x.ticks(4)).enter().append("line")
     .attr("x1", x)
@@ -300,10 +298,6 @@ export const drawOverallRawScoreChart = function({
       return yScale(d.y);
     })
     .attr("r", 5);
-    // .on("mouseover", function(a, b, c) {
-    //   console.log(a);
-    //   this.attr('class', 'focus')
-    // });
 };
 
 export const drawBarChart = function({ attrs, maxVal, target, countY, showLabel, widthT, heightT, barWidth, pacingY }) {
@@ -500,8 +494,8 @@ export const drawSusEquivalentChart = function({
       .attr("text-anchor", "middle")
       .text(i*20 + '%')
   }
-  // 4. Call the y axis in a group tag
 
+  // 4. Call the y axis in a group tag
   for (let i = 0; i <= 5; i ++) {
     svg.append("g")
       .append("text")
@@ -520,6 +514,7 @@ export const drawSusEquivalentChart = function({
       .attr("shape-rendering", "crispEdges")
       .style("stroke", "#aeaeae");
   }
+
   svg.append("g")
     .append("text")
     .attr("x", -135)
@@ -529,6 +524,7 @@ export const drawSusEquivalentChart = function({
     .attr("font-size", "13")
     .attr("transform", "rotate(-90)")
     .text("SUS Equivalent Score");
+
   // add chart title
   svg.append("g")
     .append("text")
