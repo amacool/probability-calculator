@@ -19,8 +19,8 @@ const globalInMean = params.tGlobalInMean;
 const globalLnSD = params.tGlobalLnSD;
 
 // version info
-const versionInfo = params.versionInfo;
-const copyrightInfo = params.copyrightInfo;
+const versionInfo = params.tVersionInfo;
+const copyrightInfo = params.tCopyrightInfo;
 
 const hashedAdminPwd = params.hashedAdminPwd;
 const hashedUserPwd = params.hashedUserPwd;

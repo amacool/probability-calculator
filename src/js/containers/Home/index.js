@@ -21,13 +21,13 @@ function Home({
     <div className="container home-container">
       <header className="App-header">
         <div className="logo">
-          <img src={BigLogo} />
+          <img src={BigLogo} alt="" />
         </div>
         <div className="powered-by">
           <div>
             <a href="https://www.measuringu.com">
               <p>Powered By</p>
-              <img src={MeasuringULogo} />
+              <img src={MeasuringULogo} alt="" />
             </a>
           </div>
         </div>

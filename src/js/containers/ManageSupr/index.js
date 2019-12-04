@@ -209,6 +209,14 @@ function ManageSupr({
                     toast.error("Please Input Expiration Date!", {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 10000});
                     return;
                   }
+                  if (!tVersionInfo) {
+                    toast.error("Please Input Version Information!", {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 10000});
+                    return;
+                  }
+                  if (!tCopyrightInfo) {
+                    toast.error("Please Input Copyright Information!", {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 10000});
+                    return;
+                  }
                   if (!authCheck(hashedAdminPwd, adminPwd)) {
                     toast.error("Incorrect Admin Password!", {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 10000});
                     return;
@@ -228,7 +236,9 @@ function ManageSupr({
                       tGlobalLnSD: v3,
                       tWebsiteData: websiteData,
                       hashedAdminPwd: md5(newAdminPwd),
-                      expirationDate: date.getTime() / 12321
+                      expirationDate: date.getTime() / 12321,
+                      tVersionInfo,
+                      tCopyrightInfo
                       // hashedUserPwd: md5(userPwd)
                     });
                   } else {

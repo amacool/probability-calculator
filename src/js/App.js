@@ -8,7 +8,7 @@ import '../assets/fonts/index.css';
 import {bindActionCreators} from "redux";
 import pathActions from "./redux/path/actions";
 
-function App({ expirationDate, setPath }) {
+function App({ expirationDate, setPath, versionInfo, copyrightInfo }) {
   const date = new Date(expirationDate);
   return (
     <div className="App">
@@ -22,8 +22,8 @@ function App({ expirationDate, setPath }) {
             <p className="btn-license-terms" onClick={() => setPath("license-terms")}>License Terms & Conditions</p>
           </div>
           <div>
-            <p>v. 2.51 Last Updated June 26, 2019</p>
-            <p>Copyright © 2004 - 2019 Measuring Usability LLC</p>
+            <p>{versionInfo}</p>
+            <p>{copyrightInfo}</p>
           </div>
         </div>
       </div>
@@ -33,7 +33,9 @@ function App({ expirationDate, setPath }) {
 }
 
 const mapStateToProps = (state) => ({
-  expirationDate: state.Calc.expirationDate
+  expirationDate: state.Calc.expirationDate,
+  versionInfo: state.Calc.versionInfo,
+  copyrightInfo: state.Calc.copyrightInfo
 });
 
 const mapDispatchToProps = dispatch =>

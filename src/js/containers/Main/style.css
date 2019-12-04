@@ -16,3 +16,24 @@
 .main-header-top .logo img {
   width: 152px;
 }
+
+.logo-second img {
+  width: 121px;
+}
+
+.logo-second {
+  display: flex;
+  align-items: flex-end;
+}
+
+.logo-second a {
+  text-decoration: none;
+  color: #446292;
+}
+
+.logo-second p {
+  margin: 0;
+  text-align: left;
+  font-size: 10px;
+  margin-bottom: 3px;
+}
