@@ -6,6 +6,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import { toast } from 'react-toastify';
 import calcActions from "../../redux/calc/actions";
 import { OverallSupr } from "./OverallSupr";
 import { PercentileRanks } from "./PercentileRanks";
@@ -86,15 +87,15 @@ function ViewResults({
 
   const doValidation = () => {
     if (calcMode === "raw" && rawData.length === 0) {
-      alert('Enter raw data!');
+      toast.error('Enter raw data!', {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 5000});
       return false;
     }
     if (summaryData.length === 0) {
-      alert('Enter summary data!');
+      toast.error('Enter summary data!', {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 5000});
       return false;
     }
     if (maxScore.length < 1 || globalInMean.length < 1 || globalLnSD.length < 1) {
-      alert('One or more static values are empty!');
+      toast.error('One or more static values are empty!', {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 5000});
       return false;
     }
     return true;
@@ -218,14 +219,14 @@ function ViewResults({
 
   React.useEffect(() => {
     if (calcMode === "raw" && rawData.length === 0) {
-      alert('Enter raw data!');
+      toast.error('Enter raw data!', {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 5000});
       return;
     } else if (summaryData.length === 0) {
-      alert('Enter summary data!');
+      toast.error('Enter summary data!', {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 5000});
       return;
     }
     if (maxScore.length < 1 || globalInMean.length < 1 || globalLnSD.length < 1) {
-      alert('One or more static values are empty!');
+      toast.error('One or more static values are empty!', {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 5000});
       return;
     }
     let result = '';

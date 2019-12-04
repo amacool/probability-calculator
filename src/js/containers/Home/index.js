@@ -2,9 +2,9 @@ import React from "react";
 import connect from "react-redux/es/connect/connect";
 import { bindActionCreators } from "redux";
 import pathActions from "../../redux/path/actions";
-import { Logo } from "../../components/Logo";
-import { PoweredBy } from "../../components/PoweredBy";
 import calcActions from "../../redux/calc/actions";
+import BigLogo from "../../../assets/images/logo.png";
+import MeasuringULogo from "../../../assets/images/MeasuringU_Logo.png";
 import "./style.css";
 
 function Home({
@@ -21,12 +21,14 @@ function Home({
     <div className="container home-container">
       <header className="App-header">
         <div className="logo">
-          <Logo big={true} />
+          <img src={BigLogo} />
         </div>
         <div className="powered-by">
           <div>
-            <p>Powered By</p>
-            <PoweredBy/>
+            <a href="https://www.measuringu.com">
+              <p>Powered By</p>
+              <img src={MeasuringULogo} />
+            </a>
           </div>
         </div>
       </header>

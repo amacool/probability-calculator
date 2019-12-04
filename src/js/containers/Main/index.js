@@ -9,8 +9,8 @@ import ViewResults from "../ViewResults";
 import ViewDatabases from "../ViewDatabases";
 import ManageSupr from "../ManageSupr";
 import About from "../About";
-import { Logo } from "../../components/Logo";
 import NavTopHeader from "../../components/NavTopHeader";
+import BigLogo from "../../../assets/images/logo.png";
 import "./style.css";
 
 function Main({ path, setPath }) {
@@ -23,7 +23,7 @@ function Main({ path, setPath }) {
           <header className="main-header">
             <div className="main-header-top">
               <div className="logo" onClick={() => setPath('home')}>
-                <Logo big={false} />
+                <img src={BigLogo} />
               </div>
               <div>powered-by</div>
             </div>

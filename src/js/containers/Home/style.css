@@ -1,6 +1,6 @@
 .powered-by {
-  height: 110px;
-  margin-top: -55px;
+  height: 55px;
+  margin-top: -15px;
 }
 
 .powered-by > div {
@@ -8,9 +8,15 @@
   text-align: left;
 }
 
+.powered-by a {
+  text-decoration: none;
+}
+
 .powered-by p {
   margin: 0;
-  font-size: 17px;
+  font-size: 14px;
+  color: #446292;
+  font-weight: 500;
 }
 
 .home-body {
@@ -40,4 +46,12 @@
 .navigation-container button.enter-data {
   color: #eee;
   background-color: #335588;
+}
+
+.App-header .logo img {
+  width: 364px;
+}
+
+.powered-by img {
+  width: 152px;
 }

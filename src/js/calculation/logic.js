@@ -4,7 +4,8 @@ import {
   getSD,
   getND,
   getTINV,
-  zinv
+  zinv,
+  get_ci_pr
 } from "./functions";
 import {
   getArrSum,
@@ -13,43 +14,6 @@ import {
   getNonBlankCount,
   getProFormat
 } from "../helper";
-
-const get_ci_pr = (N, studySD, rawMean, rawMeanSUPRQ, maxScore, globalInMean, globalLnSD, confLevel, acc) => {
-  const SE = studySD / Math.sqrt(N);
-  const t = getTINV(confLevel, N - 1);
-  const margin = SE * t;
-  const marginOfError = margin / rawMean;
-  const studyMean = rawMean > maxScore ? 4.999999999 : rawMeanSUPRQ;
-  const studyMeanRef = Math.log(maxScore - studyMean);
-  const low = studyMean - margin < 1 ? 1 : studyMean - margin;
-  const high = studyMean + margin > maxScore ? maxScore : studyMean + margin;
-  const gZReflect = (studyMeanRef - globalInMean) / globalLnSD;
-  const gProReflect = getND(gZReflect).toFixed(3);
-
-  const lowLnReflect = Math.log(maxScore - low);
-  const lZReflect = (lowLnReflect - globalInMean) / globalLnSD;
-  const lProReflect = getND(lZReflect).toFixed(3);
-
-  const highLnReflect = Math.log(maxScore - high);
-  const hZReflect = (highLnReflect - globalInMean) / globalLnSD;
-  let hProReflect = high === maxScore ? 0.00000001 : getND(hZReflect);
-  hProReflect = hProReflect.toFixed(acc);
-
-  const ciLowPro = (1 - lProReflect).toFixed(3);
-  const prMean = (1 - gProReflect).toFixed(3);
-  const ciHighPro = (1 - hProReflect).toFixed(3);
-  const ciLowVal = rawMean - margin;
-  const ciHighVal = Math.min(rawMean + margin, 5);
-
-  return {
-    prMean,
-    ciLowPro,
-    ciHighPro,
-    ciLowVal,
-    ciHighVal,
-    marginOfError
-  };
-};
 
 export const getRawMeans = (data) => {
   let stdDevQ = [];
@@ -197,7 +161,7 @@ export const getCalcResult = (data, calcMode, confLevel = 0.9, maxScore, globalI
   if (calcMode === "raw" || calcMode === "raw-means") {
     stdDevQ = qColumnData.map((item) => getSD(getNonBlankArr(item), 2));
     rawMeanQ = qColumnData.map((item) => getArrAvg(getNonBlankArr(item)));
-    testSD = getSD(rowSUM, 2);
+    testSD = getSD(rowSUM, 5);
     testVar = testSD * testSD;
     sumVar = getArrSum(stdDevQ.map((item) => item * item));
     cronbachAlpha = N / DF * (1 - (sumVar / testVar));
@@ -326,6 +290,13 @@ export const getCalcResult = (data, calcMode, confLevel = 0.9, maxScore, globalI
   const susGlobalInMean = Math.log(susMaxScore - 68);
   const susZReflect = (susStudyMeanRef - susGlobalInMean)/susGlobalLnSD;
   const susPercentileRank = 1 - getND(susZReflect);
+
+  console.log(susMaxScore - susEquivalent);
+  console.log("susEquivalent", susEquivalent);
+  console.log("susStudyMeanRef", susStudyMeanRef);
+  console.log("susGlobalInMean", susGlobalInMean);
+  console.log("susZReflect", susZReflect);
+  console.log("susPercentileRank", susPercentileRank);
 
   susEquivalents = {
     suprQ: [percentileRanksBA[0].mean, rawScoresBA[0].mean],

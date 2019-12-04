@@ -12,3 +12,7 @@
   padding: 50px 100px 80px;
   text-align: left;
 }
+
+.main-header-top .logo img {
+  width: 152px;
+}

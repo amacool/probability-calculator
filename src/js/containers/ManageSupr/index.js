@@ -114,7 +114,7 @@ function ManageSupr({
 
         reader.readAsText(file);
       } else {
-        alert("File not supported, .json file only");
+        toast.error('File not supported, .json file only', {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 10000});
       }
     });
   }, [fileInput]);
@@ -205,10 +205,6 @@ function ManageSupr({
                     toast.error("Please Input Admin Password!", {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 10000});
                     return;
                   }
-                  // if (!userPwd) {
-                  //   alert('Please Input User Password!');
-                  //   return;
-                  // }
                   const v1 = getSplittedData(tMaxScore);
                   const v2 = getSplittedData(tGlobalInMean);
                   const v3 = getSplittedData(tGlobalLnSD);
@@ -245,7 +241,7 @@ function ManageSupr({
                 className="btn-secondary btn-import-file"
                 onClick={() => {
                   if (!authCheck(hashedAdminPwd, adminPwd)) {
-                    alert('Incorrect Admin Password!');
+                    toast.error("Incorrect Admin Password!", {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 10000});
                     return;
                   }
                   document.getElementById('file-input').click();

@@ -4,7 +4,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Main from "./containers/Main";
 import "./App.css";
-import './fonts/index.css';
+import '../assets/fonts/index.css';
 
 function App({ expirationDate }) {
   const date = new Date(expirationDate);
