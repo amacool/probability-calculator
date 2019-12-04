@@ -20,10 +20,14 @@ function ManageSupr({
   globalLnSD,
   isAuthenticated,
   hashedAdminPwd,
-  setAuthentication
+  setAuthentication,
+  versionInfo,
+  copyrightInfo
 }) {
   const [tMaxScore, setTMaxScore] = React.useState(maxScore);
   const [tGlobalInMean, setTGlobalInMean] = React.useState(globalInMean);
+  const [tVersionInfo, setTVersionInfo] = React.useState(versionInfo);
+  const [tCopyrightInfo, setTCopyrightInfo] = React.useState(copyrightInfo);
   const [tGlobalLnSD, setTGlobalLnSD] = React.useState(globalLnSD);
   const fileInput = React.useRef();
   const [adminPwd, setAdminPwd] = React.useState('');
@@ -149,6 +153,14 @@ function ManageSupr({
                 <p> - Global Ln SD</p>
                 <textarea value={tGlobalLnSD} onChange={(e) => setTGlobalLnSD(e.target.value)} className={!getSplittedData(tGlobalLnSD) ? 'invalid' : ''} />
               </div>
+              <div>
+                <p> - Version Info</p>
+                <textarea value={tVersionInfo} onChange={(e) => setTVersionInfo(e.target.value)} className={!tVersionInfo ? 'invalid' : ''} />
+              </div>
+              <div>
+                <p> - Copyright Info</p>
+                <textarea value={tCopyrightInfo} onChange={(e) => setTCopyrightInfo(e.target.value)} className={!tCopyrightInfo ? 'invalid' : ''} />
+              </div>
             </div>
             <h3 className="rating-card-heading">SET EXPIRATION DATE</h3>
             <div className="set-expiration-date">
@@ -216,7 +228,7 @@ function ManageSupr({
                       tGlobalLnSD: v3,
                       tWebsiteData: websiteData,
                       hashedAdminPwd: md5(newAdminPwd),
-                      expirationDate: date.getTime()/12321
+                      expirationDate: date.getTime() / 12321
                       // hashedUserPwd: md5(userPwd)
                     });
                   } else {
@@ -279,7 +291,9 @@ const mapStateToProps = (state) => ({
   globalLnSD: state.Calc.globalLnSD,
   websiteData: state.Calc.websiteData,
   hashedAdminPwd: state.Calc.hashedAdminPwd,
-  isAuthenticated: state.Calc.isAuthenticated
+  isAuthenticated: state.Calc.isAuthenticated,
+  versionInfo: state.Calc.versionInfo,
+  copyrightInfo: state.Calc.copyrightInfo
 });
 
 const mapDispatchToProps = dispatch =>

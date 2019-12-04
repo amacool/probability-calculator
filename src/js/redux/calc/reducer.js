@@ -18,6 +18,10 @@ const globalInMean = params.tGlobalInMean;
 // Global Ln SD : SUPR-Q	Usability	Trust	Loyalty	App	Raw NPS
 const globalLnSD = params.tGlobalLnSD;
 
+// version info
+const versionInfo = params.versionInfo;
+const copyrightInfo = params.copyrightInfo;
+
 const hashedAdminPwd = params.hashedAdminPwd;
 const hashedUserPwd = params.hashedUserPwd;
 const expirationDate = params.expirationDate * 12321;
@@ -36,6 +40,8 @@ const initState = {
   hashedUserPwd,
   expirationDate,
   isAuthenticated: false,
+  versionInfo,
+  copyrightInfo
 };
 
 export default function calcReducer(state = initState, { type, payload }) {

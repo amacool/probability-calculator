@@ -9,6 +9,7 @@ import ViewResults from "../ViewResults";
 import ViewDatabases from "../ViewDatabases";
 import ManageSupr from "../ManageSupr";
 import About from "../About";
+import LicenseTerms from "../LicenseTerms";
 import NavTopHeader from "../../components/NavTopHeader";
 import BigLogo from "../../../assets/images/logo.png";
 import "./style.css";
@@ -36,6 +37,7 @@ function Main({ path, setPath }) {
             {path === 'view-databases' && <ViewDatabases/>}
             {path === 'manage-supr' && <ManageSupr/>}
             {path === 'about' && <About/>}
+            {path === 'license-terms' && <LicenseTerms/>}
           </div>
         </div>
       )}
