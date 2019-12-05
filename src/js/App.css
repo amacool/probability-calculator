@@ -82,8 +82,8 @@ body {
 
 /* table style */
 .tg  {border-collapse:collapse;border-spacing:0;}
-.tg td{padding: 6px 15px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:#c4c4c4;}
-.tg th{font-weight: normal;padding: 6px 15px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:#c4c4c4;}
+.tg td{font-size: 14px;padding: 6px 13px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:#c4c4c4;}
+.tg th{font-weight: normal;padding: 6px 13px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:#c4c4c4;}
 .tg .tg-cly1{text-align:left;vertical-align:middle}
 .tg .tg-0lax{text-align:left;vertical-align:top}
 

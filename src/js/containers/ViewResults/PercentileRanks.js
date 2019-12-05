@@ -23,7 +23,7 @@ export const PercentileRanks = ({ result, drawChart }) => {
             <table className="tg result-table">
               <tr>
                 <th className="tg-cly1 cell-dark-grey" rowSpan="2"></th>
-                <th className="tg-cly1 cell-dark-blue" rowSpan="2">Percentile Rank</th>
+                <th className="tg-cly1 cell-dark-blue" rowSpan="2">Percentile<br/>Rank</th>
                 <th className="tg-cly1 cell-dark-grey" colSpan="2">Confidence Interval</th>
                 <th className="tg-cly1 cell-dark-grey" rowSpan="2">Standard<br/>Deviation</th>
                 <th className="tg-cly1 cell-dark-grey" rowSpan="2">Sample<br/>Size</th>

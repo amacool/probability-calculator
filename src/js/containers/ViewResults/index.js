@@ -99,7 +99,7 @@ function ViewResults({
       high: data.overallResults.percentileRank.ciHigh.replace('%', ''),
       val: data.overallResults.percentileRank.percentileRank.replace('%', ''),
       target: "chart-overall-percentile-bar",
-      width: 700,
+      width: 586,
       height: 150
     });
     drawOverallRawScoreChart({
@@ -108,8 +108,8 @@ function ViewResults({
       maxScore: 5,
       historicalAvgScore: 3.96,
       target: "chart-overall-percentile-line",
-      widthT: 650,
-      heightT: 200
+      widthT: 550,
+      heightT: 170
     });
     calcMode !== 'summary-single' && drawBarChart({
       attrs: {
@@ -125,8 +125,8 @@ function ViewResults({
       target: "chart-percentile-by-attr",
       showLabel: true,
       barWidth: 34,
-      widthT: 400,
-      heightT: 220
+      widthT: 390,
+      heightT: 190
     });
 
     calcMode !== 'summary-single'  && drawBarChart({
@@ -143,8 +143,8 @@ function ViewResults({
       target: "chart-raw-scores-by-attr",
       showLabel: true,
       barWidth: 34,
-      widthT: 400,
-      heightT: 220
+      widthT: 390,
+      heightT: 190
     });
     calcMode === 'raw' && calcMode !== 'summary-single' && drawBarChart({
       attrs: {
@@ -162,7 +162,7 @@ function ViewResults({
       target: "chart-raw-values-by-question",
       showLabel: false,
       barWidth: 34,
-      widthT: 450,
+      widthT: 400,
       heightT: 220
     });
     calcMode === 'raw' && calcMode !== 'summary-single' && drawBarChart({
@@ -175,7 +175,7 @@ function ViewResults({
       target: "chart-raw-values-by-question-single",
       showLabel: false,
       barWidth: 34,
-      widthT: 120,
+      widthT: 110,
       heightT: 220,
     });
     calcMode !== 'summary-single' && drawSusEquivalentChart({
@@ -185,8 +185,8 @@ function ViewResults({
       maxScore: 100,
       historicalAvgScore: 3.9,
       target: "chart-sus-equivalent-chart",
-      widthT: 650,
-      heightT: 200
+      widthT: 600,
+      heightT: 180
     });
   };
 

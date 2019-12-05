@@ -19,7 +19,8 @@
   border: 2px solid #C4C4C4;
   border-radius: 10px;
   padding: 17px;
-  margin-bottom: 50px;
+  margin: 0 auto 50px;
+  max-width: 1500px;
 }
 
 .result-header {
@@ -101,4 +102,18 @@
 
 .individual-raw-values-inner + div {
   font-size: 12px;
+}
+
+@media (max-width: 1410px) {
+  .result-body-inner-wrapper {
+    display: block;
+  }
+  .result-body-inner-wrapper > table {
+    margin: 0 auto 30px;
+  }
+  .result-body-inner-wrapper > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center !important;
+  }
 }

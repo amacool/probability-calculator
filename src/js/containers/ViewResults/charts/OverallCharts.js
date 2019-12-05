@@ -5,7 +5,7 @@ export const drawOverallPercentileChart = function({ low, high, val, target, wid
   let barLabelWidth = 10; // space reserved for bar labels
   let gridLabelHeight = 25; // space reserved for gridline labels
   let gridChartOffset = 20; // space between start of grid and first bar
-  let maxBarWidth = 670; // width of the bar with the max value
+  let maxBarWidth = width - 30; // width of the bar with the max value
   let barWidth = width;
   let verticalLineHeight = 60;
 
@@ -233,7 +233,7 @@ export const drawOverallRawScoreChart = function({
   }
   svg.append("g")
     .append("text")
-    .attr("x", -135)
+    .attr("x", -115)
     .attr("y", -50)
     .attr("dy", 1)
     .attr("text-anchor", "left")
@@ -413,24 +413,50 @@ export const drawSusEquivalentChart = function({
   let chartHeight = heightT;
 
   // prepare data set
+  // let lineDataSet = [
+  //   { x: 0, y: 43.6 },
+  //   { x: 0, y: 48 },
+  //   { x: 0.01, y: 52.4 },
+  //   { x: 0.02, y: 56.8 },
+  //   { x: 0.06, y: 61.2 },
+  //   { x: 0.09, y: 63.4 },
+  //   { x: 0.14, y: 65.6 },
+  //   { x: 0.21, y: 67.8 },
+  //   { x: 0.3, y: 70 },
+  //   { x: 0.42, y: 72.2 },
+  //   { x: 0.56, y: 74.4 },
+  //   { x: 0.7, y: 76.6 },
+  //   { x: 0.83, y: 78.8 },
+  //   { x: 0.92, y: 81 },
+  //   { x: 0.98, y: 83.2 },
+  //   { x: 1, y: 85.4 },
+  //   { x: 1, y: 87.6 },
+  // ];
   let lineDataSet = [
-    { x: 0, y: 43.6 },
-    { x: 0, y: 48 },
-    { x: 0.01, y: 52.4 },
-    { x: 0.02, y: 56.8 },
-    { x: 0.06, y: 61.2 },
-    { x: 0.09, y: 63.4 },
-    { x: 0.14, y: 65.6 },
-    { x: 0.21, y: 67.8 },
-    { x: 0.3, y: 70 },
-    { x: 0.42, y: 72.2 },
-    { x: 0.56, y: 74.4 },
-    { x: 0.7, y: 76.6 },
-    { x: 0.83, y: 78.8 },
-    { x: 0.92, y: 81 },
-    { x: 0.98, y: 83.2 },
-    { x: 1, y: 85.4 },
-    { x: 1, y: 87.6 },
+    { x: 0, y: 8.4 },
+    { x: 6.97867454413359E-06, y: 19.4 },
+    { x: 0.0000745197874256753, y: 30.4 },
+    { x: 0.000195810715979849, y: 34.8 },
+    { x: 0.000518379993496576, y: 39.2 },
+    { x: 0.0013776334429918, y: 43.6 },
+    { x: 0.00365594847896622, y: 48 },
+    { x: 0.00961402489273588, y: 52.4 },
+    { x: 0.0247717566215404, y: 56.8 },
+    { x: 0.061510628, y: 61.2 },
+    { x: 0.0949011071611745, y: 63.4 },
+    { x: 0.143626599903107, y: 65.6 },
+    { x: 0.212186779682727, y: 67.8 },
+    { x: 0.304220563002966, y: 70 },
+    { x: 0.420429418328786, y: 72.2 },
+    { x: 0.55583589384775, y: 74.4 },
+    { x: 0.697636747317795, y: 76.6 },
+    { x: 0.826207640907988, y: 78.8 },
+    { x: 0.921807231960859, y: 81 },
+    { x: 0.97553493283422, y: 83.2 },
+    { x: 0.995628199741097, y: 85.4 },
+    { x: 0.999687795850716, y: 87.6 },
+    { x: 0.999999998207485, y: 92 },
+    { x: 1, y: 96.4 }
   ];
   let dotPos = 0;
   let dotIndex = 0;

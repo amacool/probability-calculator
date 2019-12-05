@@ -23,7 +23,7 @@ export const SusEquivalents = ({ result, drawChart }) => {
             <table className="tg result-table">
               <tr>
                 <th className="tg-cly1 cell-dark-grey"></th>
-                <th className="tg-cly1 cell-dark-blue">Percentile Rank</th>
+                <th className="tg-cly1 cell-dark-blue">Percentile<br/>Rank</th>
                 <th className="tg-cly1 cell-light-blue">Raw Score</th>
               </tr>
               <tr>
