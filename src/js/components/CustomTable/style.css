@@ -90,3 +90,13 @@ table.react-bootstrap-table {
   font-size: 13px;
   font-weight: normal;
 }
+
+
+/* excel like styling */
+.react-bootstrap-table .cell-selected {
+  border: solid 2px blue;
+}
+
+.react-bootstrap-table .cell-active {
+  border: solid 2px red;
+}
