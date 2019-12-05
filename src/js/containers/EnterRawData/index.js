@@ -271,7 +271,7 @@ function EnterRawData({
           onConfirm={applyColumnReorder}
           title="Reorder Columns"
           confirmLabel="Close and Apply"
-          cancelLabel="Close"
+          cancelLabel="Cancel"
         >
           <div className="order-columns-container">
             <div className="order-columns-content">
@@ -304,7 +304,7 @@ function EnterRawData({
           }}
           title="Import Data"
           confirmLabel="Import"
-          cancelLabel="Close"
+          cancelLabel="Cancel"
         >
           <div className="import-data-container">
             <textarea onChange={(e) => setImportData(e.target.value)} />

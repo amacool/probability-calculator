@@ -11,8 +11,8 @@ import ManageSupr from "../ManageSupr";
 import About from "../About";
 import LicenseTerms from "../LicenseTerms";
 import NavTopHeader from "../../components/NavTopHeader";
-import BigLogo from "../../../assets/images/logo.png";
-import MeasuringULogo from "../../../assets/images/MeasuringU_Logo.png";
+import { Logo } from "../../components/Logo";
+import { PoweredBy } from "../../components/PoweredBy";
 import "./style.css";
 
 function Main({ path, setPath }) {
@@ -24,13 +24,13 @@ function Main({ path, setPath }) {
         <div className="container home-container">
           <header className="main-header">
             <div className="main-header-top">
-              <div className="logo" onClick={() => setPath('home')}>
-                <img src={BigLogo} alt="" />
+              <div className="main-logo" onClick={() => setPath('home')}>
+                <Logo big={false} />
+                <p>Calculator</p>
               </div>
               <div className="logo-second">
                 <a href="https://www.measuringu.com">
-                  <p>Powered By</p>
-                  <img src={MeasuringULogo} alt="" />
+                  <PoweredBy/>
                 </a>
               </div>
             </div>

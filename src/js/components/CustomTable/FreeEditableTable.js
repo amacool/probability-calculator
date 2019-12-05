@@ -40,32 +40,49 @@ export default ({
     return { row, col };
   };
 
-  const actionOnSelectedCells = (action) => {
+  const getSelectionBoundary = (beginPos, endPos) => {
+    let row1 = Math.min(beginPos.current.row, endPos.current.row);
+    let row2 = Math.max(beginPos.current.row, endPos.current.row);
+    let col1 = Math.min(beginPos.current.col, endPos.current.col);
+    let col2 = Math.max(beginPos.current.col, endPos.current.col);
+    return { row1, row2, col1, col2 };
+  };
+
+  const updateCellSelection = () => {
     if (!beginOfSelection.current || !endOfSelection.current) {
       return;
     }
-    let row1 = Math.min(beginOfSelection.current.row, endOfSelection.current.row);
-    let row2 = Math.max(beginOfSelection.current.row, endOfSelection.current.row);
-    let col1 = Math.min(beginOfSelection.current.col, endOfSelection.current.col);
-    let col2 = Math.max(beginOfSelection.current.col, endOfSelection.current.col);
+
+    const { row1, row2, col1, col2 } = getSelectionBoundary(beginOfSelection, endOfSelection);
+    console.log(row1, col1)
+    console.log(row2, col2)
+
+    // deselect out of range cells
+    const cells = document.getElementsByClassName('cell-selected');
+    for (let i = 0; i < cells.length; i ++) {
+      const cell = cells[i];
+      const { row, col } = getCellPos(cell.className);
+      if (row < row1 || row > row2 || col < col1 || col > col2) {
+        cell.className = cell.className.replace(' cell-active', '').replace(' cell-selected', '');
+      }
+    }
+
+    // select cells in range
     for (let i = row1; i <= row2; i++) {
       for (let j = col1; j <= col2; j++) {
         const cell = document.getElementsByClassName(`col-${i}-${j}`)[0];
-        if (cell && action === 'deselect') {
-          cell.className = cell.className.replace('cell-active', '');
-          cell.className = cell.className.replace('cell-selected', '');
+        if (cell.className.indexOf('cell-selected') < 0) {
+          cell.className += ' cell-selected';
         }
       }
     }
   };
 
-  const cleanSelectedCells = () => {
-    actionOnSelectedCells('deselect');
-  };
-
   const isRightSelection = ele => {
     return ele.tagName === 'TD';
   };
+
+  console.log('hey')
 
   return (
     <div className={`custom-table-container ${className}`}>
@@ -144,37 +161,35 @@ export default ({
             }
           },
           onMouseDown: function(e) {
-            cleanSelectedCells();
-            if (!isRightSelection(e.target)) {
-              return;
-            }
-            setIsSelecting(true);
-            let className = e.target.className;
-            if (className.indexOf('cell-active') < 0) {
-              className += ' cell-active';
-              e.target.className = className;
-            }
-            beginOfSelection.current = getCellPos(className);
+            // if (!isRightSelection(e.target)) {
+            //   return;
+            // }
+            // console.log('aa');
+            // setIsSelecting(true);
+            // let className = e.target.className;
+            // if (className.indexOf('cell-active') < 0) {
+            //   className += ' cell-active';
+            //   e.target.className = className;
+            // }
+            // beginOfSelection.current = getCellPos(className);
           },
           onMouseMove: function(e) {
-            cleanSelectedCells();
-            if (!isSelecting || !isRightSelection(e.target)) {
-              return;
-            }
-            let className = e.target.className;
-            if (className.indexOf('cell-selected') < 0) {
-              className += ' cell-selected';
-              e.target.className = className;
-            }
-            endOfSelection.current = getCellPos(className);
+            // if (!isSelecting || !isRightSelection(e.target)) {
+            //   return;
+            // }
+            // console.log(isSelecting, isRightSelection(e.target));
+            // let className = e.target.className;
+            // endOfSelection.current = getCellPos(className);
+            // updateCellSelection();
           },
           onMouseUp: function(e) {
-            setIsSelecting(false);
-            if (!isRightSelection(e.target)) {
-              return;
-            }
-            let className = e.target.className;
-            endOfSelection.current = getCellPos(className);
+            // setIsSelecting(false);
+            // if (!isRightSelection(e.target)) {
+            //   return;
+            // }
+            // let className = e.target.className;
+            // endOfSelection.current = getCellPos(className);
+            // updateCellSelection();
           },
         }}
       />

@@ -17,23 +17,27 @@
   width: 152px;
 }
 
+.main-logo {
+  display: flex;
+  align-items: flex-end;
+}
+
+.main-logo p {
+  margin: -7px 0 5px -12px;
+  text-align: left;
+  font-size: 18px;
+  color: #355187;
+}
+
 .logo-second img {
   width: 121px;
 }
 
 .logo-second {
-  display: flex;
-  align-items: flex-end;
+  height: 65px;
 }
 
 .logo-second a {
   text-decoration: none;
   color: #446292;
-}
-
-.logo-second p {
-  margin: 0;
-  text-align: left;
-  font-size: 10px;
-  margin-bottom: 3px;
 }
