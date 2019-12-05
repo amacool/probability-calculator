@@ -72,14 +72,14 @@ export const PercentileRanks = ({ result, drawChart }) => {
                 <td className="tg-cly1 cell-light-grey">{result[4].stdDev}</td>
                 <td className="tg-cly1 cell-light-grey">{result[4].sampleSize}</td>
               </tr>
-              {/*<tr>*/}
-                {/*<td className="tg-cly1 cell-dark-grey">NPS (Raw %)</td>*/}
-                {/*<td className="tg-cly1 cell-light-grey">{result[5].mean}</td>*/}
-                {/*<td className="tg-cly1 cell-light-grey">{result[5].low}</td>*/}
-                {/*<td className="tg-cly1 cell-light-grey">{result[5].high}</td>*/}
-                {/*<td className="tg-cly1 cell-light-grey">{result[5].stdDev}</td>*/}
-                {/*<td className="tg-cly1 cell-light-grey">{result[5].sampleSize}</td>*/}
-              {/*</tr>*/}
+              <tr>
+                <td className="tg-cly1 cell-dark-grey">NPS (Raw %)</td>
+                <td className="tg-cly1 cell-light-grey">{result[5].mean}</td>
+                <td className="tg-cly1 cell-light-grey">{result[5].low}</td>
+                <td className="tg-cly1 cell-light-grey">{result[5].high}</td>
+                <td className="tg-cly1 cell-light-grey">{result[5].stdDev}</td>
+                <td className="tg-cly1 cell-light-grey">{result[5].sampleSize}</td>
+              </tr>
             </table>
             <div id="chart-percentile-by-attr" />
             <div className="export-btn-container">

@@ -193,29 +193,12 @@ export const getCalcResult = (data, calcMode, confLevel = 0.9, maxScore, globalI
       sampleSize: getNonBlankCount(subScales[attrNames[index]])
     });
     index < 5 && rawScoresBA.push({
-      mean: rawMeanBA[index].toFixed(2),
+      mean: rawMeanBA[index] && rawMeanBA[index].toFixed(2),
       low: ciLowVal.toFixed(2),
       high: ciHighVal.toFixed(2),
-      stdDev: stdDevBA[index].toFixed(1),
+      stdDev: stdDevBA[index] && stdDevBA[index].toFixed(1),
       sampleSize: getNonBlankCount(subScales[attrNames[index]])
     });
-  });
-
-  // get NPS values
-  const { npsMean, npsLow, npsHigh, npsProLow, npsProHigh } = calcNPS(qColumnData[4], z, globalInMean, globalLnSD);
-  percentileRanksBA.push({
-    mean: '-',
-    low: getProFormat(npsProLow, acc),
-    high: getProFormat(npsProHigh, acc),
-    stdDev: '-',
-    sampleSize: dataCount
-  });
-  rawScoresBA.push({
-    mean: npsMean.toFixed(2),
-    low: npsLow.toFixed(2),
-    high: npsHigh.toFixed(2),
-    stdDev: '-',
-    sampleSize: dataCount
   });
 
   // get Individual Raw Values by Attribute
@@ -251,6 +234,23 @@ export const getCalcResult = (data, calcMode, confLevel = 0.9, maxScore, globalI
   if (calcMode === "raw-means") {
     return rawMeansByQ;
   }
+
+  // get NPS values
+  const { npsMean, npsLow, npsHigh, npsProLow, npsProHigh } = calcNPS(qColumnData[4], z, globalInMean, globalLnSD);
+  percentileRanksBA.push({
+    mean: (100 * npsMean).toFixed(1) + '%',
+    low: (100 * npsLow).toFixed(1) + '%',
+    high: (100 * npsHigh).toFixed(1) + '%',
+    stdDev: '-',
+    sampleSize: dataCount
+  });
+  rawScoresBA.push({
+    mean: rawMeansByQ[4].mean,
+    low: rawMeansByQ[4].low,
+    high: rawMeansByQ[4].high,
+    stdDev: '-',
+    sampleSize: dataCount
+  });
 
   // get Overall SUPR-Q Results
   overallResults = {

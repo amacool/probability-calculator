@@ -1,5 +1,5 @@
 import React from "react";
-import { downloadAsPng } from "../../helper";
+import { downloadAsPng, downloadAsSvg } from "../../helper";
 import { ResultHeader } from "./ResultHeader";
 
 export const OverallSupr = ({ result, confLevel, drawChart }) => {
@@ -45,7 +45,8 @@ export const OverallSupr = ({ result, confLevel, drawChart }) => {
               <p className="chart-desc">We can be {confLevel*100}% confident the population mean SUPR-Q Score is above {result.percentileRank.ciLow}.</p>
             </div>
             <div className="export-btn-container">
-              <button className="btn-primary" onClick={() => downloadAsPng('chart-overall-percentile-bar', 'Overall SUPR-Q Results - 1')}>Export Chart</button>
+              {/*<button className="btn-primary" onClick={() => downloadAsPng('chart-overall-percentile-bar', 'Overall SUPR-Q Results - 1')}>Export Chart</button>*/}
+              <button className="btn-primary" onClick={() => downloadAsSvg('chart-overall-percentile-bar-svg', 'Overall SUPR-Q Results - 1')}>Export Chart</button>
             </div>
           </div>
 

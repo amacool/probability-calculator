@@ -305,7 +305,7 @@ export const drawBarChart = function({ attrs, maxVal, target, countY, showLabel,
   let vals = Object.values(attrs);
   let lows = vals.map(item => parseFloat(item.low.replace('%', '')));
   let highs = vals.map(item => parseFloat(item.high.replace('%', '')));
-  vals = vals.map(item => parseFloat(item.mean.replace('%', '')));
+  vals = vals.map(item => item.mean ? parseFloat(item.mean.replace('%', '')) : 0);
   let countX = labels.length;
   let d3 = window.d3;
   let margin = { top: 25, right: 25, bottom: 25, left: 25 }

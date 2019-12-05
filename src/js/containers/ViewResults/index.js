@@ -86,14 +86,6 @@ function ViewResults({
   const [labelWidth, setLabelWidth] = React.useState(0);
 
   const doValidation = () => {
-    if (calcMode === "raw" && rawData.length === 0) {
-      toast.error('Enter raw data!', {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 5000});
-      return false;
-    }
-    if (summaryData.length === 0) {
-      toast.error('Enter summary data!', {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 5000});
-      return false;
-    }
     if (maxScore.length < 1 || globalInMean.length < 1 || globalLnSD.length < 1) {
       toast.error('One or more static values are empty!', {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 5000});
       return false;
@@ -102,9 +94,6 @@ function ViewResults({
   };
 
   const drawCharts = (data) => {
-    if (!doValidation()) {
-      return;
-    }
     drawOverallPercentileChart({
       low: data.overallResults.percentileRank.ciLow.replace('%', ''),
       high: data.overallResults.percentileRank.ciHigh.replace('%', ''),
@@ -139,7 +128,8 @@ function ViewResults({
       widthT: 400,
       heightT: 220
     });
-    calcMode !== 'summary-single' && drawBarChart({
+
+    calcMode !== 'summary-single'  && drawBarChart({
       attrs: {
         "Overall": data.rawScoresBA[0],
         "Usability": data.rawScoresBA[1],
@@ -218,13 +208,6 @@ function ViewResults({
   }, []);
 
   React.useEffect(() => {
-    if (calcMode === "raw" && rawData.length === 0) {
-      toast.error('Enter raw data!', {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 5000});
-      return;
-    } else if (summaryData.length === 0) {
-      toast.error('Enter summary data!', {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 5000});
-      return;
-    }
     if (maxScore.length < 1 || globalInMean.length < 1 || globalLnSD.length < 1) {
       toast.error('One or more static values are empty!', {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 5000});
       return;
@@ -265,9 +248,6 @@ function ViewResults({
               id: 'outlined-age-simple',
             }}
           >
-            <MenuItem value="">
-              <em>None</em>
-            </MenuItem>
             <MenuItem value={0.95}>95%</MenuItem>
             <MenuItem value={0.9}>90%</MenuItem>
             <MenuItem value={0.5}>50%</MenuItem>
