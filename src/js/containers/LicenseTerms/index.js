@@ -6,31 +6,32 @@ import pathActions from "../../redux/path/actions";
 import RichTextEditor from 'react-rte';
 import "./style.css";
 
-function LicenseTerms({ licenseTermsInfo, updateLicenseTermsInfo, setPath }) {
-  console.log(licenseTermsInfo);
+function LicenseTerms({ licenseTermsInfo, updateLicenseTermsInfo, setPath, isAuthenticated }) {
   const [value, setValue] = React.useState(RichTextEditor.createValueFromString(licenseTermsInfo, 'html'));
-
-  const onChange = (v) => {
-    setValue(v);
-  };
 
   return (
     <div className="license-terms-container">
       <div>
-        <RichTextEditor
-          value={value}
-          onChange={onChange}
-        />
-        <br/>
-        <button
-          className="btn-secondary"
-          onClick={() => {
-            updateLicenseTermsInfo(value.toString('html'));
-            setPath('manage-supr');
-          }}
-        >
-          Export As Calc Params
-        </button>
+        {isAuthenticated ? (
+          <>
+            <RichTextEditor
+              value={value}
+              onChange={(v) => setValue(v)}
+            />
+            <br/>
+            <button
+              className="btn-secondary"
+              onClick={() => {
+                updateLicenseTermsInfo(value.toString('html'));
+                setPath('manage-supr');
+              }}
+            >
+              Export As Calc Params
+            </button>
+          </>
+        ) : (
+          <div dangerouslySetInnerHTML={{__html: value.toString('html')}} />
+        )}
       </div>
     </div>
   )
@@ -38,6 +39,7 @@ function LicenseTerms({ licenseTermsInfo, updateLicenseTermsInfo, setPath }) {
 
 const mapStateToProps = (state) => ({
   licenseTermsInfo: state.Calc.licenseTermsInfo,
+  isAuthenticated: state.Calc.isAuthenticated
 });
 
 const mapDispatchToProps = dispatch =>
