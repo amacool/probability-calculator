@@ -1,11 +1,12 @@
 import React from "react";
 import connect from "react-redux/es/connect/connect";
 import { bindActionCreators } from "redux";
-import { websiteHeading } from "../../constants";
+import {summaryHeading, websiteHeading} from "../../constants";
 import FreeEditableTable from "../../components/CustomTable/FreeEditableTable";
 import pathActions from "../../redux/path/actions";
 import calcActions from "../../redux/calc/actions";
 import { isValidDate } from "../../helper";
+import { exportTable } from "../../helper";
 import "./style.css";
 
 const getTableHeader = (headings, editable) => {
@@ -169,7 +170,13 @@ function ViewDatabases({ websiteData, updateWebsiteData, calcResult, isAuthentic
         </div>
       </div>
       <div className="content-body">
-        {isAuthenticated === 1 && <button className="btn-secondary" onClick={() => setPath('manage-supr')}>Export</button>}
+        {isAuthenticated === 1 && (
+          <div className="export-websites-container">
+            <p>You can export website data as .csv file or as calculation static parameters.</p>
+            <button className="btn-secondary" onClick={() => exportTable([websiteHeading, ...websiteData], "website-data.csv")}>Export As CSV</button>
+            <button className="btn-secondary" onClick={() => setPath('manage-supr')}>Export As Calc Params</button>
+          </div>
+        )}
         <div className="study-tab-container">
           <div className="study-tab">
             <div>Current Study</div>

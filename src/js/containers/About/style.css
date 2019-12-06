@@ -1,3 +1,12 @@
+.about-container {
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+.about-header-wrapper {
+  width: 100%;
+}
+
 .about-header {
   display: flex;
   justify-content: space-between;
@@ -15,28 +24,34 @@
 .rating-card-container {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 20px;
 }
 
 .rating-attr-card {
   background: #D6DCE5;
-  border-radius: 25px;
-  padding: 16px;
+  border-radius: 15px;
+  padding: 10px;
   display: flex;
   color: #44546A;
   height: 80px;
-  width: 300px;
+  width: 45%;
+  margin: 0 5px 20px;
+}
+
+.rating-attr-card:last-child {
+  /*margin-right: 0;*/
 }
 
 .rating-attr-card .card-icon {
-  width: 100px;
-  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .rating-attr-card .card-content {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
+  margin-left: 10px;
 }
 
 .rating-attr-card .card-content p {
@@ -51,7 +66,7 @@
   padding-left: 20px;
   margin-top: 2px;
   margin-bottom: 0;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .rating-bottom-container {
@@ -65,4 +80,28 @@
   font-size: 14px;
   color: #6B6B6B;
   margin: 5px 10px;
+}
+
+.rating-bottom-container button {
+  margin-right: 5px;
+  min-width: 175px;
+}
+
+@media (max-width: 1420px) {
+  .rating-card-container {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 800px) {
+  .rating-attr-card {
+    width: 100%;
+  }
+  .rating-bottom-container {
+    display: block;
+  }
+  .rating-bottom-container button {
+    margin-left: 5px;
+    margin-top: 10px;
+  }
 }

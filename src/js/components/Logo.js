@@ -3,7 +3,7 @@ import React from "react";
 export const Logo = ({ big }) =>
   big ? (
     <svg width="364" height="158" viewBox="0 0 364 158" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="363.827" height="157.743" fill="url(#pattern0)"/>
+      <rect width="363.827" height="158.743" fill="url(#pattern0)"/>
       <defs>
         <pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1">
           <use xlinkHref="#image0" transform="translate(0 -0.00307081) scale(0.00184843 0.00426331)"/>

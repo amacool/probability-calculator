@@ -1,3 +1,7 @@
+.export-websites-container button {
+  margin-right: 10px;
+}
+
 .study-tab-container {
   display: flex;
   width: 70%;

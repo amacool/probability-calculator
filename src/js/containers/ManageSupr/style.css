@@ -105,3 +105,9 @@
 .set-expiration-date .DayPickerInput {
   width: 30%;
 }
+
+@media (max-width: 843px) {
+  .import-constants input {
+    width: 95%;
+  }
+}

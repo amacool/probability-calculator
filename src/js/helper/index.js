@@ -83,12 +83,12 @@ const downloadAsSvg = (target, name) => {
     });
 };
 
-const exportTable = (data) => {
+const exportTable = (data, name) => {
   let str = data.map(item => item.join(',')).join('\n');
   let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(str);
   let downloadAnchorNode = document.createElement('a');
   downloadAnchorNode.setAttribute("href", dataStr);
-  downloadAnchorNode.setAttribute("download", "table-data.csv");
+  downloadAnchorNode.setAttribute("download", name);
   document.body.appendChild(downloadAnchorNode);
   downloadAnchorNode.click();
   downloadAnchorNode.remove();

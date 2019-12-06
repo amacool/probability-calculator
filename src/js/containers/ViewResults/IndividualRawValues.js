@@ -59,7 +59,7 @@ export const IndividualRawValues = ({ result }) => {
               className="short tbl-individual-raw-values has-scroll"
             />
             <div className="export-btn-container">
-              <button className="btn-primary btn-clear-value" onClick={() => exportTable([summaryHeading.slice(1), ...result])}>Export Table</button>
+              <button className="btn-primary btn-clear-value" onClick={() => exportTable([summaryHeading.slice(1), ...result], "raw-values.csv")}>Export Table</button>
             </div>
           </div>
           <div className="">Rows correspond to order entered under Raw Data Entry</div>
