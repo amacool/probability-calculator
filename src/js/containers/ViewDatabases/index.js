@@ -1,12 +1,12 @@
 import React from "react";
 import connect from "react-redux/es/connect/connect";
 import { bindActionCreators } from "redux";
-import {summaryHeading, websiteHeading} from "../../constants";
+import { websiteHeading } from "../../constants";
 import FreeEditableTable from "../../components/CustomTable/FreeEditableTable";
 import pathActions from "../../redux/path/actions";
+import { CustomModal } from "../../components/CustomModal";
 import calcActions from "../../redux/calc/actions";
-import { isValidDate } from "../../helper";
-import { exportTable } from "../../helper";
+import { exportTable, isValidDate } from "../../helper";
 import "./style.css";
 
 const getTableHeader = (headings, editable) => {
@@ -62,6 +62,9 @@ const getRowsProp = (rows) => {
 };
 
 function ViewDatabases({ websiteData, updateWebsiteData, calcResult, isAuthenticated, setPath }) {
+  const [openImportModal, setOpenImportModal] = React.useState(false);
+  const [importData, setImportData] = React.useState('');
+
   let percentileRank = calcResult && calcResult.percentileRanksBA ? calcResult.percentileRanksBA.map(item => item.mean) : [];
   if (percentileRank !== [] && calcResult !== null && calcResult.rawScoresBA) {
     percentileRank[5] = calcResult.rawScoresBA[5].mean * 100 + '%';
@@ -172,7 +175,8 @@ function ViewDatabases({ websiteData, updateWebsiteData, calcResult, isAuthentic
       <div className="content-body">
         {isAuthenticated === 1 && (
           <div className="export-websites-container">
-            <p>You can export website data as .csv file or as calculation static parameters.</p>
+            <p>You can import data by copying & paste into table or modal and export data as .csv file or as calculation static parameters.</p>
+            <button className="btn-primary" onClick={() => setOpenImportModal(true)}>Import Data</button>
             <button className="btn-secondary" onClick={() => exportTable([websiteHeading, ...websiteData], "website-data.csv")}>Export As CSV</button>
             <button className="btn-secondary" onClick={() => setPath('manage-supr')}>Export As Calc Params</button>
           </div>
@@ -193,6 +197,20 @@ function ViewDatabases({ websiteData, updateWebsiteData, calcResult, isAuthentic
           />
         </div>
       </div>
+      <CustomModal
+        open={openImportModal}
+        onCloseModal={() => setOpenImportModal(false)}
+        onConfirm={() => {
+          const result = isValidData(importData);
+        }}
+        title="Import Data"
+        confirmLabel="Import"
+        cancelLabel="Cancel"
+      >
+        <div className="import-data-container">
+          <textarea onChange={(e) => setImportData(e.target.value)} />
+        </div>
+      </CustomModal>
     </div>
   );
 }

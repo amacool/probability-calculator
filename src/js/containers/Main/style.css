@@ -20,6 +20,7 @@
 .main-logo {
   display: flex;
   align-items: flex-end;
+  cursor: pointer;
 }
 
 .main-logo p {

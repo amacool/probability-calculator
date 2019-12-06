@@ -22,7 +22,8 @@ function ManageSupr({
   hashedAdminPwd,
   setAuthentication,
   versionInfo,
-  copyrightInfo
+  copyrightInfo,
+  licenseTermsInfo
 }) {
   const [tMaxScore, setTMaxScore] = React.useState(maxScore);
   const [tGlobalInMean, setTGlobalInMean] = React.useState(globalInMean);
@@ -36,6 +37,7 @@ function ManageSupr({
   const [password, setPassword] = React.useState('');
   const [expirationDate, setExpirationDate] = React.useState();
   const FORMAT = 'MM/dd/yyyy';
+  console.log(licenseTermsInfo);
 
   React.useEffect(() => {
     setTMaxScore(maxScore);
@@ -238,7 +240,8 @@ function ManageSupr({
                       hashedAdminPwd: md5(newAdminPwd),
                       expirationDate: date.getTime() / 12321,
                       tVersionInfo,
-                      tCopyrightInfo
+                      tCopyrightInfo,
+                      licenseTermsInfo
                       // hashedUserPwd: md5(userPwd)
                     });
                   } else {
@@ -303,7 +306,8 @@ const mapStateToProps = (state) => ({
   hashedAdminPwd: state.Calc.hashedAdminPwd,
   isAuthenticated: state.Calc.isAuthenticated,
   versionInfo: state.Calc.versionInfo,
-  copyrightInfo: state.Calc.copyrightInfo
+  copyrightInfo: state.Calc.copyrightInfo,
+  licenseTermsInfo: state.Calc.licenseTermsInfo
 });
 
 const mapDispatchToProps = dispatch =>

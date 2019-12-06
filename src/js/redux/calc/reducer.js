@@ -22,6 +22,8 @@ const globalLnSD = params.tGlobalLnSD;
 const versionInfo = params.tVersionInfo;
 const copyrightInfo = params.tCopyrightInfo;
 
+const licenseTermsInfo = params.licenseTermsInfo;
+
 const hashedAdminPwd = params.hashedAdminPwd;
 const hashedUserPwd = params.hashedUserPwd;
 const expirationDate = params.expirationDate * 12321;
@@ -41,7 +43,8 @@ const initState = {
   expirationDate,
   isAuthenticated: false,
   versionInfo,
-  copyrightInfo
+  copyrightInfo,
+  licenseTermsInfo
 };
 
 export default function calcReducer(state = initState, { type, payload }) {
@@ -92,6 +95,12 @@ export default function calcReducer(state = initState, { type, payload }) {
       return {
         ...state,
         websiteData: payload
+      };
+
+    case actions.UPDATE_LICENSE_TERMS:
+      return {
+        ...state,
+        licenseTermsInfo: payload
       };
 
     case actions.GET_CONSTANTS_DATA:

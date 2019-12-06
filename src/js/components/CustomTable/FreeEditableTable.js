@@ -14,11 +14,6 @@ export default ({
   className,
   nonEmptyRowCount
 }) => {
-  const [innerRows, setInnerRows] = React.useState(rowsProp);
-  const [isSelecting, setIsSelecting] = React.useState(false);
-  const beginOfSelection = React.useRef(null);
-  const endOfSelection = React.useRef(null);
-
   const navigateToCell = (row, col, keyCode) => {
     keyCode !== 13 && document.getElementsByClassName('react-bootstrap-table-editing-cell')[0].children[0].blur();
     const cell = document.getElementsByClassName(`col-${row}-${col}`)[0];
@@ -39,50 +34,6 @@ export default ({
     const col = parseInt(replaced.split('-')[1]);
     return { row, col };
   };
-
-  const getSelectionBoundary = (beginPos, endPos) => {
-    let row1 = Math.min(beginPos.current.row, endPos.current.row);
-    let row2 = Math.max(beginPos.current.row, endPos.current.row);
-    let col1 = Math.min(beginPos.current.col, endPos.current.col);
-    let col2 = Math.max(beginPos.current.col, endPos.current.col);
-    return { row1, row2, col1, col2 };
-  };
-
-  const updateCellSelection = () => {
-    if (!beginOfSelection.current || !endOfSelection.current) {
-      return;
-    }
-
-    const { row1, row2, col1, col2 } = getSelectionBoundary(beginOfSelection, endOfSelection);
-    console.log(row1, col1)
-    console.log(row2, col2)
-
-    // deselect out of range cells
-    const cells = document.getElementsByClassName('cell-selected');
-    for (let i = 0; i < cells.length; i ++) {
-      const cell = cells[i];
-      const { row, col } = getCellPos(cell.className);
-      if (row < row1 || row > row2 || col < col1 || col > col2) {
-        cell.className = cell.className.replace(' cell-active', '').replace(' cell-selected', '');
-      }
-    }
-
-    // select cells in range
-    for (let i = row1; i <= row2; i++) {
-      for (let j = col1; j <= col2; j++) {
-        const cell = document.getElementsByClassName(`col-${i}-${j}`)[0];
-        if (cell.className.indexOf('cell-selected') < 0) {
-          cell.className += ' cell-selected';
-        }
-      }
-    }
-  };
-
-  const isRightSelection = ele => {
-    return ele.tagName === 'TD';
-  };
-
-  console.log('hey')
 
   return (
     <div className={`custom-table-container ${className}`}>
@@ -159,38 +110,7 @@ export default ({
               }
               navigateToCell(row, col);
             }
-          },
-          onMouseDown: function(e) {
-            // if (!isRightSelection(e.target)) {
-            //   return;
-            // }
-            // console.log('aa');
-            // setIsSelecting(true);
-            // let className = e.target.className;
-            // if (className.indexOf('cell-active') < 0) {
-            //   className += ' cell-active';
-            //   e.target.className = className;
-            // }
-            // beginOfSelection.current = getCellPos(className);
-          },
-          onMouseMove: function(e) {
-            // if (!isSelecting || !isRightSelection(e.target)) {
-            //   return;
-            // }
-            // console.log(isSelecting, isRightSelection(e.target));
-            // let className = e.target.className;
-            // endOfSelection.current = getCellPos(className);
-            // updateCellSelection();
-          },
-          onMouseUp: function(e) {
-            // setIsSelecting(false);
-            // if (!isRightSelection(e.target)) {
-            //   return;
-            // }
-            // let className = e.target.className;
-            // endOfSelection.current = getCellPos(className);
-            // updateCellSelection();
-          },
+          }
         }}
       />
     </div>
