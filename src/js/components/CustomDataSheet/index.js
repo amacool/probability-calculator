@@ -3,14 +3,27 @@ import ReactDataSheet from 'react-datasheet';
 import 'react-datasheet/lib/react-datasheet.css';
 import "./style.css";
 
-export default function CustomDataSheet() {
-  const [grid, setGrid] = React.useState(
-    [
-      [{value:  5, expr: '1 + 4'}, {value:  6, expr: '6'}, {value:  6, expr: '6'}],
-      [{value:  5, expr: '1 + 4'}, {value:  5, expr: '1 + 4'}, {value:  6, expr: '6'}]
-    ]
-  );
-  const columns = ['first', 'second', 'third'];
+const THead = ({ title, description, mean, SD, sampleSize }) => (
+  <div style={{ minHeight: '180px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+    <div style={{ minHeight: '150px' }}>
+      <h3>{title}</h3>
+      <p><i>{description}</i></p>
+    </div>
+    {mean && SD && sampleSize && (
+      <div style={{ fontStyle: 'italic', fontWeight: 'normal', color: '#888' }}>
+        <div style={{ display: 'flex' }}><span style={{ width: '50%' }}>Mean: </span><span>{mean}</span></div>
+        <div style={{ display: 'flex' }}><span style={{ width: '50%' }}>SD: </span><span>{SD}</span></div>
+        <div style={{ display: 'flex' }}><span style={{ width: '50%' }}>n: </span><span>{sampleSize}</span></div>
+      </div>
+    )}
+  </div>
+);
+
+export default function CustomDataSheet({
+  columnsProp,
+  rowsProp
+}) {
+  const [grid, setGrid] = React.useState(rowsProp);
   const onCellsChanged = (changes) => changes.forEach(({cell, row, col, value}) => console.log("New expression :" + value))
 
   return (
@@ -22,11 +35,7 @@ export default function CustomDataSheet() {
           <table className={props.className + ' custom-data-sheet'}>
             <thead>
               <tr>
-                {columns.map((col, index) => (
-                  <th key={index}>
-                    {col}
-                  </th>
-                ))}
+                {columnsProp}
               </tr>
             </thead>
             <tbody>
@@ -40,6 +49,13 @@ export default function CustomDataSheet() {
           </tr>
         )}
         valueViewer={(v) => <div>{v.value}</div>}
+        onCellsChanged={changes => {
+          const newGrid = [...grid];
+          changes.forEach(({cell, row, col, value}) => {
+            newGrid[row][col] = {...grid[row][col], value}
+          });
+          setGrid(newGrid);
+        }}
       />
     </div>
   );

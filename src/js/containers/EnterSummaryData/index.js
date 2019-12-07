@@ -134,9 +134,6 @@ function EnterSummaryData({
           </button>
         </div>
         <div>
-          <CustomDataSheet/>
-        </div>
-        <div>
           <FreeEditableTable
             rowsProp={includeAttr ? getRowsProp(summaryData) : getReducedRowsProp(summaryData)}
             columnsProp={getTableHeader(includeAttr ? summaryHeading : summaryHeading.slice(0, 2))}

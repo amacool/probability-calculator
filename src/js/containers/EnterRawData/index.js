@@ -8,8 +8,49 @@ import { getFormatedRawData, getReorderedData, getSortedData, parseRawDataToInt 
 import { CustomModal } from "../../components/CustomModal";
 import { questionHeading } from "../../constants";
 import { getRawMeans } from "../../calculation/logic";
+import CustomDataSheet from "../../components/CustomDataSheet";
 import "./style.css";
 
+// excel sheet
+const SheetHead = ({ title, description, mean, SD, sampleSize, key }) => (
+  <th key={key} style={{ border: '1px solid #c4c4c4', padding: 10, backgroundColor: '#d5e3fa' }}>
+    <div style={{ minHeight: '180px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+      <div style={{ minHeight: '150px' }}>
+        <h3 style={{ wordBreak: 'break-all' }}>{title}</h3>
+        <p style={{ fontSize: '13px', fontWeight: 'normal' }}><i>{description}</i></p>
+      </div>
+      {mean && SD && sampleSize && (
+        <div style={{ fontStyle: 'italic', fontWeight: 'normal', color: '#888' }}>
+          <div style={{ display: 'flex' }}><span style={{ width: '50%' }}>Mean: </span><span>{mean}</span></div>
+          <div style={{ display: 'flex' }}><span style={{ width: '50%' }}>SD: </span><span>{SD}</span></div>
+          <div style={{ display: 'flex' }}><span style={{ width: '50%' }}>n: </span><span>{sampleSize}</span></div>
+        </div>
+      )}
+    </div>
+  </th>
+);
+
+const getSheetHeader = (columnOrder, preCalcResult) => {
+  return columnOrder.map((order, key) => (
+    <SheetHead
+      key={key}
+      title={questionHeading[order].title}
+      description={questionHeading[order].desc}
+      mean={preCalcResult[order].mean}
+      SD={preCalcResult[order].stdDev}
+      sampleSize={preCalcResult[order].sampleSize}
+    />
+  ));
+};
+
+const getSheetRowsProp = (initialRowCount, rows) => {
+  const emptyRows = initialRowCount - rows.length > 0 ? [...Array(initialRowCount - rows.length)].map(() => [...Array(8)].map(() => '')) : [];
+  const newRows = [...rows, ...emptyRows];
+  return newRows.map(row => row.map(value => ({ value })))
+};
+
+
+// table
 const THead = ({ title, description, mean, SD, sampleSize }) => (
   <div style={{ minHeight: '180px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
     <div style={{ minHeight: '150px' }}>
@@ -70,6 +111,7 @@ function EnterRawData({
   const [curColumn, setCurColumn] = React.useState(0);
   const [importData, setImportData] = React.useState('');
   const [preCalcResult, setPreCalcResult] = React.useState([...Array(8)].map(() => []));
+  console.log(rawData);
 
   const isValidData = (data) => {
     try {
@@ -245,6 +287,12 @@ function EnterRawData({
           <button className="btn-primary btn-clear-value" onClick={onClearValues}>Clear Values</button>
           <button className="btn-primary btn-column-reorder" onClick={() => setOpenReorderModal(true)}>Reorder Columns</button>
           <button className="btn-primary btn-import-data" onClick={() => setOpenImportModal(true)}>Import Data</button>
+        </div>
+        <div>
+          <CustomDataSheet
+            rowsProp={getSheetRowsProp(100, rawData, columnOrder)}
+            columnsProp={getSheetHeader(columnOrder, preCalcResult)}
+          />
         </div>
         <div>
           <FreeEditableTable
