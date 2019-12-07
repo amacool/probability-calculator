@@ -12,8 +12,8 @@ import CustomDataSheet from "../../components/CustomDataSheet";
 import "./style.css";
 
 // excel sheet
-const SheetHead = ({ title, description, mean, SD, sampleSize, key }) => (
-  <th key={key} style={{ border: '1px solid #c4c4c4', padding: 10, backgroundColor: '#d5e3fa' }}>
+const SheetHead = ({ title, description, mean, SD, sampleSize, key, width }) => (
+  <th key={key} style={{ border: '1px solid #c4c4c4', padding: 10, backgroundColor: '#d5e3fa', width: `${width}%` }}>
     <div style={{ minHeight: '180px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
       <div style={{ minHeight: '150px' }}>
         <h3 style={{ wordBreak: 'break-all' }}>{title}</h3>
@@ -39,6 +39,7 @@ const getSheetHeader = (columnOrder, preCalcResult) => {
       mean={preCalcResult[order].mean}
       SD={preCalcResult[order].stdDev}
       sampleSize={preCalcResult[order].sampleSize}
+      width={100 / columnOrder.length}
     />
   ));
 };
@@ -111,7 +112,6 @@ function EnterRawData({
   const [curColumn, setCurColumn] = React.useState(0);
   const [importData, setImportData] = React.useState('');
   const [preCalcResult, setPreCalcResult] = React.useState([...Array(8)].map(() => []));
-  console.log(rawData);
 
   const isValidData = (data) => {
     try {

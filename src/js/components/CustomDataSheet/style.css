@@ -1,3 +1,28 @@
 .custom-data-sheet {
   width: 100%;
 }
+
+.custom-data-sheet tbody {
+  width: calc(100% + 15px);
+  height: 400px;
+  display: block;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border: solid 1px #dcdcdc;
+  margin-top: -1px;
+}
+
+.custom-data-sheet thead tr {
+  display: table;
+  width: 100%;
+}
+
+.custom-data-sheet tbody tr {
+  width: 100%;
+  display: table;
+}
+
+.data-grid-container .data-grid .cell > input {
+  width: 12.5%;
+  display: unset !important;
+}
