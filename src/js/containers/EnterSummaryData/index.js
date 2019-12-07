@@ -5,6 +5,7 @@ import pathActions from "../../redux/path/actions";
 import { summaryHeading } from "../../constants";
 import FreeEditableTable from "../../components/CustomTable/FreeEditableTable";
 import calcActions from "../../redux/calc/actions";
+import CustomDataSheet from "../../components/CustomDataSheet";
 import "./style.css";
 
 const getTableHeader = (headings) => {
@@ -131,6 +132,9 @@ function EnterSummaryData({
           >
             {!includeAttr ? 'Include Columns for Attributes' : 'Remove Columns for Attributes'}
           </button>
+        </div>
+        <div>
+          <CustomDataSheet/>
         </div>
         <div>
           <FreeEditableTable

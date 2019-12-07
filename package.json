@@ -13,6 +13,7 @@
     "react": "^16.11.0",
     "react-bootstrap-table-next": "^3.2.1",
     "react-bootstrap-table2-editor": "^1.4.0",
+    "react-datasheet": "^1.4.0",
     "react-day-picker": "^7.4.0",
     "react-dom": "^16.11.0",
     "react-redux": "^7.1.1",
