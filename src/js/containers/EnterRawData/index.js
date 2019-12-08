@@ -3,8 +3,7 @@ import connect from "react-redux/es/connect/connect";
 import { bindActionCreators } from "redux";
 import calcActions from "../../redux/calc/actions";
 import pathActions from "../../redux/path/actions";
-import FreeEditableTable from "../../components/CustomTable/FreeEditableTable";
-import { getFormatedRawData, getReorderedData, getSortedData, parseRawDataToInt } from "../../helper";
+import { getReorderedData, getSortedData, parseRawDataToInt } from "../../helper";
 import { CustomModal } from "../../components/CustomModal";
 import { questionHeading } from "../../constants";
 import { getRawMeans } from "../../calculation/logic";
@@ -13,19 +12,19 @@ import "./style.css";
 
 // excel sheet
 const SheetHead = ({ title, description, mean, SD, sampleSize, key, width }) => (
-  <th key={key} style={{ border: '1px solid #c4c4c4', padding: 10, backgroundColor: '#d5e3fa', width: `${width}%` }}>
+  <th key={key} style={{ border: '1px solid #c4c4c4', padding: 10, backgroundColor: '#d5e3fa', width: `${width}%`, verticalAlign: 'baseline' }}>
     <div style={{ minHeight: '180px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
       <div style={{ minHeight: '150px' }}>
         <h3 style={{ wordBreak: 'break-all' }}>{title}</h3>
         <p style={{ fontSize: '13px', fontWeight: 'normal' }}><i>{description}</i></p>
       </div>
-      {mean && SD && sampleSize && (
+      {mean && SD && sampleSize ? (
         <div style={{ fontStyle: 'italic', fontWeight: 'normal', color: '#888' }}>
           <div style={{ display: 'flex' }}><span style={{ width: '50%' }}>Mean: </span><span>{mean}</span></div>
           <div style={{ display: 'flex' }}><span style={{ width: '50%' }}>SD: </span><span>{SD}</span></div>
           <div style={{ display: 'flex' }}><span style={{ width: '50%' }}>n: </span><span>{sampleSize}</span></div>
         </div>
-      )}
+      ) : <div/>}
     </div>
   </th>
 );
@@ -91,11 +90,6 @@ const getTableHeader = (columnOrder, preCalcResult) => {
   }));
 };
 
-const getRowsProp = (initialRowCount, rows, columnOrder) => {
-  const emptyRows = initialRowCount - rows.length > 0 ? [...Array(initialRowCount - rows.length)].map(() => [...Array(8)].map(() => '')) : [];
-  return [...rows, ...getFormatedRawData(emptyRows, rows.length, columnOrder)];
-};
-
 function EnterRawData({
   path,
   setPath,
@@ -111,7 +105,8 @@ function EnterRawData({
   const [openReorderModal, setOpenReorderModal] = React.useState(false);
   const [curColumn, setCurColumn] = React.useState(0);
   const [importData, setImportData] = React.useState('');
-  const [preCalcResult, setPreCalcResult] = React.useState([...Array(8)].map(() => []));
+  const [preCalcResult, setPreCalcResult] = React.useState([...Array(8)].map(() => ''));
+  const initialRowCount = 100;
 
   const isValidData = (data) => {
     try {
@@ -161,45 +156,9 @@ function EnterRawData({
     }
   };
 
-  const getClipboardData = (e) => {
-    if (openImportModal || !window.posOnTable) {
-      return;
-    }
-    const clipboardData = e.clipboardData || window.clipboardData;
-    const pastedData = clipboardData.getData('Text');
-    const result = isValidData(pastedData);
-
-    // checks if single value
-    if (
-      window.posOnTable &&
-      result &&
-      result.length === 1 &&
-      result[0].every((item, index) => index === 0 || (index > 0 && item === ''))
-    ) {
-      let newData = [...rawData];
-      if (newData[window.posOnTable.row]) {
-        newData[window.posOnTable.row][window.posOnTable.col] = result[0][0];
-      }
-      updateRawData(newData);
-    } else if (result) {
-      updateColumnOrder([0, 1, 2, 3, 4, 5, 6, 7]);
-      updateRawData(result);
-      result.length > 0 && setPreCalcResult(getRawMeans(parseRawDataToInt(getSortedData(result, [0, 1, 2, 3, 4, 5, 6, 7]))));
-    }
-    e.stopPropagation();
-    e.preventDefault();
-  };
-
   React.useEffect(() => {
     rawData.length > 0 && setPreCalcResult(getRawMeans(parseRawDataToInt(getSortedData(rawData, rawColumnOrder))));
   }, []);
-
-  React.useEffect(() => {
-    window.addEventListener('paste', getClipboardData);
-    return () => {
-      window.removeEventListener('paste', getClipboardData);
-    }
-  }, [rawData, openImportModal]);
 
   React.useEffect(function() {
     setColumnOrder(rawColumnOrder || []);
@@ -207,42 +166,36 @@ function EnterRawData({
 
   const onSheetChange = (data) => {
     let newData = [...rawData];
+    let isValid = true;
+
     data.forEach(cell => {
-      const { col, row, value } = cell;
+      let { col, row, value } = cell;
       // validation here!
-
-      if (!newData[row]) {
-        newData = [...newData, [...Array(8)].map(() => [])];
+      const num = parseInt(value);
+      if (value === "" || isNaN(value) || (columnOrder[col] === 4 && (num < 0 || num > 10)) || (columnOrder[col] !== 4 && (num <= 0 || num > 5))) {
+        value = value ? 'NaN' : "";
+        isValid = false;
       }
-      // last row must not be empty
-
+      if (!newData[row]) {
+        for (let i = newData.length; i <= row; i++) {
+          newData = [...newData, [...Array(8)].map(() => '')];
+        }
+      }
       newData[row][col] = value;
     });
-    updateRawData(newData);
-    newData.length > 0 && setPreCalcResult(getRawMeans(parseRawDataToInt(getSortedData(newData, rawColumnOrder))));
-  };
-
-  const sheetValidation = (row) => {
-    console.log(row);
-  };
-
-  const onDataChange = (newRow, newValue, colId) => {
-    const rowId = newRow.id;
-    delete newRow.id;
-    if (rowId > rawData.length) {
-      return false;
+    // reduce ongoing empty rows from the last
+    for (let i = newData.length - 1; ; i--) {
+      if (newData[i].every((item) => item === "")) {
+        newData.splice(i, 1);
+      } else {
+        break;
+      }
     }
-    if (!Object.values(newRow).some(item => item !== '')) {
-      return false;
-    }
-    let values = Object.values(newRow);
-    const num = parseInt(newValue);
-    if (newValue === "" || isNaN(newValue) || (columnOrder[colId] === 4 && (num < 0 || num > 10)) || (columnOrder[colId] !== 4 && (num <= 0 || num > 5))) {
-      values[colId] = newValue ? 'NaN' : "";
+    console.log(newData);
+    if (!isValid) {
       alert("You have entered one or more invalid values. The values should be between 1 – 5 (or 0 – 10 for NPS).");
     }
-    let newData = [...rawData];
-    newData[rowId] = values;
+    console.log(newData);
     updateRawData(newData);
     newData.length > 0 && setPreCalcResult(getRawMeans(parseRawDataToInt(getSortedData(newData, rawColumnOrder))));
   };
@@ -312,20 +265,12 @@ function EnterRawData({
         <div>
           <CustomDataSheet
             className={`w-${questionHeading.length}`}
-            rowsProp={getSheetRowsProp(100, rawData, columnOrder)}
+            rowsProp={getSheetRowsProp(initialRowCount, rawData, columnOrder)}
             columnsProp={getSheetHeader(columnOrder, preCalcResult)}
             onSheetChange={onSheetChange}
-            sheetValidation={sheetValidation}
           />
         </div>
         <div>
-          <FreeEditableTable
-            rowsProp={getRowsProp(100, getFormatedRawData(rawData, 0), columnOrder)}
-            columnsProp={getTableHeader(columnOrder, preCalcResult)}
-            onDataChange={onDataChange}
-            className="tbl-raw-data tall has-scroll editable"
-            nonEmptyRowCount={rawData.length}
-          />
           <button
             className="btn-secondary btn-view-results"
             onClick={() => {
