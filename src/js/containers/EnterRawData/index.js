@@ -205,6 +205,27 @@ function EnterRawData({
     setColumnOrder(rawColumnOrder || []);
   }, [rawColumnOrder]);
 
+  const onSheetChange = (data) => {
+    let newData = [...rawData];
+    data.forEach(cell => {
+      const { col, row, value } = cell;
+      // validation here!
+
+      if (!newData[row]) {
+        newData = [...newData, [...Array(8)].map(() => [])];
+      }
+      // last row must not be empty
+
+      newData[row][col] = value;
+    });
+    updateRawData(newData);
+    newData.length > 0 && setPreCalcResult(getRawMeans(parseRawDataToInt(getSortedData(newData, rawColumnOrder))));
+  };
+
+  const sheetValidation = (row) => {
+    console.log(row);
+  };
+
   const onDataChange = (newRow, newValue, colId) => {
     const rowId = newRow.id;
     delete newRow.id;
@@ -293,6 +314,8 @@ function EnterRawData({
             className={`w-${questionHeading.length}`}
             rowsProp={getSheetRowsProp(100, rawData, columnOrder)}
             columnsProp={getSheetHeader(columnOrder, preCalcResult)}
+            onSheetChange={onSheetChange}
+            sheetValidation={sheetValidation}
           />
         </div>
         <div>

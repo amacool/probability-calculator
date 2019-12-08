@@ -6,14 +6,14 @@ import "./style.css";
 export default function CustomDataSheet({
   columnsProp,
   rowsProp,
-  className
+  className,
+  onSheetChange
 }) {
-  const [grid, setGrid] = React.useState(rowsProp);
 
   return (
     <div>
       <ReactDataSheet
-        data={grid}
+        data={rowsProp}
         valueRenderer={(cell) => cell.value}
         sheetRenderer={props => (
           <table className={`${props.className} custom-data-sheet ${className}`}>
@@ -32,13 +32,9 @@ export default function CustomDataSheet({
             {props.children}
           </tr>
         )}
-        valueViewer={(v) => <div style={{width: `${100/grid[0].length}%`}}>{v.value}</div>}
+        valueViewer={(v) => <div style={{width: `${100/rowsProp[0].length}%`}}>{v.value}</div>}
         onCellsChanged={changes => {
-          const newGrid = [...grid];
-          changes.forEach(({cell, row, col, value}) => {
-            newGrid[row][col] = {...grid[row][col], value}
-          });
-          setGrid(newGrid);
+          onSheetChange(changes);
         }}
       />
     </div>
