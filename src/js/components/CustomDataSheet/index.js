@@ -5,7 +5,8 @@ import "./style.css";
 
 export default function CustomDataSheet({
   columnsProp,
-  rowsProp
+  rowsProp,
+  className
 }) {
   const [grid, setGrid] = React.useState(rowsProp);
 
@@ -15,7 +16,7 @@ export default function CustomDataSheet({
         data={grid}
         valueRenderer={(cell) => cell.value}
         sheetRenderer={props => (
-          <table className={props.className + ' custom-data-sheet'}>
+          <table className={`${props.className} custom-data-sheet ${className}`}>
             <thead>
               <tr>
                 {columnsProp}

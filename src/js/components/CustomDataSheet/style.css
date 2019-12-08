@@ -22,7 +22,15 @@
   display: table;
 }
 
-.data-grid-container .data-grid .cell > input {
+.custom-data-sheet tbody tr td {
+  height: 24px !important;
+}
+
+.custom-data-sheet.w-8 tbody tr td {
   width: 12.5%;
-  display: unset !important;
+}
+
+.custom-data-sheet.w-8 tbody tr td input {
+  height: 100% !important;
+  width: calc(100% - 4px) !important;
 }

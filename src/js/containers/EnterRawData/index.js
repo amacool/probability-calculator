@@ -290,6 +290,7 @@ function EnterRawData({
         </div>
         <div>
           <CustomDataSheet
+            className={`w-${questionHeading.length}`}
             rowsProp={getSheetRowsProp(100, rawData, columnOrder)}
             columnsProp={getSheetHeader(columnOrder, preCalcResult)}
           />
