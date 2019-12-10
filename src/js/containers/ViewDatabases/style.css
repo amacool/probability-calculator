@@ -37,6 +37,10 @@
   border-right: none;
 }
 
+.tbl-all-websites .react-bootstrap-table thead th {
+  pointer-events: none;
+}
+
 .tbl-all-websites .react-bootstrap-table tbody {
   max-height: 480px;
   overflow-y: auto;

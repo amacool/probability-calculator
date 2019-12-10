@@ -27,6 +27,7 @@ const erf = (x) => {
   const p = 0.3275911;
   const xx = Math.abs(x);
   const t = 1 / (1 + p * xx);
+
   //Direct calculation using formula 7.1.26 is absolutely correct
   //But calculation of nth order polynomial takes O(n^2) operations
   //return 1 - (a1 * t + a2 * t * t + a3 * t * t * t + a4 * t * t * t * t + a5 * t * t * t * t * t) * Math.Exp(-1 * x * x);
@@ -34,6 +35,7 @@ const erf = (x) => {
   //Horner's method, takes O(n) operations for nth order polynomial
   return 1 - ((((((a5 * t + a4) * t) + a3) * t + a2) * t) + a1) * t * Math.exp(-1 * xx * xx);
 };
+
 const getND = (z) => {
   let sign = 1;
   if (z < 0) sign = -1;

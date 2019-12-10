@@ -134,3 +134,7 @@ body {
 .mb-50 {
   margin-bottom: 50px;
 }
+
+.Toastify__toast--error {
+  background-color: #355187;
+}

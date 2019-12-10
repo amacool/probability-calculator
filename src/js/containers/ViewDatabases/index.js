@@ -1,18 +1,23 @@
 import React from "react";
 import connect from "react-redux/es/connect/connect";
 import { bindActionCreators } from "redux";
+import { toast } from "react-toastify";
 import { websiteHeading } from "../../constants";
 import FreeEditableTable from "../../components/CustomTable/FreeEditableTable";
 import pathActions from "../../redux/path/actions";
 import { CustomModal } from "../../components/CustomModal";
 import calcActions from "../../redux/calc/actions";
 import { exportTable, isValidDate } from "../../helper";
+import { SortAsc, SortDesc } from "../../components/Icons";
 import "./style.css";
 
-const getTableHeader = (headings, editable) => {
+const getTableHeader = (headings, editable, setSortBy, sortBy, isAsc) => {
   return headings.map((heading, key) => ({
     dataField: `a${key + 1}`,
-    text: heading,
+    text: <div onClick={() => setSortBy(key)} style={{ pointerEvents: 'all', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <span style={{ marginRight: 3 }}>{heading}</span>
+      {sortBy === key && (!isAsc ? <SortAsc width={15}/> : <SortDesc width={15}/>)}
+    </div>,
     sort: true,
     onSort: (field, order) => {
       console.log(field, order);
@@ -64,11 +69,13 @@ const getRowsProp = (rows) => {
 function ViewDatabases({ websiteData, updateWebsiteData, calcResult, isAuthenticated, setPath }) {
   const [openImportModal, setOpenImportModal] = React.useState(false);
   const [importData, setImportData] = React.useState('');
+  const [sortBy, setSortBy] = React.useState(-1);
+  const [isAsc, setIsAsc] = React.useState(null);
 
   let percentileRank = calcResult && calcResult.percentileRanksBA ? calcResult.percentileRanksBA.map(item => item.mean) : [];
-  if (percentileRank !== [] && calcResult !== null && calcResult.rawScoresBA) {
-    percentileRank[5] = calcResult.rawScoresBA[5].mean * 100 + '%';
-  }
+  // if (percentileRank !== [] && calcResult !== null && calcResult.rawScoresBA) {
+  //   percentileRank[5] = calcResult.rawScoresBA[5].mean * 100 + '%';
+  // }
 
   const isValidData = (data) => {
     try {
@@ -87,9 +94,6 @@ function ViewDatabases({ websiteData, updateWebsiteData, calcResult, isAuthentic
         if (items.every(item => item === '' || item.charCodeAt(0) === 13)) {
           continue;
         }
-        if (!isSingleValue && items.length !== 10) {
-          msg += 'Invalid Length!\n';
-        }
         items.forEach((item, index) => {
           let x = parseFloat(item.substr(0, item.length - 1));
           let proSign = item.substr(item.length - 1, 1) === '%';
@@ -97,42 +101,18 @@ function ViewDatabases({ websiteData, updateWebsiteData, calcResult, isAuthentic
             (index >= 4 && (!proSign || isNaN(x) || x < 0 || x > 100)) ||
             (index === 1 && !isValidDate(item))
           ) {
-            msg += "You have entered one or more invalid values.\n";
+            msg = "You have entered one or more invalid values.\n";
           }
         });
         items = [...items, ...[...Array(10 - items.length)].map(() => "")];
         validData.push(items);
       }
-      msg && alert(msg);
+      msg && toast.error(msg, {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 10000});
       return validData;
     } catch (err) {
       alert(err);
       return false;
     }
-  };
-
-  const getClipboardData = (e) => {
-    const clipboardData = e.clipboardData || window.clipboardData;
-    const pastedData = clipboardData.getData('Text');
-    const result = isValidData(pastedData);
-
-    // checks if single value
-    if (
-      window.posOnTable &&
-      result &&
-      result.length === 1 &&
-      result[0].every((item, index) => index === 0 || (index > 0 && item === ''))
-    ) {
-      let newData = [...websiteData];
-      if (newData[window.posOnTable.row]) {
-        newData[window.posOnTable.row][window.posOnTable.col] = result[0][0];
-      }
-      updateWebsiteData(newData);
-    } else if (result) {
-      updateWebsiteData(result);
-    }
-    e.stopPropagation();
-    e.preventDefault();
   };
 
   const onDataChange = (newRow, newValue, colId) => {
@@ -148,7 +128,7 @@ function ViewDatabases({ websiteData, updateWebsiteData, calcResult, isAuthentic
       (colId >= 4 && (!proSign || isNaN(x) || x < 0 || x > 100)) ||
       (colId === 1 && !isValidDate(newValue))
     ) {
-      alert("You have entered one or more invalid values.");
+      toast.error("You have entered one or more invalid values.", {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 10000});
     }
 
     let newData = [...websiteData];
@@ -157,12 +137,14 @@ function ViewDatabases({ websiteData, updateWebsiteData, calcResult, isAuthentic
     updateWebsiteData(newData);
   };
 
-  React.useEffect(() => {
-    window.addEventListener('paste', getClipboardData);
-    return () => {
-      window.removeEventListener('paste', getClipboardData);
+  const handleSortBy = (newSortBy) => {
+    if (newSortBy === sortBy) {
+      setIsAsc(val => !val);
+    } else {
+      setIsAsc(false);
     }
-  }, [websiteData]);
+    setSortBy(newSortBy);
+  };
 
   return (
     <div>
@@ -190,7 +172,7 @@ function ViewDatabases({ websiteData, updateWebsiteData, calcResult, isAuthentic
         <div>
           <FreeEditableTable
             rowsProp={getRowsProp(websiteData)}
-            columnsProp={getTableHeader(websiteHeading, isAuthenticated === 1)}
+            columnsProp={getTableHeader(websiteHeading, isAuthenticated === 1, handleSortBy, sortBy, isAsc)}
             onDataChange={onDataChange}
             className={`tbl-all-websites ${websiteData.length > 20 ? "has-scroll" : ""}`}
             nonEmptyRowCount={websiteData.length}
@@ -202,6 +184,8 @@ function ViewDatabases({ websiteData, updateWebsiteData, calcResult, isAuthentic
         onCloseModal={() => setOpenImportModal(false)}
         onConfirm={() => {
           const result = isValidData(importData);
+          updateWebsiteData(result);
+          setOpenImportModal(false);
         }}
         title="Import Data"
         confirmLabel="Import"

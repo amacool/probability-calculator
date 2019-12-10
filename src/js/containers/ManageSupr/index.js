@@ -6,6 +6,7 @@ import dateFnsFormat from "date-fns/format";
 import MomentLocaleUtils, { formatDate, parseDate } from 'react-day-picker/moment';
 import { toast } from 'react-toastify';
 import calcActions from "../../redux/calc/actions";
+import pathActions from "../../redux/path/actions";
 import { md5 } from "../../helper/md5";
 import { exportJson, authCheck } from "../../helper";
 import "react-day-picker/lib/style.css";
@@ -23,7 +24,8 @@ function ManageSupr({
   setAuthentication,
   versionInfo,
   copyrightInfo,
-  licenseTermsInfo
+  licenseTermsInfo,
+  setPath
 }) {
   const [tMaxScore, setTMaxScore] = React.useState(maxScore);
   const [tGlobalInMean, setTGlobalInMean] = React.useState(globalInMean);
@@ -37,7 +39,6 @@ function ManageSupr({
   const [password, setPassword] = React.useState('');
   const [expirationDate, setExpirationDate] = React.useState();
   const FORMAT = 'MM/dd/yyyy';
-  console.log(licenseTermsInfo);
 
   React.useEffect(() => {
     setTMaxScore(maxScore);
@@ -162,6 +163,14 @@ function ManageSupr({
               <div>
                 <p> - Copyright Info</p>
                 <textarea value={tCopyrightInfo} onChange={(e) => setTCopyrightInfo(e.target.value)} className={!tCopyrightInfo ? 'invalid' : ''} />
+              </div>
+              <div>
+                <p> - Websites Data</p>
+                <button className="btn-secondary" onClick={() => setPath('view-databases')}>Edit</button>
+              </div>
+              <div>
+                <p> - License Terms & Conditions</p>
+                <button className="btn-secondary" onClick={() => setPath('license-terms')}>Edit</button>
               </div>
             </div>
             <h3 className="rating-card-heading">SET EXPIRATION DATE</h3>
@@ -315,7 +324,8 @@ const mapDispatchToProps = dispatch =>
     {
       setConstantsData: (data) => calcActions.setConstantsData(data),
       updateWebsiteData: (data) => calcActions.updateWebsiteData(data),
-      setAuthentication: (data) => calcActions.setAuthentication(data)
+      setAuthentication: (data) => calcActions.setAuthentication(data),
+      setPath: (data) => pathActions.setPath(data),
     },
     dispatch
   );

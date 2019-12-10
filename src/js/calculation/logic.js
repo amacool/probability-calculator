@@ -158,7 +158,7 @@ export const getCalcResult = (data, calcMode, confLevel = 0.9, maxScore, globalI
   let sumVar;
   let cronbachAlpha = '';
   let internalReliability = '';
-  if (calcMode === "raw" || calcMode === "raw-means") {
+  if (calcMode === "raw" || calcMode === "raw-means" || calcMode === "summary-all") {
     stdDevQ = qColumnData.map((item) => getSD(getNonBlankArr(item), 2));
     rawMeanQ = qColumnData.map((item) => getArrAvg(getNonBlankArr(item)));
     testSD = getSD(rowSUM, 5);
@@ -244,7 +244,7 @@ export const getCalcResult = (data, calcMode, confLevel = 0.9, maxScore, globalI
     stdDev: '-',
     sampleSize: dataCount
   });
-  rawScoresBA.push({
+  calcMode !== "summary-single" && rawScoresBA.push({
     mean: rawMeansByQ[4].mean,
     low: rawMeansByQ[4].low,
     high: rawMeansByQ[4].high,
@@ -260,15 +260,7 @@ export const getCalcResult = (data, calcMode, confLevel = 0.9, maxScore, globalI
       ciHigh: percentileRanksBA[0].high,
       marginOfError: getProFormat(suprqMarginOfError, acc)
     },
-    rawScore: {
-      rawScore: rawScoresBA[0].mean,
-      ciLow: rawScoresBA[0].low,
-      ciHigh: rawScoresBA[0].high,
-      stdDev: rawScoresBA[0].stdDev,
-      sampleSize: rawScoresBA[0].sampleSize,
-      cronbachAlpha: cronbachAlpha && cronbachAlpha.toFixed(3),
-      internalReliability: internalReliability
-    }
+    rawScore: {}
   };
 
   if (calcMode === "summary-single") {
@@ -280,6 +272,16 @@ export const getCalcResult = (data, calcMode, confLevel = 0.9, maxScore, globalI
       overallResults
     };
   }
+
+  overallResults.rawScore = {
+    rawScore: rawScoresBA[0].mean,
+    ciLow: rawScoresBA[0].low,
+    ciHigh: rawScoresBA[0].high,
+    stdDev: rawScoresBA[0].stdDev,
+    sampleSize: rawScoresBA[0].sampleSize,
+    cronbachAlpha: cronbachAlpha && cronbachAlpha.toFixed(3),
+    internalReliability: internalReliability
+  };
 
   // get SUS Equivalents
   const susGlobalLnSD = globalLnSD[6];

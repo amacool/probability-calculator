@@ -1,6 +1,7 @@
 import React from "react";
 import connect from "react-redux/es/connect/connect";
 import { bindActionCreators } from "redux";
+import { toast } from "react-toastify";
 import calcActions from "../../redux/calc/actions";
 import pathActions from "../../redux/path/actions";
 import { getReorderedData, getSortedData, parseRawDataToInt } from "../../helper";
@@ -183,17 +184,17 @@ function EnterRawData({
       }
       newData[row][col] = value;
     });
+
     // reduce ongoing empty rows from the last
-    for (let i = newData.length - 1; ; i--) {
+    for (let i = newData.length - 1; i >= 0 ; i--) {
       if (newData[i].every((item) => item === "")) {
         newData.splice(i, 1);
       } else {
         break;
       }
     }
-    console.log(newData);
     if (!isValid) {
-      alert("You have entered one or more invalid values. The values should be between 1 – 5 (or 0 – 10 for NPS).");
+      toast.error("You have entered one or more invalid values. The values should be between 1 – 5 (or 0 – 10 for NPS).", {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 10000});
     }
     console.log(newData);
     updateRawData(newData);

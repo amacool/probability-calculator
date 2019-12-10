@@ -7,6 +7,7 @@ import FreeEditableTable from "../../components/CustomTable/FreeEditableTable";
 import calcActions from "../../redux/calc/actions";
 import CustomDataSheet from "../../components/CustomDataSheet";
 import "./style.css";
+import {toast} from "react-toastify";
 
 const getTableHeader = (headings) => {
   return headings.map((heading, key) => ({
@@ -79,7 +80,7 @@ function EnterSummaryData({
     const num = parseInt(newValue);
     if (newValue === "" || isNaN(newValue) || num < 0 || num > 5 || (colId === 1 && rowId === 0 && num < 1)) {
       values[colId] = newValue ? 'NaN' : "";
-      alert("You have entered one or more invalid values.");
+      toast.error("You have entered one or more invalid values.", {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 10000});
     }
     let newData = [...summaryData];
     if (includeAttr) {
@@ -133,7 +134,7 @@ function EnterSummaryData({
             {!includeAttr ? 'Include Columns for Attributes' : 'Remove Columns for Attributes'}
           </button>
         </div>
-        <div>
+        <div style={{ width: includeAttr ? '100%' : '33.4%' }}>
           <FreeEditableTable
             rowsProp={includeAttr ? getRowsProp(summaryData) : getReducedRowsProp(summaryData)}
             columnsProp={getTableHeader(includeAttr ? summaryHeading : summaryHeading.slice(0, 2))}
