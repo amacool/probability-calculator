@@ -27,43 +27,43 @@ function About({ setPath }) {
         <div className="rating-card-container">
           <RatingAttrCard
             icon={<Icon1/>}
-            heading="usability"
+            heading="USABILITY"
             options={[
               'This website is easy to use',
-              'it is easy to navigate with this website'
+              'It is easy to navigate with this website'
             ]}
           />
           <RatingAttrCard
             icon={<Icon2/>}
-            heading="usability"
+            heading="CREDIBILITY (TRUST)"
             options={[
-              'This website is easy to use',
-              'it is easy to navigate with this website'
+              'The information on this website is credible',
+              'The information on this website is trustworthy'
             ]}
           />
           <RatingAttrCard
             icon={<Icon3/>}
-            heading="usability"
+            heading="LOYALTY"
             options={[
-              'This website is easy to use',
-              'it is easy to navigate with this website'
+              'How likely are you to recommend this website to a friend or colleague? [Net Promotor Score (NPS)]',
+              'I will likely visit the website in the future'
             ]}
           />
           <RatingAttrCard
             icon={<Icon4/>}
-            heading="usability"
+            heading="APPEARANCE"
             options={[
-              'This website is easy to use',
-              'it is easy to navigate with this website'
+              'I found the website to be attractive',
+              'The website has a clean and simple presentation'
             ]}
           />
         </div>
         <div className="rating-bottom-container">
           <div>
-            <p>Rating Scale: 1 - 5, Strongly Disagree - Strongly Agree [Higher is better]</p>
-            <p>For NPS: 0 - 10, Not at All Likely - Extremely Likely</p>
+            <p>Rating Scale: 1 – 5, Strongly Disagree – Strongly Agree [Higher is better]</p>
+            <p>For NPS: 0 – 10, Not at All Likely – Extremely Likely</p>
           </div>
-          <button className="btn-primary">Export Boilerplate Slide</button>
+          {/*<button className="btn-primary">Export Boilerplate Slide</button>*/}
         </div>
       </div>
     </div>

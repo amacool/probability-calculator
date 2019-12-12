@@ -413,25 +413,6 @@ export const drawSusEquivalentChart = function({
   let chartHeight = heightT;
 
   // prepare data set
-  // let lineDataSet = [
-  //   { x: 0, y: 43.6 },
-  //   { x: 0, y: 48 },
-  //   { x: 0.01, y: 52.4 },
-  //   { x: 0.02, y: 56.8 },
-  //   { x: 0.06, y: 61.2 },
-  //   { x: 0.09, y: 63.4 },
-  //   { x: 0.14, y: 65.6 },
-  //   { x: 0.21, y: 67.8 },
-  //   { x: 0.3, y: 70 },
-  //   { x: 0.42, y: 72.2 },
-  //   { x: 0.56, y: 74.4 },
-  //   { x: 0.7, y: 76.6 },
-  //   { x: 0.83, y: 78.8 },
-  //   { x: 0.92, y: 81 },
-  //   { x: 0.98, y: 83.2 },
-  //   { x: 1, y: 85.4 },
-  //   { x: 1, y: 87.6 },
-  // ];
   let lineDataSet = [
     { x: 0, y: 8.4 },
     { x: 6.97867454413359E-06, y: 19.4 },
@@ -462,7 +443,7 @@ export const drawSusEquivalentChart = function({
   let dotIndex = 0;
   for (let i = 0; i < lineDataSet.length - 1; i ++) {
     if (lineDataSet[i].y <= susScore && lineDataSet[i + 1].y > susScore) {
-      dotPos = { x: (lineDataSet[i].x + lineDataSet[i + 1].x)/2, y: susScore };
+      dotPos = { x: (lineDataSet[i].x + lineDataSet[i + 1].x)/2, y: (lineDataSet[i].y + lineDataSet[i + 1].y)/2 };
       dotIndex = i;
       break;
     }

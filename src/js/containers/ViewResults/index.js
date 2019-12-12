@@ -99,7 +99,7 @@ function ViewResults({
       high: data.overallResults.percentileRank.ciHigh.replace('%', ''),
       val: data.overallResults.percentileRank.percentileRank.replace('%', ''),
       target: "chart-overall-percentile-bar",
-      width: 586,
+      width: 686,
       height: 150
     });
     drawOverallRawScoreChart({
@@ -108,7 +108,7 @@ function ViewResults({
       maxScore: 5,
       historicalAvgScore: 3.96,
       target: "chart-overall-percentile-line",
-      widthT: 550,
+      widthT: 650,
       heightT: 170
     });
     calcMode !== 'summary-single' && drawBarChart({
@@ -162,7 +162,7 @@ function ViewResults({
       target: "chart-raw-values-by-question",
       showLabel: false,
       barWidth: 34,
-      widthT: 400,
+      widthT: 420,
       heightT: 220
     });
     calcMode === 'raw' && calcMode !== 'summary-single' && drawBarChart({
@@ -248,8 +248,12 @@ function ViewResults({
               id: 'outlined-age-simple',
             }}
           >
+            <MenuItem value={0.99}>99%</MenuItem>
             <MenuItem value={0.95}>95%</MenuItem>
             <MenuItem value={0.9}>90%</MenuItem>
+            <MenuItem value={0.85}>85%</MenuItem>
+            <MenuItem value={0.8}>80%</MenuItem>
+            <MenuItem value={0.75}>75%</MenuItem>
             <MenuItem value={0.5}>50%</MenuItem>
           </Select>
         </FormControl>

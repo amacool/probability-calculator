@@ -1,5 +1,6 @@
 .custom-data-sheet {
   width: 100%;
+  min-width: 800px;
 }
 
 .custom-data-sheet tbody {

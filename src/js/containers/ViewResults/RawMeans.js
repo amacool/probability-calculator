@@ -112,9 +112,9 @@ export const RawMeans = ({ result, drawChart }) => {
               </div>
             </div>
           </div>
-          <div className="export-btn-container">
-            <button className="btn-primary" onClick={() => downloadAsPng('chart-raw-values-by-question-container', 'Raw Means by Questionnaire Item')}>Export Chart</button>
-          </div>
+          {/*<div className="export-btn-container">*/}
+            {/*<button className="btn-primary" onClick={() => downloadAsPng('chart-raw-values-by-question-container', 'Raw Means by Questionnaire Item')}>Export Chart</button>*/}
+          {/*</div>*/}
         </div>
       )}
     </div>

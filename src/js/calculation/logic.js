@@ -3,7 +3,6 @@ import {
   calcCiForQ,
   getSD,
   getND,
-  getTINV,
   zinv,
   get_ci_pr
 } from "./functions";
@@ -236,7 +235,10 @@ export const getCalcResult = (data, calcMode, confLevel = 0.9, maxScore, globalI
   }
 
   // get NPS values
-  const { npsMean, npsLow, npsHigh, npsProLow, npsProHigh } = calcNPS(qColumnData[4], z, globalInMean, globalLnSD);
+  console.log(data);
+  const { npsMean, npsLow, npsHigh, npsProLow, npsProHigh } = data.length > 0 ?
+    calcNPS(qColumnData[4], z, globalInMean, globalLnSD) :
+    { npsMean: 'NaN', npsLow: 'NaN', npsHigh: 'NaN' };
   percentileRanksBA.push({
     mean: (100 * npsMean).toFixed(1) + '%',
     low: (100 * npsLow).toFixed(1) + '%',

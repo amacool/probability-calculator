@@ -83,10 +83,10 @@
 }
 
 .chart-container .labels p {
-  width: 60px;
-  font-size: 11px;
+  width: 52px;
+  margin: 10px 2px;
+  font-size: 10px;
   text-align: center;
-  margin-left: 0;
 }
 
 .single-label p {

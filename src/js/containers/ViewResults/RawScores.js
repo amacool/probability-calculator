@@ -81,9 +81,9 @@ export const RawScores = ({ result, drawChart }) => {
               </tr>
             </table>
             <div id="chart-raw-scores-by-attr" />
-            <div className="export-btn-container">
-              <button className="btn-primary" onClick={() => downloadAsPng('chart-raw-scores-by-attr', 'Raw Scores by Attribute')}>Export Chart</button>
-            </div>
+            {/*<div className="export-btn-container">*/}
+              {/*<button className="btn-primary" onClick={() => downloadAsPng('chart-raw-scores-by-attr', 'Raw Scores by Attribute')}>Export Chart</button>*/}
+            {/*</div>*/}
           </div>
         </div>
       )}

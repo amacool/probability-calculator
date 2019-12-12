@@ -16,7 +16,7 @@ const SheetHead = ({ title, description, mean, SD, sampleSize, key, width }) => 
   <th key={key} style={{ border: '1px solid #c4c4c4', padding: 10, backgroundColor: '#d5e3fa', width: `${width}%`, verticalAlign: 'baseline' }}>
     <div style={{ minHeight: '180px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
       <div style={{ minHeight: '150px' }}>
-        <h3 style={{ wordBreak: 'break-all' }}>{title}</h3>
+        <h3 style={{ wordBreak: 'break-all', fontSize: 14 }}>{title}</h3>
         <p style={{ fontSize: '13px', fontWeight: 'normal' }}><i>{description}</i></p>
       </div>
       {mean && SD && sampleSize ? (
@@ -126,16 +126,10 @@ function EnterRawData({
         if (items.every(item => item === '' || item.charCodeAt(0) === 13)) {
           continue;
         }
-        if (!isSingleValue && items.length !== 8) {
-          msg += 'Invalid Length!\n';
-        }
         items.forEach((item, index) => {
           let num = parseInt(item);
           if (isNaN(item)) {
             msg += "Invalid input! Not a number!\n";
-          }
-          if (item === "") {
-            msg += "There's an empty input!\n";
           }
           if (index === 4 && (num < 0 || num > 10)) {
             item = 'NaN';
@@ -149,11 +143,10 @@ function EnterRawData({
         items = [...items, ...[...Array(8 - items.length)].map(() => "")];
         validData.push(items);
       }
-      msg && alert(msg);
-      return validData;
+      return { data: validData, isValid: !msg };
     } catch (err) {
       alert(err);
-      return false;
+      return { data: false, isValid: false };
     }
   };
 
@@ -173,7 +166,7 @@ function EnterRawData({
       let { col, row, value } = cell;
       // validation here!
       const num = parseInt(value);
-      if (value === "" || isNaN(value) || (columnOrder[col] === 4 && (num < 0 || num > 10)) || (columnOrder[col] !== 4 && (num <= 0 || num > 5))) {
+      if (isNaN(value) || (columnOrder[col] === 4 && (num < 0 || num > 10)) || (columnOrder[col] !== 4 && (num <= 0 || num > 5))) {
         value = value ? 'NaN' : "";
         isValid = false;
       }
@@ -196,7 +189,6 @@ function EnterRawData({
     if (!isValid) {
       toast.error("You have entered one or more invalid values. The values should be between 1 – 5 (or 0 – 10 for NPS).", {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 10000});
     }
-    console.log(newData);
     updateRawData(newData);
     newData.length > 0 && setPreCalcResult(getRawMeans(parseRawDataToInt(getSortedData(newData, rawColumnOrder))));
   };
@@ -269,6 +261,7 @@ function EnterRawData({
             rowsProp={getSheetRowsProp(initialRowCount, rawData, columnOrder)}
             columnsProp={getSheetHeader(columnOrder, preCalcResult)}
             onSheetChange={onSheetChange}
+            parseClipboard={isValidData}
           />
         </div>
         <div>
@@ -311,13 +304,19 @@ function EnterRawData({
           open={openImportModal}
           onCloseModal={() => setOpenImportModal(false)}
           onConfirm={() => {
-            const result = isValidData(importData);
-            if (result) {
-              updateColumnOrder([0, 1, 2, 3, 4, 5, 6, 7]);
-              updateRawData(result);
-              console.log(parseRawDataToInt(getSortedData(result, [0, 1, 2, 3, 4, 5, 6, 7])));
-              result.length > 0 && setPreCalcResult(getRawMeans(parseRawDataToInt(getSortedData(result, [0, 1, 2, 3, 4, 5, 6, 7]))));
+            if (!importData) {
               setOpenImportModal(false);
+              return;
+            }
+            const { data, isValid } = isValidData(importData);
+            if (data) {
+              updateColumnOrder([0, 1, 2, 3, 4, 5, 6, 7]);
+              updateRawData(data);
+              data.length > 0 && setPreCalcResult(getRawMeans(parseRawDataToInt(getSortedData(data, [0, 1, 2, 3, 4, 5, 6, 7]))));
+              setOpenImportModal(false);
+            }
+            if (!isValid) {
+              toast.error("You have entered one or more invalid values. The values should be between 1 – 5 (or 0 – 10 for NPS).", {containerId: 'A', position: toast.POSITION.TOP_RIGHT, className: 'toast-info', autoClose: 10000});
             }
           }}
           title="Import Data"

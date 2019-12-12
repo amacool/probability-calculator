@@ -154,7 +154,7 @@ function ViewDatabases({ websiteData, updateWebsiteData, calcResult, isAuthentic
           <p>Table shows percentile ranks.</p>
         </div>
       </div>
-      <div className="content-body">
+      <div className="content-body website-content-body">
         {isAuthenticated === 1 && (
           <div className="export-websites-container">
             <p>You can import data by copying & paste into table or modal and export data as .csv file or as calculation static parameters.</p>

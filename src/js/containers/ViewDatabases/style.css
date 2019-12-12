@@ -5,6 +5,10 @@
   margin-right: 10px;
 }
 
+.website-content-body {
+  min-width: 1080px;
+}
+
 .study-tab-container {
   display: flex;
   width: 70%;

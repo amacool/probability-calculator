@@ -43,9 +43,9 @@ export const SusEquivalents = ({ result, drawChart }) => {
               </tr>
             </table>
             <div id="chart-sus-equivalent-chart" />
-            <div className="export-btn-container">
-              <button className="btn-primary" onClick={() => downloadAsPng('chart-sus-equivalent-chart', 'SUS Equivalents')}>Export Chart</button>
-            </div>
+            {/*<div className="export-btn-container">*/}
+              {/*<button className="btn-primary" onClick={() => downloadAsPng('chart-sus-equivalent-chart', 'SUS Equivalents')}>Export Chart</button>*/}
+            {/*</div>*/}
           </div>
         </div>
       )}

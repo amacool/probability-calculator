@@ -82,9 +82,9 @@ export const PercentileRanks = ({ result, drawChart }) => {
               </tr>
             </table>
             <div id="chart-percentile-by-attr" />
-            <div className="export-btn-container">
-              <button className="btn-primary" onClick={() => downloadAsPng('chart-percentile-by-attr', 'Percentile Ranks by Attribute')}>Export Chart</button>
-            </div>
+            {/*<div className="export-btn-container">*/}
+              {/*<button className="btn-primary" onClick={() => downloadAsPng('chart-percentile-by-attr', 'Percentile Ranks by Attribute')}>Export Chart</button>*/}
+            {/*</div>*/}
           </div>
         </div>
       )}

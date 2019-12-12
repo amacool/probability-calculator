@@ -44,10 +44,10 @@ export const OverallSupr = ({ result, confLevel, drawChart }) => {
             <div id="chart-overall-percentile-bar">
               <p className="chart-desc">We can be {confLevel*100}% confident the population mean SUPR-Q Score is above {result.percentileRank.ciLow}.</p>
             </div>
-            <div className="export-btn-container">
+            {/*<div className="export-btn-container">*/}
               {/*<button className="btn-primary" onClick={() => downloadAsPng('chart-overall-percentile-bar', 'Overall SUPR-Q Results - 1')}>Export Chart</button>*/}
-              <button className="btn-primary" onClick={() => downloadAsSvg('chart-overall-percentile-bar-svg', 'Overall SUPR-Q Results - 1')}>Export Chart</button>
-            </div>
+              {/*<button className="btn-primary" onClick={() => downloadAsSvg('chart-overall-percentile-bar-svg', 'Overall SUPR-Q Results - 1')}>Export Chart</button>*/}
+            {/*</div>*/}
           </div>
 
           <div className="result-body-inner-wrapper">
@@ -87,9 +87,9 @@ export const OverallSupr = ({ result, confLevel, drawChart }) => {
             <div id="chart-overall-percentile-line">
               <p className="chart-desc">A raw score of {result.rawScore.rawScore} is higher than {result.percentileRank.percentileRank} of websites in the database</p>
             </div>
-            <div className="export-btn-container">
-              <button className="btn-primary" onClick={() => downloadAsPng('chart-overall-percentile-line', 'Overall SUPR-Q Results - 2')}>Export Chart</button>
-            </div>
+            {/*<div className="export-btn-container">*/}
+              {/*<button className="btn-primary" onClick={() => downloadAsPng('chart-overall-percentile-line', 'Overall SUPR-Q Results - 2')}>Export Chart</button>*/}
+            {/*</div>*/}
           </div>
         </div>
       )}
